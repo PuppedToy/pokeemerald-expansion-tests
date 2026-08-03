@@ -62,3 +62,4 @@
 | [B-056](B-056-game-corner-tm-labels-not-randomized.md) | "Game Corner TM prize list shows vanilla move names, not the run's randomized TMs" | open | minor | 0.7.0 |  |  |
 | [B-057](B-057-compile-layout-drifts-with-injected-data.md) | "A compiled ROM's layout drifts with the DATA the randomizer writes, so inject(base) can never equal compile(bundle)" | open | major | 0.7.0 |  |  |
 | [B-058](B-058-noipa-accessor-still-folds-const-read.md) | "A `noipa` accessor still folds its `const` global read, so four injectable scalars are dead in inject mode" | open | critical | 0.7.0 |  |  |
+| [B-059](B-059-viewer-form-sprites-ignore-per-form-palette.md) | "Viewer sprites ignore a form's `.palette`, so Squawkabilly and Deerling forms all render in the base form's colours" | open | minor | 0.5.0 |  |  |
