@@ -42,6 +42,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Changed
 
+- **Your patch is now built in seconds instead of minutes.** Instead of compiling a whole game from scratch
+  for every request, we now write your randomized data straight into a game we built once — the same
+  result, produced in a few seconds. (T-244)
+
 - **Item-ball choice menus now use the game's own item names.** When you open an item ball that lets you
   pick, the options are spelled exactly as the item is in your bag (e.g. "Heavy-Duty Boots"). Same items,
   same choices — only the spelling of a few names changes. (T-236)

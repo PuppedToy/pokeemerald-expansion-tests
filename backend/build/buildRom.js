@@ -70,7 +70,10 @@ export function createBuildRom({ requests, storage, fake = true, spawnFn = spawn
     }
 
     await new Promise((resolve, reject) => {
-      const args = ['make.js', `--bundle=${req.bundle_path}`, `--rom=${romIndex}`, `--out=${dir}`];
+      // `--inject` is explicit on purpose (T-244): injection is already make.js's default, but the flag
+      // beats the env, so a stray ROM_BUILD_MODE=compile left in a box env cannot put production back on
+      // the 4-minute compile path. Delivery is injection by construction, not by default.
+      const args = ['make.js', `--bundle=${req.bundle_path}`, `--rom=${romIndex}`, `--out=${dir}`, '--inject'];
       const child = spawnFn('node', args, {
         cwd: repoRoot,
         detached: true, // own process group, so killActiveBuild can take down the whole make tree

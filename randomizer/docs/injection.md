@@ -8,20 +8,50 @@ bytes into a base ROM" (seconds).
 This page is the design reference for `randomizer/injector/`. Task history lives in `tasks/`
 (T-238 built the skeleton; T-239–T-243 migrate the outputs one by one).
 
-## The switch
+## The switch — and which side of it delivers (T-244)
+
+Phase 3 kept `compile` as the default so every migration step was reversible in one env var. **T-244
+inverted it:** injection produces every ROM a player receives, and the compile path is retained for one
+job only — being the reference GATE-3 measures injection against.
 
 | | |
 |---|---|
-| `ROM_BUILD_MODE=compile` (default) | the proven path: writers mutate `src/`, `make`, restore |
-| `ROM_BUILD_MODE=inject` | `make.js` calls `injectOneRom()`; no source mutation, no `make`, no restore |
-| `node make.js … --compile` / `--inject` | per-invocation override; the flag beats the env |
+| *(nothing set)* | **inject** — `make.js` calls `injectOneRom()`; no source mutation, no `make`, no restore |
+| `--compile` / `ROM_BUILD_MODE=compile` | the compile path: writers mutate `src/`, `make`, restore. **Verification only** |
+| `--inject` | injection, overriding any env — what `backend/build/buildRom.js` passes |
 
-The backend spawns `node make.js …` and inherits the env, so flipping the box's env flips the whole
-queue — and unsetting it rolls everything back. Default stays `compile` until **every** module has passed
-its gate (below). **Since T-243 every module is migrated**, so `injectRom()` emits a complete ROM: a
-full randomized `nicknames-on` took **16 s** by injection against ~55 s warm / ~230 s cold by compile.
-The default is still `compile` until the owner has play-tested an injected ROM (INV-BEHAVIOR, which no
-byte comparison can judge).
+Three properties hold this in place, and each has a test:
+
+- **No absence of configuration selects compile.** `resolveBuildMode()` defaults to `inject`; an empty or
+  unset `ROM_BUILD_MODE` is unset, not a fallback.
+- **`compileOneRom()` refuses unless asked for by name** (`isCompileExplicitlyRequested()`, or an explicit
+  `allowCompile` from an in-process harness). A programmatic caller cannot start a 4-minute `make` by
+  accident.
+- **The delivery path asks for injection explicitly.** `buildRom.js` spawns `make.js … --inject`, and the
+  flag beats the env, so a stale `ROM_BUILD_MODE=compile` in a box env cannot regress production.
+
+A full randomized `nicknames-on` takes **16 s** by injection against ~55 s warm / ~230 s cold by compile.
+The interactive "randomize fresh, then compile" maker (`make.js --randomize`) went with T-244: ROMs come
+from a bundle. `node analyze.js` covers analysis; `backend/build/golden-corpus/generate.mjs` mints a
+bundle from a config spec.
+
+### Why the compile path was quarantined instead of deleted
+
+T-244's plan said to remove it. It stayed, by decision, because it is not only a generator:
+
+- It is **GATE-3's reference**. `parity.mjs --compile-each` asks "does the injector produce the data
+  `compile()` produces?" for every table in the corpus. Delete `compile()` and that question becomes
+  unanswerable — for the next upstream sync ([ADR-012](../../docs/adr/ADR-012-upstream-bugfix-cherry-pick-sync.md)),
+  for the next writer, forever. The `verify-corpus` skill and the corpus `manifest.json` rest on the same
+  foundation.
+- The injector **imports the writers** (see *Deriving writes from the compile path* below):
+  `writer.applyWildPlanToEncounters`, `itemPriceWriter.patchPricesInContent`,
+  `pokemonWriter.editSpeciesFile`, `moneyWriter`, `runAndBunWriter`, `stevenTagWriter`, `megaHiddenWriter`,
+  `tradeWriter`, `evoLevelWriter`, `starterNameWriter`, `locationNameWriter`, `tradeNameWriter`. Stripping
+  the source-edit code out of them would delete the rule the injected bytes are derived *from*.
+
+What T-244 did remove is every way of reaching the compile path **by omission** — which is the failure
+mode that mattered: a box that quietly builds the slow way, or a caller that mutates `src/` in production.
 
 ## Where the base comes from
 

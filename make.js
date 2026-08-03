@@ -4,39 +4,38 @@
 /**
  * make.js — ROM production pipeline.
  *
- * Two modes:
- *   Bundle    — reads a pre-generated session bundle JSON and produces one ROM
- *               per entry: write game files → make → save ROM → restore files.
- *   Randomize — runs the randomizer fresh (like analyze.js), then compiles one ROM.
+ * Reads a pre-generated session bundle JSON and produces one artifact per entry by **injecting** the
+ * bundle's data into the prebuilt base ROM (seconds, no `make`, no source mutation). Injection reads its
+ * base from `base/pokeemerald.{gba,map,sym}` (override with INJECT_BASE_ROM / INJECT_BASE_MAP /
+ * INJECT_BASE_SYM) and refuses to emit a ROM while any injector module is still pending, since those
+ * outputs would silently keep their base values.
  *
- * Non-interactive flags:
  *   node make.js --bundle=./path/to/bundle.json
- *   node make.js --randomize [--seed=42] [--difficulty=hard] [--no-balance]
- *   node make.js --full-rom     (emit the full .gba instead of a BPS patch; default is .bps — ADR-013)
- *   node make.js --debug
- *   node make.js --clean        (runs 'make clean' before the first make)
+ *   node make.js --bundle=… --rom=2 --out=./dir   (one ROM of the bundle — the backend's per-ROM unit)
+ *   node make.js --bundle=… --full-rom            (full .gba instead of the default BPS patch — ADR-013)
+ *   node make.js --bundle=… --debug
  *
- * How a ROM is produced — T-238, Phase 3 of the base+injection migration:
- *   ROM_BUILD_MODE=compile   (DEFAULT)  write game files → `make` → artifact          [the proven path]
- *   ROM_BUILD_MODE=inject               write the bundle's data into the prebuilt base [seconds, no make]
- *   …or per invocation: `--compile` / `--inject` (the flag beats the env — rollback in one word).
- * Injection reads its base from `base/pokeemerald.{gba,map,sym}` (override with INJECT_BASE_ROM /
- * INJECT_BASE_MAP / INJECT_BASE_SYM). It refuses to emit a ROM while any Phase-3 module is still
- * pending, since those outputs would silently keep their base values.
- * See docs/base-plus-injection-strategy.md and randomizer/docs/injection.md.
+ * The old compile-per-user path (write game files → `make` → restore) was decommissioned in **T-244**:
+ * `compileOneRom` survives ONLY as the reference GATE-3 measures injection against
+ * (`backend/build/golden-corpus/parity.mjs --compile-each`, the `verify-corpus` skill), and it refuses to
+ * run unless `--compile` / `ROM_BUILD_MODE=compile` asks for it by name. Nothing in the delivery path can
+ * reach it. See randomizer/docs/injection.md, docs/base-plus-injection-strategy.md and
+ * docs/adr/ADR-023-injection-verified-by-data-equivalence.md.
  */
 
 const { spawnSync } = require('child_process');
 const fs   = require('fs');
 const path = require('path');
 const os   = require('os');
-const readline = require('readline');
 
 const root    = __dirname;
 const ROM_SRC = path.join(root, 'pokeemerald.gba');
 
 // ── Guards ───────────────────────────────────────────────────────────────────
 
+const { BUILD_MODES, resolveBuildMode, isCompileExplicitlyRequested } = require('./randomizer/injector/mode');
+
+// The compile path mutates data/maps/ — a dirty data/ would be silently lost by its restore().
 function checkDataClean() {
     const result = spawnSync('git', ['status', '--porcelain', 'data/'], {
         cwd: root, shell: process.platform === 'win32', encoding: 'utf8',
@@ -44,6 +43,23 @@ function checkDataClean() {
     const dirty = (result.stdout || '').trim();
     if (dirty) {
         console.error('\nERROR: Uncommitted changes in data/ detected. Commit or stash them first:\n' + dirty);
+        process.exit(1);
+    }
+}
+
+// Injection mutates nothing, so it needs no restore — but it READS the base's own sources (item prices,
+// learnsets, wild slots, the .party files: randomizer/docs/injection.md "Deriving writes from the compile
+// path"). If a crashed run left those files randomized, injection would write a *previous* run's values
+// into the base and call it a fresh ROM. So the inputs must match the build the base came from.
+// Tracked modifications only: an untracked file under src/ is not an input the injector reads (T-244).
+function checkInjectInputsClean() {
+    const result = spawnSync('git', ['status', '--porcelain', '--untracked-files=no', 'src/', 'include/', 'data/maps/'], {
+        cwd: root, shell: process.platform === 'win32', encoding: 'utf8',
+    });
+    const dirty = (result.stdout || '').trim();
+    if (dirty) {
+        console.error('\nERROR: injection reads the base\'s own sources and they are modified — the base ROM and\n'
+            + 'these files would disagree. Restore them first (git checkout -- src/ include/ data/maps/):\n' + dirty);
         process.exit(1);
     }
 }
@@ -73,12 +89,6 @@ function resolveJobs() {
     if (Number.isInteger(env) && env > 0) return env;
     const cores = (typeof os.availableParallelism === 'function' ? os.availableParallelism() : os.cpus().length) || 1;
     return Math.max(1, cores);
-}
-
-// ── Interactive prompt ───────────────────────────────────────────────────────
-
-function ask(rl, question) {
-    return new Promise(resolve => rl.question(question, resolve));
 }
 
 // ── Bundle sentinel resolution ───────────────────────────────────────────────
@@ -185,17 +195,35 @@ async function injectOneRom({
 
 // ── Single-ROM build — the unit the backend queue drives (T-030) ──────────────
 
-async function buildOneRom({ rom, bundle, seed, universeSeed = seed, outDir, isDebug = false, jobs = resolveJobs(), fullRom = false }) {
-    // T-238 — one switch decides how the ROM is produced; compile is the default until INV-BYTES holds.
-    const { isInjectMode } = require('./randomizer/injector/mode');
-    if (isInjectMode()) {
-        const result = await injectOneRom({ rom, bundle, seed, universeSeed, outDir, fullRom });
-        return result.dest;
+/**
+ * Produce one ROM. Injection unless the compile path was asked for **by name** (`--compile` /
+ * ROM_BUILD_MODE=compile), which only the GATE-3 harness does — T-244. Callers that know the mode pass it
+ * in; the default resolution is there so a bare `require('make.js').buildOneRom(...)` still injects.
+ */
+async function buildOneRom({ rom, bundle, seed, universeSeed = seed, outDir, isDebug = false, jobs = resolveJobs(), fullRom = false, mode = resolveBuildMode() }) {
+    if (mode === BUILD_MODES.COMPILE) {
+        return compileOneRom({ rom, bundle, seed, universeSeed, outDir, isDebug, jobs, fullRom });
     }
-    return compileOneRom({ rom, bundle, seed, universeSeed, outDir, isDebug, jobs, fullRom });
+    const result = await injectOneRom({ rom, bundle, seed, universeSeed, outDir, fullRom });
+    return result.dest;
 }
 
-async function compileOneRom({ rom, bundle, seed, universeSeed = seed, outDir, isDebug = false, jobs = resolveJobs(), fullRom = false }) {
+/**
+ * The decommissioned compile path (T-244) — **verification only**.
+ *
+ * It is not a fallback and not a delivery option: it is the reference GATE-3 measures injection against
+ * (ADR-023 — data equivalence, since a compiled ROM's layout drifts with its own data, B-057). Keeping it
+ * is what lets a future upstream sync or a new writer still be proven against `compile()`; what T-244
+ * removed is every way of reaching it *by omission*. Hence the guard: an explicit `--compile` /
+ * `ROM_BUILD_MODE=compile` (or `allowCompile: true` from an in-process harness) or it refuses.
+ */
+async function compileOneRom({ rom, bundle, seed, universeSeed = seed, outDir, isDebug = false, jobs = resolveJobs(), fullRom = false, allowCompile = isCompileExplicitlyRequested() }) {
+    if (!allowCompile) {
+        throw new Error(
+            'compileOneRom is the GATE-3 reference path, not a way to deliver a ROM (T-244). '
+            + 'Ask for it by name — `--compile` / ROM_BUILD_MODE=compile — or use injection.',
+        );
+    }
     const rng                          = require('./randomizer/rng');
     const writer                       = require('./randomizer/writer');
     const { writeTMsFromList }          = require('./randomizer/tmRandomizer');
@@ -261,7 +289,7 @@ async function compileOneRom({ rom, bundle, seed, universeSeed = seed, outDir, i
 // ── Bundle mode ──────────────────────────────────────────────────────────────
 
 async function bundleMode(bundlePath, isDebug, doClean, opts = {}) {
-    const { romIndex = null, outDir: outDirOverride = null, jobs = resolveJobs(), fullRom = false } = opts;
+    const { romIndex = null, outDir: outDirOverride = null, jobs = resolveJobs(), fullRom = false, mode = resolveBuildMode() } = opts;
     console.log(`\nLoading bundle: ${bundlePath}`);
 
     let bundle;
@@ -291,17 +319,20 @@ async function bundleMode(bundlePath, isDebug, doClean, opts = {}) {
     console.log(`Seed:      ${seed}`);
     if (universeSeed !== seed) console.log(`Universe:  ${universeSeed}`);
     console.log(`Output:    ${outDir}`);
-    console.log(`Jobs:      make -j${jobs}`);
     console.log(`Artifact:  ${fullRom ? 'full ROM (.gba)' : 'BPS patch (.bps, vanilla→built)'}`);
-    console.log(`Mode:      ${require('./randomizer/injector/mode').resolveBuildMode()} (T-238)`);
-
-    if (doClean) run('make', ['clean']);
+    if (mode === BUILD_MODES.COMPILE) {
+        console.log(`Jobs:      make -j${jobs}`);
+        console.log('Mode:      compile — GATE-3 REFERENCE PATH, not delivery (T-244)');
+        if (doClean) run('make', ['clean']);
+    } else {
+        console.log('Mode:      inject (T-244)');
+    }
 
     for (const rom of roms) {
         console.log(`\n${'─'.repeat(64)}`);
         console.log(`ROM ${rom.romIndex + 1} / ${bundle.roms.length}  →  ${romFileName(rom)}`);
         console.log('─'.repeat(64));
-        await buildOneRom({ rom, bundle, seed, universeSeed, outDir, isDebug, jobs, fullRom });
+        await buildOneRom({ rom, bundle, seed, universeSeed, outDir, isDebug, jobs, fullRom, mode });
     }
 
     console.log(`\n${'='.repeat(64)}`);
@@ -310,164 +341,50 @@ async function bundleMode(bundlePath, isDebug, doClean, opts = {}) {
     console.log('='.repeat(64));
 }
 
-// ── Randomize mode ───────────────────────────────────────────────────────────
+// ── Argument parsing ─────────────────────────────────────────────────────────
 
-async function randomizeMode(opts, doClean) {
-    const { loadConfig }     = require('./randomizer/config');
-    const { runPokedexModule }  = require('./randomizer/modules/pokedexModule');
-    const { runTrainersModule } = require('./randomizer/modules/trainersModule');
-    const { runStartersModule } = require('./randomizer/modules/startersModule');
-    const { runWildModule }     = require('./randomizer/modules/wildModule');
-    const wildData = require('./randomizer/wild');
-    const rng      = require('./randomizer/rng');
-    const writer   = require('./randomizer/writer');
-    const { selectTrades } = require('./randomizer/trades');
-    const { emitArtifact, resolveVanillaPath } = require('./randomizer/romArtifact');
-
-    const config = loadConfig({
-        seed:         opts.seed ? parseInt(opts.seed, 10) : null,
-        difficulty:   opts.difficulty || null,
-        rebalance:    opts.rebalance,
-        allTms:       false,
-    }, { argv: [] });
-
-    rng.seed(config.seed);
-    console.log(`\nSeed: ${config.seed}`);
-
-    const outDir = path.join(root, 'roms');
-    fs.mkdirSync(outDir, { recursive: true });
-
-    if (doClean) run('make', ['clean']);
-
-    let dest;
-    try {
-        const pokedex  = await runPokedexModule(config);
-        const trainers = runTrainersModule(pokedex, config);
-        const starters = runStartersModule(pokedex.pokes, { quality: config.starterQuality });
-        const wild     = runWildModule(pokedex.pokes, starters, wildData);
-        // T-194 — town trades (deterministic per ROM seed) for the docs sub-cards + trade-data write.
-        const trades = selectTrades({
-            pokemonList: pokedex.pokes,
-            wildArtifact: wild,
-            wildMaps: wildData.maps,
-            capLevels: pokedex.capLevels,
-            seed: deriveRomSeed((config.seed >>> 0), 0),
-            diagnostics: null,
-        });
-
-        await writer(pokedex, trainers, starters, wild, opts.debug, null, null,
-            writer.docRunNamespace({ seed: config.seed }), null, trades);
-        run('make', ['-j', String(resolveJobs())]);
-
-        // Default delivery is a BPS delta; --full-rom copies the .gba verbatim (ADR-013).
-        const vanillaPath = opts.fullRom ? null : resolveVanillaPath(root);
-        dest = emitArtifact({
-            builtRomPath: ROM_SRC, outDir, label: `rom-${config.seed}.gba`, fullRom: opts.fullRom, vanillaPath,
-        });
-        console.log(`\n  ✓  Saved: ${dest}`);
-    } finally {
-        restore();
-    }
-
-    console.log(`\n  Done! Saved to: ${dest}`);
-}
-
-// ── Argument parsing + interactive prompts ───────────────────────────────────
-
-async function parseOpts() {
+function parseOpts() {
     const argv = process.argv.slice(2);
-
-    const bundleFlag  = argv.find(a => a.startsWith('--bundle='));
-    const doRandomize = argv.includes('--randomize');
-    const isDebug     = argv.includes('--debug');
-    const doClean     = argv.includes('--clean');
-    const doFullRom   = argv.includes('--full-rom');
-
-    if (bundleFlag || doRandomize) {
-        return {
-            mode:       bundleFlag ? 'bundle' : 'randomize',
-            bundlePath: bundleFlag ? path.resolve(bundleFlag.replace('--bundle=', '')) : null,
-            isDebug,
-            doClean,
-            bundleOpts: {
-                romIndex: (argv.find(a => a.startsWith('--rom='))  || '').replace('--rom=',  '') || null,
-                outDir:   (argv.find(a => a.startsWith('--out='))  || '').replace('--out=',  '') || null,
-                jobs:     (argv.find(a => a.startsWith('--jobs=')) || '').replace('--jobs=', '') || null,
-                fullRom:  doFullRom,
-            },
-            randOpts: {
-                debug:      isDebug,
-                rebalance:  !argv.includes('--no-balance'),
-                difficulty: (argv.find(a => a.startsWith('--difficulty=')) || '').replace('--difficulty=', '') || null,
-                seed:       (argv.find(a => a.startsWith('--seed='))       || '').replace('--seed=',       '') || null,
-                fullRom:    doFullRom,
-            },
-        };
+    const bundleFlag = argv.find(a => a.startsWith('--bundle='));
+    if (!bundleFlag) {
+        throw new Error(
+            'nothing to build: pass --bundle=./path/to/bundle.json.\n'
+            + '(The interactive "randomize fresh, then compile" maker was decommissioned in T-244 — ROMs come\n'
+            + ' from a bundle now. `node analyze.js` for analysis; backend/build/golden-corpus/generate.mjs\n'
+            + ' mints a bundle from a config spec.)',
+        );
     }
-
-    // Interactive
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-    console.log('\nPokémon Emerald ROM Maker');
-    console.log('=========================');
-
-    const debugStr = await ask(rl, 'Debug mode? (y/n) [n]: ');
-    const debug    = debugStr.trim().toLowerCase() === 'y';
-
-    const cleanStr = await ask(rl, 'Run \'make clean\' first? (y/n) [n]: ');
-    const clean    = cleanStr.trim().toLowerCase() === 'y';
-
-    const fullRomStr = await ask(rl, 'Emit full ROM (.gba) instead of a BPS patch? (y/n) [n]: ');
-    const fullRom    = fullRomStr.trim().toLowerCase() === 'y';
-
-    console.log('\nSource:');
-    console.log('  1  Bundle JSON  — apply pre-generated randomizer data, then compile');
-    console.log('  2  Randomize    — randomize fresh, then compile');
-    const srcStr = await ask(rl, 'Choose [1]: ');
-    const srcChoice = srcStr.trim() || '1';
-
-    let mode, bundlePath, randOpts;
-
-    if (srcChoice !== '2') {
-        mode = 'bundle';
-        const bpStr = await ask(rl, 'Path to bundle JSON: ');
-        bundlePath = path.resolve(bpStr.trim());
-    } else {
-        mode = 'randomize';
-        const rebalanceStr  = await ask(rl, 'Rebalance stats? (y/n) [y]: ');
-        const difficultyStr = await ask(rl, 'Difficulty (1-13, or easy/fair/hard) [7]: ');
-        const seedStr       = await ask(rl, 'Seed (blank = random): ');
-        randOpts = {
-            debug,
-            rebalance:  rebalanceStr.trim().toLowerCase() !== 'n',
-            difficulty: difficultyStr.trim() || null,
-            seed:       seedStr.trim() || null,
-            fullRom,
-        };
-    }
-
-    rl.close();
-    return { mode, bundlePath, isDebug: debug, doClean: clean, bundleOpts: { fullRom }, randOpts };
+    return {
+        bundlePath: path.resolve(bundleFlag.replace('--bundle=', '')),
+        isDebug:    argv.includes('--debug'),
+        doClean:    argv.includes('--clean'),
+        bundleOpts: {
+            romIndex: (argv.find(a => a.startsWith('--rom='))  || '').replace('--rom=',  '') || null,
+            outDir:   (argv.find(a => a.startsWith('--out='))  || '').replace('--out=',  '') || null,
+            jobs:     (argv.find(a => a.startsWith('--jobs=')) || '').replace('--jobs=', '') || null,
+            fullRom:  argv.includes('--full-rom'),
+        },
+    };
 }
 
 // ── Entry point ──────────────────────────────────────────────────────────────
 
 async function main() {
-    checkDataClean();
-    const opts = await parseOpts();
+    const opts = parseOpts();
+    const mode = resolveBuildMode();
+    // Each path guards a different hazard: compile mutates data/maps/, injection reads src/ (see above).
+    if (mode === BUILD_MODES.COMPILE) checkDataClean(); else checkInjectInputsClean();
 
     process.on('SIGINT', () => process.exit(130));
 
-    if (opts.mode === 'bundle') {
-        const bo = opts.bundleOpts || {};
-        await bundleMode(opts.bundlePath, opts.isDebug, opts.doClean, {
-            romIndex: bo.romIndex != null ? parseInt(bo.romIndex, 10) : null,
-            outDir:   bo.outDir ? path.resolve(bo.outDir) : null,
-            jobs:     bo.jobs ? parseInt(bo.jobs, 10) : resolveJobs(),
-            fullRom:  !!bo.fullRom,
-        });
-    } else {
-        await randomizeMode(opts.randOpts, opts.doClean);
-    }
+    const bo = opts.bundleOpts;
+    await bundleMode(opts.bundlePath, opts.isDebug, opts.doClean, {
+        romIndex: bo.romIndex != null ? parseInt(bo.romIndex, 10) : null,
+        outDir:   bo.outDir ? path.resolve(bo.outDir) : null,
+        jobs:     bo.jobs ? parseInt(bo.jobs, 10) : resolveJobs(),
+        fullRom:  !!bo.fullRom,
+        mode,
+    });
 }
 
 // Run only when invoked directly, so the backend/tests can `require` the builders.

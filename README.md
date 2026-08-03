@@ -108,20 +108,28 @@ Output: opens `randomizer/output/out.html` in the default browser.
 
 ### `make.js` — ROM production
 
-Randomizes and compiles GBA ROM(s). Requires devkitPro / agbcc toolchain on PATH.
+Produces GBA artifact(s) from a pre-generated session bundle by **injecting** the bundle's data into the
+prebuilt base ROM — seconds per ROM, no toolchain needed (T-244; see
+[randomizer/docs/injection.md](randomizer/docs/injection.md)).
 
 ```bash
-# Full pipeline: fresh randomization → compile ROM
-node make.js --randomize [--seed=42] [--difficulty=hard] [--no-balance] [--debug] [--clean]
+# One artifact per ROM in the bundle
+node make.js --bundle=./path/to/bundle.json
 
-# Bundle mode: compile ROM(s) from a pre-generated session bundle
-node make.js --bundle=./path/to/bundle.json [--clean]
+# A single ROM of the bundle, to a chosen directory (the backend's per-ROM unit)
+node make.js --bundle=./path/to/bundle.json --rom=2 --out=./out
 
-# Interactive mode (prompts for all options)
-node make.js
+# Full .gba instead of the default BPS patch (ADR-013)
+node make.js --bundle=./path/to/bundle.json --full-rom
 ```
 
-Output: ROM(s) written to `roms/<sessionId>/`.
+Output: artifact(s) written to `roms/<sessionId>/` (or `--out`). Injection needs
+`base/pokeemerald.{gba,map,sym}` from one and the same base build.
+
+The old "randomize fresh, then compile" maker (`--randomize`, and the interactive prompt) was
+decommissioned in T-244. `node analyze.js` covers analysis; `backend/build/golden-corpus/generate.mjs`
+mints a bundle from a config spec. The compile path itself survives only as GATE-3's reference
+(`--compile`, requires the devkitPro / agbcc toolchain).
 
 ## Architecture
 

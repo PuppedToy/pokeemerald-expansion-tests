@@ -111,7 +111,7 @@ These are regenerated from source on every run; committing them pollutes history
 
 ### ROM builds & debug runs
 
-`analyze.js` only analyses. ROMs are built by a separate pipeline on a dedicated builder machine: a `bundle.json` (full randomizer output for one session) is moved to the builder, then `node make.js --bundle=...` writes the game files (`randomizer/writer.js` + TM/item writers) → runs `make` → saves the ROM → restores mutated source. Anything under `debug/<run>/` was produced this way: `bundle.json` (input), `log.txt` (stdout), `logError.txt` (stderr — the real error is usually near the **end**), `rom-*.html` (viewer). A bundle is clean input; corruption almost always originates in the writers (`randomizer/writer.js`, `tmRandomizer.js`, `itemRandomizer.js`), not the bundle.
+`analyze.js` only analyses. ROMs are produced from a `bundle.json` (full randomizer output for one session) by `node make.js --bundle=...`, which **injects** the bundle's data into the prebuilt base ROM (`base/pokeemerald.{gba,map,sym}`) — seconds per ROM, no source mutation, no `make`. The compile-per-user path was decommissioned in T-244 and survives only as GATE-3's reference (`--compile`); see `randomizer/docs/injection.md`. Anything under `debug/<run>/` was produced this way: `bundle.json` (input), `log.txt` (stdout), `logError.txt` (stderr — the real error is usually near the **end**), `rom-*.html` (viewer). A bundle is clean input; corruption almost always originates in the injector modules (`randomizer/injector/modules/`) or the writer rules they derive from (`randomizer/writer.js`, `tmRandomizer.js`, `itemRandomizer.js`), not the bundle.
 
 ### Design reference — `randomizer/docs/`
 
