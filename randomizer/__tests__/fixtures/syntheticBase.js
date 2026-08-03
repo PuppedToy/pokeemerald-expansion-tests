@@ -16,6 +16,7 @@ const {
     SPECIES_INFO, MOVE_INFO, ITEM_INFO, EVOLUTION, EVOLUTION_PARAM, WILD_POKEMON, LEVEL_UP_MOVE, TEACHABLE_MOVE,
     TRAINER, TRAINER_MON, LOCATION_NICKNAME, TRADE_NICKNAME, INGAME_TRADE,
 } = require('../../injector/structLayout');
+const { OBJECT_EVENT } = require('../../injector/modules/megaMapItems');
 const { encodeParty } = require('../../injector/partyFile');
 const {
     LEVEL_UP_LEARNSET_CAPACITY, TEACHABLE_LEARNSET_CAPACITY, TRAINER_PARTY_CAPACITY,
@@ -47,6 +48,7 @@ const PARTNER_BASE = 0x120000;      // gBattlePartners[DIFFICULTY_COUNT][PARTNER
 const PARTY_BASE = 0x121000;        // the anonymous party blobs the .party pointers point at
 const NAMING_BASE = 0x130000;       // the T-242 text tables: starters, nicknames, trades
 const DATA_DRIVEN_BASE = 0x135000;  // the T-234/235/236 tables + the two toggle scripts (T-243)
+const OBJECT_EVENT_BASE = 0x138000; // per-map object-event tables — the mega-stone balls (B-060)
 const ROM_SIZE = 0x140000;
 
 // The canonical base values `verifyLayout` insists on (see structLayout.js for why these ones).
@@ -93,12 +95,15 @@ const ANCHOR_EVOLUTIONS = {
  * @param {object} [opts.partners]    { 'PARTNER_X': { doubleBattle, mons } } — gBattlePartners
  * @param {boolean|string} [opts.naming]  T-242's tables (starters, nickname tables, gIngameTrades). Pass
  *        a `gIngameTrades[]` block of C to lay the trade table out from it, or `true` for an empty one.
+ * @param {object} [opts.objectEvents]  { MapName: parsedMapJson } — lays out `<Map>_ObjectEvents` from
+ *        the JSON's own events, the way the map compiler does (B-060's mega-stone balls).
  * @param {boolean} [opts.dataDriven]  T-243's Phase-2 tables at their committed defaults, plus the two
  *        Group-D toggle scripts as real `setvar` bytecode behind their (local) labels.
  */
 function buildSyntheticBase({
     species = {}, moves = {}, items = {}, evolutions = {}, wild = {}, tmMoves = null,
     learnsets = {}, teachables = {}, trainers = null, partners = null, naming = null, dataDriven = false,
+    objectEvents = null,
 } = {}) {
     const buffer = Buffer.alloc(ROM_SIZE, 0);
     const speciesCount = constants.require('NUM_SPECIES');
@@ -341,6 +346,49 @@ function buildSyntheticBase({
         if (cursor > ROM_SIZE) throw new Error('syntheticBase: the data-driven tables outgrew the fixture ROM');
     }
 
+    // Per-map object-event tables, laid out from the map JSON exactly as the map compiler would.
+    //
+    // `dataDriven` implies them: T-243's module also places the mega stones (B-060), and the real base
+    // exports one table per map — so a fixture that omitted them would make the module's "the base must
+    // export this" guard fire in every T-243 test. The maps come from the committed JSONs, like the
+    // constants come from the committed headers.
+    let objectEventMaps = objectEvents;
+    if (!objectEventMaps && dataDriven) {
+        const { findMegaPlaceholders } = require('../../injector/modules/megaMapItems');
+        objectEventMaps = {};
+        for (const site of findMegaPlaceholders({ root: ROOT })) {
+            if (!objectEventMaps[site.map]) objectEventMaps[site.map] = site.json;
+        }
+    }
+    const objectEventSymbols = {};
+    if (objectEventMaps) {
+        const objectEvents = objectEventMaps;   // the layout loop below reads this name
+        let cursor = OBJECT_EVENT_BASE;
+        for (const [map, json] of Object.entries(objectEvents)) {
+            const events = json.object_events || [];
+            const at = cursor;
+            cursor += events.length * OBJECT_EVENT.stride;
+            events.forEach((event, i) => {
+                const eventAt = at + i * OBJECT_EVENT.stride;
+                buffer.writeUInt8(i + 1, eventAt + OBJECT_EVENT.localId);
+                buffer.writeUInt16LE(constants.require(event.graphics_id), eventAt + OBJECT_EVENT.graphicsId);
+                buffer.writeUInt16LE(Number(event.x), eventAt + OBJECT_EVENT.x);
+                buffer.writeUInt16LE(Number(event.y), eventAt + OBJECT_EVENT.y);
+                buffer.writeUInt8(Number(event.elevation) || 0, eventAt + OBJECT_EVENT.elevation);
+                buffer.writeUInt16LE(Number(event.trainer_type) || 0, eventAt + OBJECT_EVENT.trainerType);
+                // The item/sight field: a placeholder compiles to its constant, i.e. ITEM_NONE.
+                const raw = String(event.trainer_sight_or_berry_tree_id ?? '0');
+                const value = /^\d+$/.test(raw) ? Number(raw) : (constants.get(raw) ?? 0);
+                buffer.writeUInt16LE(value, eventAt + OBJECT_EVENT.sightOrBerryId);
+                if (event.flag && event.flag !== '0') {
+                    buffer.writeUInt16LE(constants.get(event.flag) ?? 0, eventAt + OBJECT_EVENT.flagId);
+                }
+            });
+            objectEventSymbols[`${map}_ObjectEvents`] = { romOffset: at, size: events.length * OBJECT_EVENT.stride };
+        }
+        if (cursor > ROM_SIZE) throw new Error('syntheticBase: the object-event tables outgrew the fixture ROM');
+    }
+
     const sym = (name, romOffset, size) => ({ name, addr: 0x08000000 + romOffset, romOffset, size, sizeExact: true });
     const symbols = {
         gSpeciesInfo: sym('gSpeciesInfo', SPECIES_BASE, speciesCount * SPECIES_STRIDE),
@@ -352,6 +400,7 @@ function buildSyntheticBase({
     for (const [name, s] of Object.entries(learnsetSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
     for (const [name, at, size] of trainerTables) symbols[name] = sym(name, at, size);
     for (const [name, s] of Object.entries(namingSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
+    for (const [name, s] of Object.entries(objectEventSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
     for (const [name, s] of Object.entries(dataDrivenSymbols)) symbols[name] = sym(name, s.romOffset, s.size);
 
     return {

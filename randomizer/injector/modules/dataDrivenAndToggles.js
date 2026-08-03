@@ -39,6 +39,7 @@ const runAndBunWriter = require('../../runAndBunWriter');
 const stevenTagWriter = require('../../stevenTagWriter');
 const { MEGA_TRAINERS } = require('../../constants');
 const { resolveRewardMegaStone } = require('../../modules/wildModule');
+const { injectMegaMapItems, megaAssignment } = require('./megaMapItems');
 
 const TAG = 'dataDrivenAndToggles';
 const REPO_ROOT = path.resolve(__dirname, '..', '..', '..');
@@ -237,18 +238,13 @@ function injectRewards(ctx, { rewardsSource = null } = {}) {
  * needs a higher level than that trainer has (or the queue has run out). No RNG — but this is the one
  * decision in the module that is re-implemented rather than called, so it is spelled out here.
  */
+/**
+ * Which mega trainers end up hidden. The assignment rule itself lives in `modules/megaMapItems.js` —
+ * the same walk decides which trainer gets which stone (B-060), and the flag table and the ball
+ * contents must never be able to disagree.
+ */
 function hiddenMegaIndices(data) {
-    const found = [...((data.wild && data.wild.foundMegaEvos) || [])].sort((a, b) => a.level - b.level);
-    const trainers = (data.trainers && data.trainers.trainersData) || [];
-    const hidden = [];
-    let next = found.shift();
-    for (const mega of MEGA_TRAINERS) {
-        const trainer = trainers.find(t => t.id === mega.trainer);
-        if (!trainer) throw new Error(`injector/${TAG}: no trainer '${mega.trainer}' for mega trainer ${mega.id}`);
-        if (!next || next.level > trainer.level) { hidden.push(Number(mega.id) - 1); continue; }
-        next = found.length ? found.shift() : null;
-    }
-    return hidden;
+    return [...megaAssignment(data)].filter(([, v]) => v.hidden).map(([id]) => Number(id) - 1);
 }
 
 function injectPicks(ctx, { picksSource = null } = {}) {
@@ -403,6 +399,9 @@ function applyDataDrivenAndToggles({ rom, offsetMap, data = {}, log = () => {}, 
         ...injectSettings(ctx, sources),
         ...injectRewards(ctx, sources),
         ...injectPicks(ctx, sources),
+        // B-060 — the mega stones on the ground. Found missing by the first play-test: it is map data,
+        // not one of the Phase-2 tables, and no module had claimed it.
+        megaStones: injectMegaMapItems(ctx, { maps: sources.maps || null }),
         ...injectToggles(ctx, sources),
     };
 }

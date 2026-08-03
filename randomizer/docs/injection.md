@@ -191,6 +191,32 @@ Phase 2 and then forgotten in Phase 3.
    `node randomizer/injector/verifyParity.js --a=… --b=… --map=…`.
 4. Only then start the next module — a failure must stay localised to one module.
 
+## Coverage: what the compile path writes, and who claims it
+
+Equivalence is not coverage. GATE-3 compares the bytes a module **wrote** against `compile()`'s, so an
+output no module writes is invisible to it — which is exactly how [B-060](../../bugs/B-060-mega-stone-map-items-never-injected.md)
+shipped a ROM handing out `????????` mega stones. The write surface below was **measured** (2026-08-02):
+a copy of the tree ran everything `compileOneRom` does before `make`, hashing `src/`, `data/`,
+`include/` and `graphics/` before and after. **31 files.**
+
+| what the compile path mutates | claimed by |
+|---|---|
+| `src/data/pokemon/species_info/gen_1..9_families.h` (9) | `group-a-fixed` — species + evolutions |
+| `src/data/wild_encounters.json` | `group-a-fixed` — wild slots |
+| `src/data/items.h` | `group-a-fixed` — prices |
+| `include/constants/tms_hms.h` | `group-a-fixed` — TM→move |
+| `src/data/pokemon/level_up_learnsets/gen_9.h`, `teachable_learnsets.h` | `learnsets` |
+| `src/data/trainers.party`, `battle_partners.party` | `trainer-parties` |
+| `src/data/trade.h`, `src/starter_choose.c`, `src/location_nicknames.c`, `src/trade_nicknames.c` | `trades-starters-nicknames` |
+| `src/randomizer_picks.c`, `src/randomizer_rewards.c` | `data-driven-and-toggles` |
+| `data/maps/EverGrandeCity_SidneysRoom/scripts.inc`, `MossdeepCity_SpaceCenter_2F/scripts.inc` | `data-driven-and-toggles` — the Group-D setvars |
+| `data/maps/*/map.json` (8, the `ITEM_MEGA_nn` balls) | `data-driven-and-toggles` — `megaMapItems` (added by B-060) |
+| `src/randomizer_settings.c`, `src/data/moves_info.h` | `data-driven-and-toggles` / `group-a-fixed` — did not change for the measured bundle (its config matched the committed defaults), so the measurement cannot confirm them |
+| `src/data/script_menu.h` | nobody — dead since T-247 removed the multichoice loops |
+
+**Re-measure after adding a writer.** A new output that nothing claims will not fail a gate; it will fail
+a play-test, days later, as a corrupt item.
+
 ## The B2 caveat
 
 `freeSpace.js` exists for a payload that outgrows its slot. After T-237 every table the randomizer

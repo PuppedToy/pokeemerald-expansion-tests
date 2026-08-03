@@ -95,4 +95,29 @@ Acceptance criteria:
   ROM at `~/emerald-playtest/T-243-nicknames-on-injected.gba` (sha `0a124380e3b8…`) for the owner's
   play-test. What the gate cannot judge is INV-BEHAVIOR: that the ROM *runs*.
 
+- **2026-08-02 — [[B-060]]: the play-test found an output NOBODY injected, and the audit that followed.**
+  The owner's first play-test of an injected ROM hit `????????` on every mega stone lying on the ground.
+  Not a wrong byte — a **missing output**: the stone is an `object_event` field in `data/maps/**/map.json`
+  that `writer.js` rewrites per run, and no Phase-3 module claimed it. `include/constants/items.h` defines
+  the placeholder `ITEM_MEGA_nn` as `ITEM_NONE`, so the ball handed over item 0.
+  - **GATE-3 structurally could not see it.** It compares the bytes the injector *wrote* against
+    `compile()`'s; an output nobody writes produces no journal entry and so no comparison. Only a
+    full-image diff would have shown it, and [[B-057]] is why we stopped doing those.
+  - **So the write surface was measured, not guessed.** A throwaway copy of the tree ran exactly what
+    `compileOneRom` does before `make`, hashing `src/`, `data/`, `include/`, `graphics/` before and after:
+    **31 files mutated**, and the mapping to modules is now a table in
+    [injection.md](../randomizer/docs/injection.md). Only ONE was unclaimed — the 8 map.jsons with mega
+    placeholders. The two map-script writers (Sidney's room, Mossdeep Space Center) are covered by this
+    task's toggles, and `script_menu.h` is dead (T-247), so the hole was exactly one output wide.
+  - **Fixed** in `modules/megaMapItems.js` (12 tests, RED first): locate `<Map>_ObjectEvents`, prove it
+    against the map's own JSON, write the stone. The mega-assignment rule moved into `megaAssignment()`
+    and now feeds both this module and `gMegaTrainerHidden` — one home, so the flag table and the ball
+    contents cannot disagree. `_ObjectEvents` added to the registry entry's claimed symbols.
+  - Re-injected the owner's bundle: 9 stones placed with real ids, 12 hidden left at 0, 16.3 s.
+    **GATE-3 re-run: ALL PASS — 12 pass / 0 fail**, now including the object-event writes.
+  - Two more play-test findings were diagnosed and are NOT injection defects: [[B-058]] (four `noipa`
+    accessors still fold their `const` read, which kills route/trade nicknames in inject mode — the real
+    blocker, and a base change) and [[B-061]] (every reward message names the `givemon` result instead of
+    the species — eleven scripts, identical on the compile path).
+
 ## Outcome

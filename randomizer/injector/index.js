@@ -93,7 +93,9 @@ const INJECTION_MODULES = [
         symbols: ['gRandomizerSettings', 'gGymRewards', 'gStaticEncounters', 'gItemPicks', 'gMegaTrainerHidden'],
         // The Group-D setvar sites are LOCAL script labels: they come from the .sym, and the operand
         // inside the script is found by scanning (see scriptPatch.js), not by symbol name.
-        symbolPatterns: [],
+        // The `<Map>_ObjectEvents` tables carry the mega stones lying on the ground (B-060) — map data
+        // rather than a Phase-2 table, which is exactly why no module claimed it until a play-test did.
+        symbolPatterns: [/_ObjectEvents$/],
     },
 ];
 

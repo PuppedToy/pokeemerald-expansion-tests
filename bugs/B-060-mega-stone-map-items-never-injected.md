@@ -1,13 +1,13 @@
 ---
 id: B-060
 title: "Ground mega stones are never injected — the object-event item stays ITEM_MEGA_nn (= ITEM_NONE), so the ball hands over a corrupt item"
-status: open
+status: fixing
 severity: critical
 created: 2026-08-02
 updated: 2026-08-02
 found-in: 0.7.0
 fixed-in:
-regression-test:
+regression-test: randomizer/__tests__/unit/injectorMegaMapItems.test.js
 links: [T-236, T-243, T-233, B-057, ADR-022]
 ---
 
@@ -68,13 +68,28 @@ which T-243 covers only for the four Group-D setvars).
 
 ## Fix
 
-<!-- Filled during the fix. The data is injectable: the 423 `<Map>_ObjectEvents` tables are all in the
-     base's .sym (JaggedPass_ObjectEvents at 0xd7cbe0, …), so a module can locate the map's object-event
-     array, find the event whose item field still holds the placeholder, and write the run's stone.
-     NOTE the .sym reports size 0 for these symbols, so the entry stride and the field offset must be
-     derived from the base's own data (the same discipline as every other module) — and the event must be
-     identified by matching the base map.json's own object_events, not by index alone.
+`randomizer/injector/modules/megaMapItems.js`, run as part of T-243's module. For each `ITEM_MEGA_nn`
+site it locates that map's `<Map>_ObjectEvents` table, **proves it** against the map's own JSON (every
+event's graphics id and position must match — the `.sym` reports size 0 for these symbols, so nothing
+about the table can be taken on trust), and writes the run's stone into the event's
+`trainer_sight_or_berry_tree_id`. `struct ObjectEventTemplate` is `packed`, so its declared offsets are
+exact; the field is at +0x0E and the stride is 0x18, both confirmed against the real base (9/9 Jagged Pass
+events matched before a byte was written).
 
-     Regression test: extend the corpus gate with a coverage assertion — for each bundle, every
-     ITEM_MEGA_nn placeholder site in data/maps/**/map.json must hold a real item id in the injected ROM
-     (and equal what compile() put there). Fails today for all 9 placed stones. -->
+A **hidden** mega trainer keeps `ITEM_NONE`, exactly as the compile path leaves it — its ball never spawns
+because `gMegaTrainerHidden` skips it. The assignment rule (which trainer gets which stone, sorted by
+level, in `MEGA_TRAINERS` order) now lives once in `megaAssignment()` and feeds **both** this module and
+`gMegaTrainerHidden`, so the flag table and the ball contents cannot disagree.
+
+Verified on the owner's own bundle: 9 stones placed with real ids (Swampertite, Cameruptite, Audinite,
+Altarianite, Houndoominite, Beedrillite, Manectite, Mewtwonite X/Y), 12 hidden sites still at 0.
+GATE-3 re-run over the corpus: **ALL PASS — 12 pass / 0 fail**, which now also compares the injected
+object-event writes against `compile()`'s.
+
+**Regression test**: `randomizer/__tests__/unit/injectorMegaMapItems.test.js` (12 tests). Two of them
+pin the defect itself — that every committed map still carries `ITEM_MEGA_nn`, and that `items.h` defines
+each placeholder as `ITEM_NONE` — and the write tests fail if the stone is not written (checked by
+reverting the write). The coverage rule the bug exposed is now documented in
+`randomizer/docs/injection.md`, with the measured write surface of the compile path.
+
+Left `fixing` rather than `fixed`: the symptom was in-game, so the owner's play-test is what closes it.

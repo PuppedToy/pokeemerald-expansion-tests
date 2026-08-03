@@ -48,6 +48,10 @@ const DEFAULT_HEADERS = [
     // header, which is where T-234/235/236 put them).
     'include/constants/randomizer_picks.h',
     'include/randomizer_rewards.h',
+    // B-060 — the map object events the mega-stone balls live in: OBJ_EVENT_GFX_* to prove a map's
+    // table against its own JSON before writing the stone into it.
+    'include/constants/event_objects.h',
+    'include/constants/flags.h',
 ];
 
 // A `#define` of a plain constant: no `(` directly after the name (that is a function-like macro).
