@@ -61,3 +61,4 @@
 | [B-055](B-055-dynamic-multichoice-auto-selects-first-option.md) | "Dynamic multichoice menus auto-select option 1 when opened from an A-press (item-ball picks)" | fixed | major | 0.7.0 | 0.7.0 | randomizer/__tests__/unit/dynamicMultichoiceInputGuard.test.js |
 | [B-056](B-056-game-corner-tm-labels-not-randomized.md) | "Game Corner TM prize list shows vanilla move names, not the run's randomized TMs" | open | minor | 0.7.0 |  |  |
 | [B-057](B-057-compile-layout-drifts-with-injected-data.md) | "A compiled ROM's layout drifts with the DATA the randomizer writes, so inject(base) can never equal compile(bundle)" | open | major | 0.7.0 |  |  |
+| [B-058](B-058-noipa-accessor-still-folds-const-read.md) | "A `noipa` accessor still folds its `const` global read, so four injectable scalars are dead in inject mode" | open | critical | 0.7.0 |  |  |
