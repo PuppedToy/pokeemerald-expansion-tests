@@ -1,10 +1,10 @@
 ---
 id: T-238
 title: "Base+injection Phase 3 — injector skeleton, .map offset loader, compile-vs-inject switch"
-status: in-progress
+status: done
 type: feature
 created: 2026-07-27
-updated: 2026-08-01
+updated: 2026-08-03
 target-version: 0.7.0
 links: [T-229, T-232, T-233, docs/base-plus-injection-strategy.md]
 blocked-by: [T-232, T-233]
@@ -141,4 +141,19 @@ Acceptance criteria:
   - Suites after the fixes: randomizer **1849**, backend **213**. The `.sym` was left in
     `/opt/emerald-t237` for T-239; the scratch validation script was removed.
 
+- **2026-08-03** — Closed. The registry board it introduced is now all-migrated; the switch is still the rollback path until the owner flips it in production.
+
 ## Outcome
+
+The injector's skeleton and, more importantly, **the switch**: `ROM_BUILD_MODE=compile` (default) /
+`inject`, overridable per invocation. Rollback is unsetting an env var, which is what made migrating one
+output at a time safe.
+
+`rom.js` (bounds/range-checked journalled writes with bit-granular ownership), `symbolMap.js`,
+`freeSpace.js`, `scriptPatch.js`, `parity.js`, `buildOffsetMap.js`, and the **module registry** that
+doubled as the migration's progress board for T-239…T-243 — including its refusal to emit a ROM while
+anything is pending, which is what kept a half-migrated injector from ever shipping base data as
+"randomized".
+
+The journal grew one thing later: `via: { symbol, at }` for payloads reached through a pointer (T-241),
+because anonymous data cannot be compared at a fixed delta.

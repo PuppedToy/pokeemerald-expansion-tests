@@ -1,10 +1,10 @@
 ---
 id: T-243
 title: "Base+injection Phase 3 — inject data-driven rewards/items/settings + feature-toggle setvars"
-status: in-progress
+status: done
 type: feature
 created: 2026-07-27
-updated: 2026-08-02
+updated: 2026-08-03
 target-version: 0.7.0
 links: [T-229, T-238, T-234, T-235, T-236, T-233, docs/base-plus-injection-strategy.md]
 blocked-by: [T-238, T-234, T-235, T-236]
@@ -120,4 +120,22 @@ Acceptance criteria:
     blocker, and a base change) and [[B-061]] (every reward message names the `givemon` result instead of
     the species — eleven scripts, identical on the compile path).
 
+- **2026-08-03** — Closed. 12/12 corpus by symbol on the post-B-058 base `af0dff6c92ef…`; the whole batch play-tested and confirmed by the owner.
+
 ## Outcome
+
+The Phase-2 data-driven tables (settings, gym rewards, static encounters, item picks, hidden megas) and
+the Group-D toggles — the `setvar` immediates inside compiled script bytecode, found by local label from
+the `.sym` and refused when ambiguous. With this entry migrated, `injectRom()` emits a ROM without
+`allowPending`: **16 s per ROM** against the compile path's minutes.
+
+The play-test that followed found what no gate could: [[B-060]], a mega-stone item in `map.json` that
+`writer.js` rewrites per run and **no module claimed**. Fixed here (`modules/megaMapItems.js`), and the
+lesson generalised — GATE-3 proves equivalence for what a module *wrote*, never coverage of what the
+compile path *writes*. So the write surface was measured (31 files) and the file→module mapping is now a
+table in `randomizer/docs/injection.md`, to be re-measured whenever a writer is added.
+
+Two more play-test findings were diagnosed and fixed in the same cycle, neither caused by injection:
+[[B-058]] (four `noipa` accessors still folded their `const` read, killing route/trade nicknames and the
+starter gender in inject mode) and [[B-061]] (eleven reward scripts named the `givemon` result — always
+Bulbasaur — instead of the species).

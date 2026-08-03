@@ -1,10 +1,10 @@
 ---
 id: T-241
 title: "Base+injection Phase 3 — inject trainer parties + battle partners (Group B, biggest)"
-status: in-progress
+status: done
 type: feature
 created: 2026-07-27
-updated: 2026-08-02
+updated: 2026-08-03
 target-version: 0.7.0
 links: [T-229, T-238, T-237, T-233, docs/base-plus-injection-strategy.md]
 blocked-by: [T-238, T-237]
@@ -127,4 +127,20 @@ Acceptance criteria:
     trainers the base declares. The 12 fresh compile hashes are again identical to the committed
     manifest, so no re-snapshot.
 
+- **2026-08-03** — Closed. 12/12 corpus by symbol; trainer teams and levels verified against the docs and in-game.
+
 ## Outcome
+
+Trainer parties, battle partners and the battle-format flag. The first module whose compile path is two
+tools, so `injector/partyFile.js` ports the parts of `trainerproc` that decide bytes — `.party` parsing,
+the name→constant transform (species collapse separator runs, constants do not), and the 36 B
+`TrainerMon` encoding — and the base's own 862 parties are re-encoded and byte-matched against the ROM
+on every run, which is a free 1811-mon test suite for the port.
+
+Two findings worth keeping: the writer's replace **drops** every field it does not emit, so entries are
+written whole with trainerproc's defaults rather than patched; and 8 mons per run do not round-trip
+(`SPECIES_FLOETTE_RED` is written as "Floette" and read back as `SPECIES_FLOETTE`) — using the docs id
+would have been "more correct" and would have differed from every compiled ROM.
+
+GATE-3 found `poolSize` being written when trainerproc never emits it, and the party-pointer drift that
+made the harness compare the wrong bytes — fixed properly with the journal's `via` mechanism.

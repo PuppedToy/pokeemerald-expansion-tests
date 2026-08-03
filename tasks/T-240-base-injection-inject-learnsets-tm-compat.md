@@ -1,10 +1,10 @@
 ---
 id: T-240
 title: "Base+injection Phase 3 — inject level-up learnsets + teachable/TM-HM compatibility (Group B)"
-status: in-progress
+status: done
 type: feature
 created: 2026-07-27
-updated: 2026-08-02
+updated: 2026-08-03
 target-version: 0.7.0
 links: [T-229, T-239, T-238, T-237, T-233, B-057, randomizer/docs/injection.md]
 blocked-by: [T-239]
@@ -138,4 +138,17 @@ Acceptance criteria:
     second, independent check that nothing leaked into the compile path.
   - The gate stays "data equivalence per symbol", not image equality — [[B-057]] / [[T-248]].
 
+- **2026-08-03** — Closed. 12/12 corpus by symbol; learnsets verified in-game by the owner's play-test.
+
 ## Outcome
+
+Level-up and teachable learnsets — 1104 + 1101 name-keyed slots, written whole so a shorter learnset
+leaves nothing of the base behind its terminator.
+
+The two writers **disagree** and the module mirrors each: an empty level-up list is written (a block
+holding only `LEVEL_UP_END`), an empty teachable list is skipped. Neither rule is visible in the
+writer's output text; both decide GATE-3.
+
+Every slot is byte-matched against the source it was compiled from before anything is written, which
+pins `struct LevelUpMove`'s field order, the name→symbol mapping and "these sources built this ROM" in
+one pass.

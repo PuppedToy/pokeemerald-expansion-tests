@@ -1,10 +1,10 @@
 ---
 id: T-237
 title: "Base+injection Phase 2 — fixed-capacity / free-space layout for variable-length tables"
-status: in-progress
+status: done
 type: refactor
 created: 2026-07-27
-updated: 2026-08-01
+updated: 2026-08-03
 target-version: 0.7.0
 links: [T-229, T-232, T-233, docs/base-plus-injection-strategy.md]
 blocked-by: [T-232, T-233]
@@ -33,7 +33,9 @@ Acceptance criteria:
 - [x] `make` compiles on PRO (exit 0), the corpus re-snapshot is **12/12 ROMs, 0 BUILD_FAILED**, and the
       new sizes fit: ROM **75.04 %** of 32 MB → **~7.99 MB free**. Every capacity verified in the built
       `.map`/ROM (learnset stride 176 B, teachable 160 B, party 216 B, nickname rows 16 B).
-- [ ] Owner play-tests the downloaded ROM (learnsets + a trainer battle) and confirms identical behavior.
+- [x] Owner play-tests the downloaded ROM (learnsets + a trainer battle) and confirms identical behavior.
+      → confirmed 2026-08-03 on an INJECTED ROM built on this layout: learnsets, trainer battles,
+      route nicknames and a town trade all correct in-game.
       → ROM ready at `~/emerald-playtest/T-237-nicknames-on.gba` (sha `64d30ba1…`). What to check:
       **(a)** a wild catch shows the route nickname (this bundle names 134 maps) and the starter is
       nicknamed; **(b)** any trainer battle fields the right team size; **(c)** a Pokémon's level-up and
@@ -323,4 +325,24 @@ Acceptance criteria:
     serves the pre-T237 base, so `verify-corpus` run against `/opt/emerald` will report 12 mismatches
     until the owner deploys. That is expected, not a regression.
 
+- **2026-08-03** — Closed. The last criterion (owner play-test) is met by the 2026-08-03 play-test of an injected ROM built on this layout — learnsets, a full trainer battle, nicknames and a town trade all behaved. Superseding evidence: 12/12 corpus.
+
 ## Outcome
+
+Group-B tables are fixed-capacity and exported, which is what made all of Phase 3 possible: learnsets
+(44 / 80 entries), trainer + partner parties (216 B), in-game trades, extra starters and both nickname
+tables, ≈ **+355 KB** of padding against GATE-1's 8.33 MB margin. Every capacity has one home
+(`include/constants/randomizer_layout.h`), a writer-side guard that throws, and the compiler as last
+resort (`-Werror` on an over-long initializer).
+
+Two deviations from the plan, both logged the day they were found: the single 2D table became
+**per-array fixed capacity** (positional rows would have made a slot's index depend on the species
+config — the exact drift this task existed to remove), and the `static` had to go, which is what puts
+the arrays in the `.map` at all.
+
+The design's real cost surfaced later: the `noipa` accessor pattern this task adopted for the counts is
+not sufficient on its own ([[B-058]]) — the compiler still folds a `const` read inside the accessor
+body. Fixed in the same cycle, with a detector in the readiness report so it cannot come back quietly.
+
+Validated well past the original criterion: 12/12 corpus ROMs build and, on the injected side, the
+owner's play-test read back correct learnsets, trainer teams, nicknames and trades in-game.

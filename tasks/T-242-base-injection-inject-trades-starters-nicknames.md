@@ -1,10 +1,10 @@
 ---
 id: T-242
 title: "Base+injection Phase 3 — inject trades + extra starters + nickname tables (Group B)"
-status: in-progress
+status: done
 type: feature
 created: 2026-07-27
-updated: 2026-08-02
+updated: 2026-08-03
 target-version: 0.7.0
 links: [T-229, T-238, T-237, T-233, docs/base-plus-injection-strategy.md]
 blocked-by: [T-238, T-237]
@@ -95,4 +95,20 @@ Acceptance criteria:
     named starter and four trades — is the one that exercises all four sub-writers; every ROM writes the
     trio + 9 extra starters and the 4 trades. Compile hashes unchanged against the manifest again.
 
+- **2026-08-03** — Closed. 12/12 corpus by symbol; nicknames, the named starter and the town trade verified in-game.
+
 ## Outcome
+
+In-game trades, the starter trio + extra starters, and the location/trade nickname tables with their
+counts — the outputs made of **text**, so `injector/charmap.js` encodes through `charmap.txt` + EOS
+instead of copying bytes.
+
+The two nickname writers disagree about an empty name (location keeps the row, trade drops it), so both
+reuse the writers' own `locationKeys()` / `namedTrades()`; the trade table is built by running
+`tradeWriter.renderTradeData()` and parsing the C back, keeping its fixed fields in one home. The
+committed `gIngameTrades[]` block is re-encoded and byte-matched against the base, which pins the 128 B
+stride, every field offset **and** the encoder at once.
+
+`gameConstants` learned `|` and `<<` for the `MAP_*` ids. GATE-3 caught the last layout surprise:
+`struct TradeNickname`'s 1 + 13 bytes occupy **16**, because ARM rounds a struct's size up to a multiple
+of 4 — so the stride is derived from the symbol and the field sum is only a floor.

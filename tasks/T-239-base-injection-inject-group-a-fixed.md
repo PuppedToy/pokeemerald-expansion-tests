@@ -1,10 +1,10 @@
 ---
 id: T-239
 title: "Base+injection Phase 3 — inject Group A (fixed-size: stats/moves/evos/wild/starters/TM/prices/items)"
-status: in-progress
+status: done
 type: feature
 created: 2026-07-27
-updated: 2026-08-02
+updated: 2026-08-03
 target-version: 0.7.0
 links: [T-229, T-238, T-233, docs/base-plus-injection-strategy.md]
 blocked-by: [T-238]
@@ -249,4 +249,22 @@ Acceptance criteria:
     layout drifts with its data) makes hash equality unachievable for any module. The manifest keeps its
     value as the compile path's own regression net.
 
+- **2026-08-03** — Closed. 12/12 corpus by symbol.
+
 ## Outcome
+
+Group A, six sub-modules behind one registry entry: species stats/types/abilities + the T-077 held-item
+strip, move power/accuracy/type/category, evolution levels, wild-encounter species, item prices and the
+TM→move table. Plus the shared floor every later module stands on: `gameConstants.js` (ids from the
+base's own headers), `structLayout.js` with **base anchors**, and `context.js`.
+
+What this task really established was the method: mirror the writer's *decision*, not its values, and
+**derive** anything the base can tell you (strides, field offsets) instead of declaring it. Both rules
+were paid for — `struct SpeciesInfo` is 260 B not 196, `MoveInfo`'s packed word is at 0x0A not 0x0C, and
+banned species were being injected — and every later module inherited them.
+
+One base change was unavoidable and audited first: `GetItemTMHMMoveId()` now reads `gTMHMItemMoveIds`
+instead of baking the TM list into code.
+
+It also found [[B-057]]: `compile()`'s layout drifts with its own data, so hash-equality INV-BYTES is
+unachievable and the gate is data equivalence per symbol. That reframing applies to the whole phase.
