@@ -33,7 +33,7 @@ function sendWelcome(mailer, email, baseUrl) {
   Promise.resolve(mailer.sendMail('welcome', email, { link: `${baseUrl || ''}/` })).catch(() => {});
 }
 
-export function handleOverview({ users, requests, betaInvites, avgRomSecs = DEFAULT_AVG }) {
+export function handleOverview({ users, requests, betaInvites, avgRomSecs = DEFAULT_AVG, baseReady = true }) {
   return (_req, res) => {
     const held = heldRomMap(requests);
     const pending = users.listPendingVerified().map((u) => ({
@@ -61,6 +61,9 @@ export function handleOverview({ users, requests, betaInvites, avgRomSecs = DEFA
         queued: active.filter((r) => r.state.startsWith('queued')).length,
         outstandingRoms,
         etaSecs: outstandingRoms * avgRomSecs,
+        // T-246 — false means the box has no base ROM to inject into: the worker is held and the queue is
+        // not moving. Without this the panel shows a growing queue and no reason for it.
+        baseReady,
       },
       audit: betaInvites ? betaInvites.list(20) : [],
     });

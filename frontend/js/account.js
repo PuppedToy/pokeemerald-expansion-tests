@@ -352,10 +352,16 @@ function setHeadline(cat) {
 }
 
 // Build progress + ETA are now server-authoritative (B-013) — no client-side timer to clear.
-function etaText(secs) {
+//
+// T-246 — the granularity follows the build: a ROM took minutes (so "About N min" was the only useful
+// resolution), and by injection it takes ~17 s, where every wait a user actually sees would collapse into
+// one flat "Less than a minute remaining" for its whole duration. Seconds are quoted in 5 s steps — fine
+// enough to visibly move, coarse enough not to look like a precision we don't have.
+export function etaText(secs) {
   if (secs == null) return 'Estimating…';
-  if (secs >= 60) return `About ${Math.round(secs / 60)} min remaining`;
-  if (secs > 5) return 'Less than a minute remaining';
+  if (secs >= 90) return `About ${Math.round(secs / 60)} min remaining`;
+  if (secs > 10) return `About ${Math.round(secs / 5) * 5} seconds remaining`;
+  if (secs > 3) return 'A few seconds remaining';
   return 'Finishing up…';
 }
 
@@ -466,7 +472,7 @@ async function reevaluateDelivery() {
 
   if (lastBundle) {
     // Optimistic submit state — NEUTRAL, not "building": the 32 MB bundle upload takes a moment and the
-    // server may well queue the run (slow/multi-ROM, or the single builder is busy). Claiming "building"
+    // server may well queue the run (the single builder is busy — T-245: one FIFO lane). Claiming "building"
     // here is what made the UI flash Building → Queued; renderRom below shows the real state.
     setHeadline('queued');
     setRomDownload({ enabled: false, reason: "Your ROM isn't ready yet." });

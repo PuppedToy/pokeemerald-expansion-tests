@@ -3,7 +3,9 @@
 #   preflight (all tests + tracker)  →  rsync the working tree  →  recreate the app  →  health-check
 #
 # It deploys YOUR working tree by rsync (mirrors exactly what you have, including gitignored runtime
-# assets) while PRESERVING the box's .git, backend/data (SQLite), roms/ and the warm build/ cache.
+# assets) while PRESERVING the box's .git, backend/data (SQLite), roms/, the warm build/ cache and base/
+# (T-246: the prebuilt base ROM is box-managed by deploy/build-base.sh — with --delete on, mirroring it
+# from a machine that happens not to have it would DELETE the box's base and break every build).
 # It refuses to deploy if any test or the tracker is red — so a broken build never reaches prod.
 #
 # Config: deploy/.env.local (gitignored) — env vars override it. Flags: --dry-run, --skip-tests.
@@ -44,6 +46,20 @@ if [ -z "$SKIP_TESTS" ]; then
   echo "    preflight OK ✓"
 fi
 
+# --- the box must be able to inject (T-244/T-246) --------------------------------
+# Injection is the only build path now, so a box without base/pokeemerald.{gba,map,sym} builds nothing.
+# The app already refuses to start its worker in that state; catching it here means the owner learns it at
+# deploy time instead of from the first user's stuck request. Warn, don't abort: a docs/frontend-only
+# deploy to a box awaiting its first base build is legitimate.
+echo "==> checking the box's base ROM"
+BASE_OK=$(${SSH} "${TARGET}" "cd ${DEPLOY_PATH} 2>/dev/null && for f in base/pokeemerald.gba base/pokeemerald.map base/pokeemerald.sym; do [ -s \"\$f\" ] || { echo missing; exit 0; }; done; echo ok" 2>/dev/null || echo unknown)
+if [ "$BASE_OK" != "ok" ]; then
+  echo "    ⚠ the box has no usable base ROM (${BASE_OK}) — builds will stay queued until you run:"
+  echo "        deploy/build-base.sh"
+else
+  echo "    base present ✓"
+fi
+
 # --- build the browser frontend ---------------------------------------------------
 # randomizer.bundle.js + base-data.json are gitignored, generated from the randomizer source, and
 # shipped by the rsync below. Rebuild them every deploy so the deployed browser code can never lag
@@ -58,6 +74,7 @@ echo "==> rsync working tree -> ${TARGET}:${DEPLOY_PATH} ${DRY}"
 rsync -az --delete ${DRY} -e "${SSH}" \
   --exclude '.git/' --exclude 'node_modules/' --exclude '/build/' \
   --exclude 'backend/data/' --exclude 'roms/' --exclude 'debug/' \
+  --exclude '/base/' \
   --exclude 'deploy/.env' --exclude 'deploy/.env.local' --exclude '.oci/' \
   --exclude '*.pem' --exclude '*.key' --exclude '.DS_Store' --exclude 'frontend/aseprite/' \
   ./ "${TARGET}:${DEPLOY_PATH}/"
