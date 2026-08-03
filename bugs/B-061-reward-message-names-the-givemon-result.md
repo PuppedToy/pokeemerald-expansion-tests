@@ -1,13 +1,13 @@
 ---
 id: B-061
 title: "Boss reward message names the wrong species — it buffers VAR_RESULT after `givemon` has overwritten it"
-status: open
+status: fixed
 severity: major
 created: 2026-08-02
 updated: 2026-08-02
 found-in: 0.5.0
-fixed-in:
-regression-test:
+fixed-in: 0.7.0
+regression-test: randomizer/__tests__/unit/injectableAccessors.test.js
 links: [T-235]
 ---
 
@@ -49,13 +49,16 @@ what it needs and simply reads the wrong var.
 
 ## Fix
 
-<!-- Filled during the fix. One token per script: buffer from VAR_TEMP_TRANSFERRED_SPECIES (already set
-     one line earlier) instead of VAR_RESULT — or move the bufferspeciesname above the givemon. Prefer the
-     former: it keeps working if a later edit reorders the give.
+All eleven reward scripts now buffer from `VAR_TEMP_TRANSFERRED_SPECIES`, which the `copyvar` on the line
+above already saved, instead of the `VAR_RESULT` that `givemon` overwrites with its own outcome. One token
+per script; the branch logic is untouched.
 
-     This is a base change, so it invalidates the golden base and the corpus hashes; it should ride along
-     with the next rebuild rather than triggering one of its own.
+Rode along with B-058's base rebuild rather than triggering one of its own. **GATE-3: ALL PASS — 12 pass /
+0 fail** on the new base (`af0dff6c92ef…`).
 
-     Regression test: a source guard over data/maps/**/scripts.inc — no `bufferspeciesname` may read
-     VAR_RESULT within the reward block that follows a `givemon VAR_RESULT`. Fails on all eleven today.
-     (The in-game text itself is not reachable from the Jest suite; the ordering is what can be pinned.) -->
+**Regression test**: `randomizer/__tests__/unit/injectableAccessors.test.js` — a source guard over
+`data/maps/**/scripts.inc`: inside a reward block, no `bufferspeciesname` may read `VAR_RESULT`, and the
+`copyvar VAR_TEMP_TRANSFERRED_SPECIES` that makes the fix free must still precede the give. Fails on all
+eleven pre-fix scripts.
+
+Fixed by commit `86143121c7`.

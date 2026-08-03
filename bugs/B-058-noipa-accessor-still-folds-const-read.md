@@ -1,13 +1,13 @@
 ---
 id: B-058
 title: "A `noipa` accessor still folds its `const` global read, so four injectable scalars are dead in inject mode"
-status: open
+status: fixed
 severity: critical
 created: 2026-08-02
 updated: 2026-08-02
 found-in: 0.7.0
-fixed-in:
-regression-test:
+fixed-in: 0.7.0
+regression-test: randomizer/__tests__/unit/injectableAccessors.test.js
 links: [T-234, T-237, T-243, T-070, T-202, T-068, ADR-022]
 ---
 
@@ -59,12 +59,30 @@ a compiled ROM can ever see it: the injected bytes are right, and the injector d
 
 ## Fix
 
-<!-- Filled during the fix. Planned: force a real load at the four sites —
-     `return *(const volatile u8 *)&gLocationNicknameCount;` — since a volatile access cannot be folded
-     or elided. `noipa` stays (it keeps the caller honest). This changes the base, so the golden base and
-     the corpus manifest must be rebuilt and re-snapshotted (owner-gated, as in T-239).
+Four accessors now force a real load — `return *(const volatile u8 *)&<global>;` — keeping `noipa`
+(which still stops the caller assuming anything):
+`GetLocationNicknameCount`, `GetTradeNicknameCount` (src/location_nicknames.c, src/trade_nicknames.c),
+`GetExtraPokemonCount`, `GetStarterGender` (src/starter_choose.c). A `volatile` access cannot be folded
+or elided by a conforming compiler.
 
-     Regression test: a detector in buildOffsetMap.js's readiness report — any accessor the injector
-     depends on whose compiled body is `movs rN,#imm; bx lr` is a folded read. Must FAIL on the current
-     base and PASS after. That is the only place the check can live: it needs a built ROM, so it belongs
-     with the other post-build gates rather than in the Jest suite. -->
+**Scope was measured, not assumed**: a scan of the whole base for four-byte functions matching
+`movs rN,#imm; bx lr` found 93, of which exactly these four are values the injector writes. The other 89
+are unrelated stubs and config accessors (`IsSleepClauseEnabled`, `ScrCmd_nop`, …).
+
+**The check now lives where it can see compiled code**: `buildOffsetMap.js`'s readiness report — which
+the process already mandates after every base change — scans `INJECTABLE_SCALAR_ACCESSORS` and prints
+`FOLDED <name> — compiled to \`return N\`, so injecting its value does NOTHING`. Verified on the rebuilt
+base: **OK — all 4 compile to a real memory load**, and on the injected ROM itself: no folded accessors.
+
+The data is now reachable, which is what the play-test could not see before: `gLocationNicknameCount`
+reads 134 with its rows (Rostam / Liron / Lakshmi), `gTradeNicknameCount` 4 (the Seedot trade is
+"Mandla"), `gStarterGender` MON_FEMALE instead of the folded MON_GENDERLESS.
+
+Base rebuilt (`af0dff6c92ef…`, 75.12 %), corpus re-snapshotted, **GATE-3: ALL PASS — 12 pass / 0 fail**.
+
+**Regression test**: `randomizer/__tests__/unit/injectableAccessors.test.js` — a source guard on all four
+sites (volatile + noipa + the accessor list the build-box check uses) plus unit tests for the detector
+itself (it must flag `movs+bx lr`, pass a real `ldr`, and report an accessor that vanished). The source
+guard fails on the pre-fix sources; the detector failed on the pre-fix base.
+
+Fixed by commit `86143121c7`.
