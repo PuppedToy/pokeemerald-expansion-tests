@@ -1,12 +1,12 @@
 ---
 id: B-060
 title: "Ground mega stones are never injected — the object-event item stays ITEM_MEGA_nn (= ITEM_NONE), so the ball hands over a corrupt item"
-status: fixing
+status: fixed
 severity: critical
 created: 2026-08-02
 updated: 2026-08-02
 found-in: 0.7.0
-fixed-in:
+fixed-in: 0.7.0
 regression-test: randomizer/__tests__/unit/injectorMegaMapItems.test.js
 links: [T-236, T-243, T-233, B-057, ADR-022]
 ---
@@ -92,4 +92,12 @@ each placeholder as `ITEM_NONE` — and the write tests fail if the stone is not
 reverting the write). The coverage rule the bug exposed is now documented in
 `randomizer/docs/injection.md`, with the measured write surface of the compile path.
 
-Left `fixing` rather than `fixed`: the symptom was in-game, so the owner's play-test is what closes it.
+**Closed 2026-08-02**: the owner confirmed in-game that the ground mega stones now hand over the right
+stone. Regression test verified to FAIL before the fix (reverting the write fails
+`writes the assigned stone over the placeholder`) and PASS after, with the whole suite green (2129).
+
+**No `CHANGELOG.brooktec.md` line**, deliberately, and against this bug's own closing checklist: the
+defect only ever existed in **inject mode**, which has never shipped — `ROM_BUILD_MODE` still defaults to
+`compile` and 0.7.0 is unreleased. A "Fixed" entry would tell users about a corrupt item they never
+received. Same call as T-232/T-238/T-239, which shipped no changelog lines for the same reason. The line
+that *will* matter is the one 0.7.0 adds for base+injection as a feature.
