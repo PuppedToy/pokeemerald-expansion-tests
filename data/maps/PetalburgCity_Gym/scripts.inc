@@ -381,7 +381,7 @@ PetalburgCity_Gym_EventScript_NormanBattle::
 	special GetGymReward
 	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
 	givemon VAR_RESULT, 39
-	bufferspeciesname STR_VAR_1, VAR_RESULT
+	bufferspeciesname STR_VAR_1, VAR_TEMP_TRANSFERRED_SPECIES
 	call PetalburgCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	special ResetHealLocationFromDewford
 	call EventScript_HideMrBriney

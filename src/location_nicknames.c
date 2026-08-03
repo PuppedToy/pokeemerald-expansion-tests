@@ -37,7 +37,11 @@ const struct LocationNickname gLocationNicknames[LOCATION_NICKNAME_CAPACITY] =
 __attribute__((noinline, noipa))
 u32 GetLocationNicknameCount(void)
 {
-    return gLocationNicknameCount;
+    // B-058 — the `volatile` read is load-bearing. `noipa` keeps callers from assuming the value, but the
+    // compiler still folded this body to `return 0` (the committed count), so the loop below never ran and
+    // an injected table of 134 rows was dead. Found by a play-test, not by any gate: the injected BYTES
+    // were correct, the code that reads them was not.
+    return *(const volatile u8 *)&gLocationNicknameCount;
 }
 
 const u8 *GetLocationNickname(u8 mapGroup, u8 mapNum, u8 *outGender)

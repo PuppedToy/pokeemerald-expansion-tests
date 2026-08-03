@@ -24,6 +24,50 @@ const { INJECTION_MODULES, checkReadiness } = require('./index');
 
 const MB = 1024 * 1024;
 
+/**
+ * The scalar values the injector writes and the GAME reads through an accessor (B-058).
+ *
+ * A table read by runtime index cannot be folded; a single `const` scalar copied out of a global can be,
+ * and `noipa` does not prevent it — it stops the caller assuming the return value, not the compiler
+ * folding the load inside the function body. Four of these compiled to `movs rN,#imm; bx lr` in a base
+ * that looked perfectly injectable, which killed the route nicknames, the trade nicknames, the extra
+ * starter count and the starter's forced gender in inject mode — and no byte comparison could see it,
+ * because the injected bytes were right and the code ignored them.
+ *
+ * Every accessor here must compile to a real memory load. Add one whenever a new injectable scalar
+ * appears; the source side is guarded in randomizer/__tests__/unit/injectableAccessors.test.js.
+ */
+const INJECTABLE_SCALAR_ACCESSORS = [
+    'GetLocationNicknameCount',
+    'GetTradeNicknameCount',
+    'GetExtraPokemonCount',
+    'GetStarterGender',
+];
+
+/**
+ * Which of `accessors` the base compiled to a constant return. Thumb: `movs rN, #imm` is 0x20nn-0x27nn
+ * and `bx lr` is 0x4770, so a four-byte body of exactly those two returns a literal.
+ *
+ * @returns {Array<{name: string, value?: number, missing?: true}>} empty when every accessor loads
+ */
+function foldedAccessors(romBytes, offsetMap, accessors = INJECTABLE_SCALAR_ACCESSORS) {
+    const found = [];
+    for (const name of accessors) {
+        const sym = offsetMap.get(name);
+        if (!sym || sym.romOffset === null || sym.romOffset === undefined) {
+            found.push({ name, missing: true });
+            continue;
+        }
+        const at = sym.romOffset & ~1;          // Thumb symbols carry the low bit set
+        if (sym.size !== 4 || at + 4 > romBytes.length) continue;
+        const first = romBytes.readUInt16LE(at);
+        const second = romBytes.readUInt16LE(at + 2);
+        const isMovsImm = (first & 0xf800) === 0x2000;
+        if (isMovsImm && second === 0x4770) found.push({ name, value: first & 0xff });
+    }
+    return found;
+}
+
 function buildOffsetMapReport({ offsetMap, modules = INJECTION_MODULES, romPath = null }) {
     const lines = [];
     const used = offsetMap.romEndOffset;
@@ -45,6 +89,23 @@ function buildOffsetMapReport({ offsetMap, modules = INJECTION_MODULES, romPath 
         lines.push(`  ${r.task}  ${r.id.padEnd(26)} ${String(r.status).padEnd(9)} ${state}` +
             `   (${r.found.length} named${r.matched ? ` + ${r.matched} by pattern` : ''})`);
         for (const name of r.missing) lines.push(`        missing: ${name}`);
+    }
+
+    if (romPath && fs.existsSync(romPath)) {
+        const { Rom } = require('./rom');
+        const folded = foldedAccessors(Rom.load(romPath).buffer, offsetMap);
+        lines.push('');
+        lines.push('Injectable scalar accessors (B-058 — a folded read makes an injected value unreadable)');
+        if (folded.length === 0) {
+            lines.push(`  OK — all ${INJECTABLE_SCALAR_ACCESSORS.length} compile to a real memory load`);
+        } else {
+            for (const f of folded) {
+                lines.push(f.missing
+                    ? `  MISSING  ${f.name} — the base does not export it`
+                    : `  FOLDED   ${f.name} — compiled to \`return ${f.value}\`, so injecting its value does NOTHING`);
+            }
+            lines.push('  → make each one read through `*(const volatile u8 *)&<global>` (see B-058)');
+        }
     }
 
     lines.push('');
@@ -88,4 +149,7 @@ function main(argv = process.argv.slice(2)) {
 
 if (require.main === module) main();
 
-module.exports = { buildOffsetMapReport, exportOffsetMap, parseMapFile, parseSymFile, main };
+module.exports = {
+    buildOffsetMapReport, exportOffsetMap, parseMapFile, parseSymFile, main,
+    foldedAccessors, INJECTABLE_SCALAR_ACCESSORS,
+};

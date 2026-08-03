@@ -48,7 +48,7 @@ LavaridgeTown_Gym_1F_EventScript_FlanneryDefeated::
 	special GetGymReward
 	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
 	givemon VAR_RESULT, 36
-	bufferspeciesname STR_VAR_1, VAR_RESULT
+	bufferspeciesname STR_VAR_1, VAR_TEMP_TRANSFERRED_SPECIES
 	call LavaridgeTown_Gym_1F_EventScript_ReceivedRewardPokeFanfare
 	addvar VAR_PETALBURG_GYM_STATE, 1
 	giveitem ITEM_HM04

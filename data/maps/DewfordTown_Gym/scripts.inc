@@ -31,7 +31,7 @@ DewfordTown_Gym_EventScript_BrawlyDefeated::
 	special GetGymReward
 	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
 	givemon VAR_RESULT, 19
-	bufferspeciesname STR_VAR_1, VAR_RESULT
+	bufferspeciesname STR_VAR_1, VAR_TEMP_TRANSFERRED_SPECIES
 	call DewfordTown_Gym_EventScript_ReceivedRewardPokeFanfare
 	addvar VAR_PETALBURG_GYM_STATE, 1
 	call_if_eq VAR_PETALBURG_GYM_STATE, 6, Common_EventScript_ReadyPetalburgGymForBattle

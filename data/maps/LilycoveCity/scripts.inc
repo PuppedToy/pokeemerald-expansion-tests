@@ -230,7 +230,7 @@ LilycoveCity_EventScript_Rival::
 	special GetGymReward
 	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
 	givemon VAR_RESULT, 48
-	bufferspeciesname STR_VAR_1, VAR_RESULT
+	bufferspeciesname STR_VAR_1, VAR_TEMP_TRANSFERRED_SPECIES
 	call LilycoveCity_EventScript_ReceivedRewardPokeFanfare
 	applymovement VAR_LAST_TALKED, Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0

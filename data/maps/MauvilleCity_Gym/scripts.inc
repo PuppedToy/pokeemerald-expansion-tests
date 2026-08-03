@@ -107,7 +107,7 @@ MauvilleCity_Gym_EventScript_WattsonDefeated::
 	special GetGymReward
 	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
 	givemon VAR_RESULT, 29, VAR_0x8005
-	bufferspeciesname STR_VAR_1, VAR_RESULT
+	bufferspeciesname STR_VAR_1, VAR_TEMP_TRANSFERRED_SPECIES
 	call MauvilleCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	setvar VAR_METEOR_FALLS_STATE, 1
 	addvar VAR_PETALBURG_GYM_STATE, 1

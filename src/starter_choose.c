@@ -417,13 +417,18 @@ u16 GetStarterPokemon(u16 chosenStarterId)
 
 // T-237 — the arrays are STARTER_EXTRA_CAPACITY long; gStarterExtraCount is how many of them this ROM
 // actually filled, so every bound below is the count, not the capacity.
-// `noipa` (same reason as T-234's GetRandomizerSettings): the count and the forced gender are single
-// const values the injector rewrites, and LTO would otherwise propagate the committed ones into every
-// caller — the ROM would keep 9 extra starters and a genderless starter no matter what was injected.
+//
+// B-058 — `noipa` is NOT enough on its own, and this is the second time that lesson has been learned.
+// It stops the compiler propagating the return value into the CALLERS; it does nothing about the compiler
+// folding the read of a `const` global inside the function's own body — nothing about that is
+// interprocedural. Both of these compiled to `movs r0, #imm; bx lr` in the base (9 extra starters, a
+// genderless starter) while the symbols sat in the `.map` looking injectable, so the injected values were
+// written and never read. The `volatile` read is what forces a real load; do not "simplify" it away.
+// Every value the injector rewrites and the game reads as a SCALAR needs this shape.
 __attribute__((noinline, noipa))
 u16 GetExtraPokemonCount()
 {
-    return gStarterExtraCount;
+    return *(const volatile u8 *)&gStarterExtraCount;
 }
 
 __attribute__((noinline, noipa))
@@ -444,7 +449,9 @@ const u8 *GetStarterNickname(void)
 __attribute__((noinline, noipa))
 u8 GetStarterGender(void)
 {
-    return gStarterGender;
+    // B-058 — volatile, for the reason spelled out at GetExtraPokemonCount above: without it this
+    // folded to `return MON_GENDERLESS` and the injected starter gender was never read.
+    return *(const volatile u8 *)&gStarterGender;
 }
 
 __attribute__((noinline, noipa))

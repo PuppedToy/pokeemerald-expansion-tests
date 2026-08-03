@@ -38,7 +38,7 @@ FortreeCity_Gym_EventScript_WinonaDefeated::
 	special GetGymReward
 	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
 	givemon VAR_RESULT, 46
-	bufferspeciesname STR_VAR_1, VAR_RESULT
+	bufferspeciesname STR_VAR_1, VAR_TEMP_TRANSFERRED_SPECIES
 	call FortreeCity_Gym_EventScript_ReceivedRewardPokeFanfare
 	setvar VAR_0x8008, 6
 	call Common_EventScript_SetGymTrainers

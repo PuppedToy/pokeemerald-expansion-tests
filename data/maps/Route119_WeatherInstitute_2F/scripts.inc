@@ -74,7 +74,7 @@ Route119_WeatherInstitute_2F_EventScript_ReceiveCastform::
 	special GetGymReward
 	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
 	givemon VAR_RESULT, 41, VAR_0x8005
-	bufferspeciesname STR_VAR_1, VAR_RESULT
+	bufferspeciesname STR_VAR_1, VAR_TEMP_TRANSFERRED_SPECIES
 	call Route119_WeatherInstitute_2F_EventScript_ReceivedRewardPokeFanfare
 	closemessage
 	release

@@ -31,7 +31,9 @@ const struct TradeNickname gTradeNicknames[TRADE_NICKNAME_CAPACITY] =
 __attribute__((noinline, noipa))
 u32 GetTradeNicknameCount(void)
 {
-    return gTradeNicknameCount;
+    // B-058 — see the same note in src/location_nicknames.c: this folded to `return 0`, so every injected
+    // trade nickname was ignored and the traded mon kept its species name.
+    return *(const volatile u8 *)&gTradeNicknameCount;
 }
 
 const u8 *GetTradeNickname(u8 whichInGameTrade)

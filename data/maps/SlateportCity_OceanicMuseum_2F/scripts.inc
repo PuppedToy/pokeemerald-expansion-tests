@@ -79,7 +79,7 @@ SlateportCity_OceanicMuseum_2F_EventScript_CaptStern::
 	special GetGymReward
 	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
 	givemon VAR_RESULT, 23, VAR_0x8005
-	bufferspeciesname STR_VAR_1, VAR_RESULT
+	bufferspeciesname STR_VAR_1, VAR_TEMP_TRANSFERRED_SPECIES
 	call SlateportCity_OceanicMuseum_2F_EventScript_ReceivedRewardPokeFanfare
 	fadescreen FADE_TO_BLACK
 	playfanfare MUS_HEAL
