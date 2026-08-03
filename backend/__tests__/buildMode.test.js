@@ -62,21 +62,38 @@ test('compileOneRom refuses unless the compile path was asked for by name', asyn
 });
 
 // Which branch buildOneRom took is legible from *where* it fails: the compile path validates the resolved
-// artifacts up front ("missing artifacts after resolution"), the inject path goes looking for the base ROM.
-// So a default-mode call on a bundle with empty artifacts must fail on the base, never on the writers.
+// artifacts up front ("missing artifacts after resolution"), the inject path reaches the injector and
+// complains that this 4 KB stand-in base exports no Group-A tables. Pointing INJECT_BASE_* at the fixture
+// keeps the assertion independent of whether a real base/ happens to exist in the checkout.
 test('buildOneRom takes the inject branch by default, with no mode passed at all', async () => {
   clean();
   fs.mkdirSync(TMP, { recursive: true });
+  const romPath = path.join(TMP, 'pokeemerald.gba');
+  const mapPath = path.join(TMP, 'pokeemerald.map');
+  fs.writeFileSync(romPath, Buffer.alloc(0x1000, 0xff));
+  fs.copyFileSync(path.join(process.cwd(), '..', 'randomizer', '__tests__', 'fixtures', 'mini.map'), mapPath);
+
+  const prev = { rom: process.env.INJECT_BASE_ROM, map: process.env.INJECT_BASE_MAP, sym: process.env.INJECT_BASE_SYM };
+  process.env.INJECT_BASE_ROM = romPath;
+  process.env.INJECT_BASE_MAP = mapPath;
+  process.env.INJECT_BASE_SYM = path.join(TMP, 'absent.sym');
+
   let message = '(no error — buildOneRom returned)';
   try {
     await makejs.buildOneRom({
       rom: { romIndex: 0, artifacts: { pokedex: {}, trainers: {}, starters: {}, wild: {} } },
       bundle: { config: { seed: 1 }, sharedData: {} }, seed: 1, outDir: TMP, fullRom: true,
     });
-  } catch (err) { message = err.message; }
+  } catch (err) {
+    message = err.message;
+  } finally {
+    for (const [k, v] of [['INJECT_BASE_ROM', prev.rom], ['INJECT_BASE_MAP', prev.map], ['INJECT_BASE_SYM', prev.sym]]) {
+      if (v === undefined) delete process.env[k]; else process.env[k] = v;
+    }
+  }
 
   assert.doesNotMatch(message, /missing artifacts after resolution/, 'that is the compile path talking');
-  assert.match(message, /base[\\/]pokeemerald\.gba/, 'the inject path resolves the base ROM first');
+  assert.match(message, /group-a-fixed[\s\S]*gSpeciesInfo/, 'the inject path ran and read the base');
   clean();
 });
 

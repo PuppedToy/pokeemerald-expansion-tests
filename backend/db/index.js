@@ -17,20 +17,27 @@ import path from 'node:path';
 // T-216 — `pending` is a beta-only holding state: the bundle is stored and counts as the user's one
 // active request, but the worker never selects it (see selectNext) and the sweeper never touches it
 // (it only ages `ready`/`failed`). An invite promotes it to `queued_<class>`.
-export const ACTIVE_STATES = ['pending', 'queued_fast', 'queued_slow', 'building', 'paused', 'ready'];
+// T-245 collapsed the two queue tiers into one `queued` lane. The three tier states below it are LEGACY:
+// nothing creates them any more, and startup recovery rewrites any that survive a deploy
+// (lifecycle/recovery.js). They stay listed so a row queued by the previous version still counts as its
+// user's active request and can still be transitioned out — an unknown state would throw.
+export const LEGACY_QUEUE_STATES = ['queued_fast', 'queued_slow', 'paused'];
+export const ACTIVE_STATES = ['pending', 'queued', 'building', 'ready', ...LEGACY_QUEUE_STATES];
 
-// Allowed state transitions. `building -> queued_*` exists for crash recovery
-// (ADR-003): an interrupted build is re-queued, keeping roms_done.
+// Allowed state transitions. `building -> queued` exists for crash recovery (ADR-003) and for the next ROM
+// of a multi-ROM run: an interrupted build is re-queued, keeping roms_done.
 export const TRANSITIONS = {
-  pending:     ['queued_fast', 'queued_slow', 'failed'], // T-216 — invite/flush promotes; cancel fails it
-  queued_fast: ['building', 'failed'],
-  queued_slow: ['building', 'failed'],
-  building:    ['paused', 'ready', 'failed', 'queued_fast', 'queued_slow'],
-  paused:      ['building', 'queued_fast', 'queued_slow', 'failed'],
+  pending:     ['queued', 'failed'],          // T-216 — invite/flush promotes; cancel fails it
+  queued:      ['building', 'failed'],
+  building:    ['queued', 'ready', 'failed'],
   ready:       ['downloaded', 'expired'],
   failed:      ['expired'],
   downloaded:  [],
   expired:     [],
+  // legacy (T-245): only ever transitioned OUT of, by recovery or the worker.
+  queued_fast: ['building', 'queued', 'failed'],
+  queued_slow: ['building', 'queued', 'failed'],
+  paused:      ['building', 'queued', 'failed'],
 };
 
 const ACTIVE_LIST = ACTIVE_STATES.map((s) => `'${s}'`).join(',');

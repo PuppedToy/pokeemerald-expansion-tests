@@ -75,7 +75,7 @@ function setup() {
 function addUser(users, requests, email, { at, held = 0 } = {}) {
   const u = users.create({ email, passwordHash: 'h', now: at });
   users.setVerified(u.id, at);
-  if (held) requests.create({ id: `req-${u.id}`, userId: u.id, queueClass: 'fast', romsTotal: held, bundlePath: `/b/${u.id}`, seed: '1', params: {}, state: 'pending', now: at });
+  if (held) requests.create({ id: `req-${u.id}`, userId: u.id, romsTotal: held, bundlePath: `/b/${u.id}`, seed: '1', params: {}, state: 'pending', now: at });
   return u;
 }
 
@@ -112,7 +112,7 @@ test('invite accepts a balanced batch: held ROMs promote (welcome:true), no-ROM 
   assert.equal(users.get(noRom.id).invite_state, 'accepted');
   // held ROM promoted to its queue class + flagged for the combined mail
   const promoted = requests.get(`req-${withRom.id}`);
-  assert.equal(promoted.state, 'queued_fast');
+  assert.equal(promoted.state, 'queued');
   assert.equal(promoted.welcome_on_ready, 1, 'invite promotion sets the combined-mail flag');
   // only the no-ROM invitee is emailed now (the ROM user is mailed on build completion)
   assert.deepEqual(mails.map((m) => [m.kind, m.to]), [['welcome', 'norom@x']]);
@@ -139,7 +139,7 @@ test('accept admits one user, promotes a held ROM, is idempotent, and 404s an un
     { adminEmail: 'admin@x', body: { userId: u.id } }, res1);
   assert.equal(res1.body.ok, true);
   assert.equal(res1.body.hasRom, true);
-  assert.equal(requests.get(`req-${u.id}`).state, 'queued_fast');
+  assert.equal(requests.get(`req-${u.id}`).state, 'queued');
   assert.equal(mails.length, 0, 'a ROM-holding accept sends no mail now (combined mail on build)');
 
   const res2 = fakeRes();

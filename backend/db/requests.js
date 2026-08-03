@@ -24,11 +24,14 @@ export function createRequestsRepo(db) {
   );
 
   const repo = {
-    create({ id, userId, queueClass, romsTotal, bundlePath, seed, params, emailOnReady = false, state = null, now = Date.now() }) {
+    // T-245 — `queueClass` is vestigial: one FIFO lane, so there is nothing to classify. The column is
+    // NOT NULL and dropping it in SQLite means rebuilding the table, which is not worth a deploy; it now
+    // records the model that produced the row ('fifo').
+    create({ id, userId, queueClass = 'fifo', romsTotal, bundlePath, seed, params, emailOnReady = false, state = null, now = Date.now() }) {
       if (this.getActiveForUser(userId)) {
         throw new Error('user already has an active request');
       }
-      const st = state || `queued_${queueClass}`; // T-216 — the beta gate creates in the held `pending` state
+      const st = state || 'queued'; // T-216 — the beta gate creates in the held `pending` state
       insert.run(
         id, userId, st, queueClass, romsTotal, 0, bundlePath, null,
         emailOnReady ? 1 : 0, String(seed), JSON.stringify(params ?? {}), now, null, null, now
@@ -45,7 +48,7 @@ export function createRequestsRepo(db) {
       const row = this.get(id);
       if (!row || row.state !== 'pending') return null;
       if (welcome) db.prepare('UPDATE requests SET welcome_on_ready = 1 WHERE id = ?').run(id);
-      return this.setState(id, `queued_${row.queue_class}`, now);
+      return this.setState(id, 'queued', now);
     },
 
     get(id) {

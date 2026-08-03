@@ -14,7 +14,6 @@ import { createRequestsRepo } from '../db/requests.js';
 import { createRunsRepo } from '../db/runs.js';
 import { createUsersRepo } from '../auth/users.js';
 import { createConfigRouter } from '../config/routes.js';
-import { classify } from '../queue/scheduler.js';
 import { validateBundle } from '../build/bundleSchema.js';
 import { handleProduce } from '../produce/handlers.js';
 import { finishBuild } from '../lifecycle/complete.js';
@@ -32,7 +31,7 @@ const validBundle = (n = 1) => ({ config: { seed: 7 }, roms: Array.from({ length
 
 function produceDeps(requests, over = {}) {
   return {
-    requests, classify, validateBundle,
+    requests, validateBundle,
     persistBundle: (id) => `/bundles/${id}.json`,
     idGen: () => 'req1', now: () => 1000, avgRomSecs: 10,
     removeFile: () => {}, killActiveBuild: () => {}, ...over,
@@ -106,7 +105,7 @@ test('BETA on + accepted user → builds normally (queued, not held)', () => {
     { userId: 1, body: validBundle(1) }, res);
 
   assert.equal(res.body.held, false);
-  assert.equal(requests.get('req1').state, 'queued_fast');
+  assert.equal(requests.get('req1').state, 'queued');
 });
 
 test('BETA off → everyone builds normally even if not accepted', () => {
@@ -119,7 +118,7 @@ test('BETA off → everyone builds normally even if not accepted', () => {
     { userId: 1, body: validBundle(1) }, res);
 
   assert.equal(res.body.held, false);
-  assert.equal(requests.get('req1').state, 'queued_fast');
+  assert.equal(requests.get('req1').state, 'queued');
 });
 
 test('a held pending request counts as the user\'s one active request', () => {
@@ -136,27 +135,27 @@ test('promotePending moves a held run into its queue class', () => {
   const db = openDatabase(':memory:');
   seedUser(db, 1, 'pending');
   const requests = createRequestsRepo(db);
-  requests.create({ id: 'p1', userId: 1, queueClass: 'slow', romsTotal: 3, bundlePath: '/b', seed: '1', params: {}, state: 'pending', now: 1 });
+  requests.create({ id: 'p1', userId: 1, romsTotal: 3, bundlePath: '/b', seed: '1', params: {}, state: 'pending', now: 1 });
 
   const out = requests.promotePending('p1');
-  assert.equal(out.state, 'queued_slow');
+  assert.equal(out.state, 'queued');
 });
 
 test('promotePending is a no-op on a non-pending row', () => {
   const db = openDatabase(':memory:');
   seedUser(db, 1, 'accepted');
   const requests = createRequestsRepo(db);
-  requests.create({ id: 'q1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, now: 1 });
+  requests.create({ id: 'q1', userId: 1, romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, now: 1 });
   assert.equal(requests.promotePending('q1'), null, 'already queued → nothing to promote');
-  assert.equal(requests.get('q1').state, 'queued_fast');
+  assert.equal(requests.get('q1').state, 'queued');
 });
 
 test('an INVITE (welcome:true) marks the run for the combined mail; the flush (default) does not', () => {
   const db = openDatabase(':memory:');
   seedUser(db, 1, 'pending'); seedUser(db, 2, 'pending');
   const requests = createRequestsRepo(db);
-  requests.create({ id: 'inv', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, state: 'pending', now: 1 });
-  requests.create({ id: 'flu', userId: 2, queueClass: 'fast', romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, state: 'pending', now: 2 });
+  requests.create({ id: 'inv', userId: 1, romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, state: 'pending', now: 1 });
+  requests.create({ id: 'flu', userId: 2, romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, state: 'pending', now: 2 });
 
   requests.promotePending('inv', { welcome: true }); // admin invite
   requests.promotePending('flu');                    // BETA-off flush
@@ -169,13 +168,13 @@ test('the BETA-off flush promotes every held run (mechanism used at startup)', (
   const db = openDatabase(':memory:');
   seedUser(db, 1, 'pending'); seedUser(db, 2, 'pending');
   const requests = createRequestsRepo(db);
-  requests.create({ id: 'h1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, state: 'pending', now: 1 });
-  requests.create({ id: 'h2', userId: 2, queueClass: 'slow', romsTotal: 3, bundlePath: '/b', seed: '1', params: {}, state: 'pending', now: 2 });
+  requests.create({ id: 'h1', userId: 1, romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, state: 'pending', now: 1 });
+  requests.create({ id: 'h2', userId: 2, romsTotal: 3, bundlePath: '/b', seed: '1', params: {}, state: 'pending', now: 2 });
 
   for (const r of requests.findByStates(['pending'])) requests.promotePending(r.id);
 
-  assert.equal(requests.get('h1').state, 'queued_fast');
-  assert.equal(requests.get('h2').state, 'queued_slow');
+  assert.equal(requests.get('h1').state, 'queued');
+  assert.equal(requests.get('h2').state, 'queued');
   assert.equal(requests.findByStates(['pending']).length, 0, 'nothing left held');
 });
 
@@ -189,7 +188,7 @@ test('finishBuild sends welcomeReady (not ready) when the run was invited from p
   const mailer = { async sendMail(kind, to, vars) { mails.push({ kind, to, vars }); return { ok: true }; } };
   const users = { get: (id) => db.prepare('SELECT * FROM users WHERE id=?').get(id) };
 
-  requests.create({ id: 'w1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, state: 'pending', emailOnReady: true, now: 1 });
+  requests.create({ id: 'w1', userId: 1, romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, state: 'pending', emailOnReady: true, now: 1 });
   requests.promotePending('w1', { welcome: true });
   requests.setState('w1', 'building', 2);
 

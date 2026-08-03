@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 
 import { openDatabase } from '../db/index.js';
 import { createRequestsRepo } from '../db/requests.js';
-import { classify } from '../queue/scheduler.js';
 import { validateBundle } from '../build/bundleSchema.js';
 import { estimateEta, buildProgress } from '../produce/eta.js';
 import { handleProduce, handleStatus, handleDownload, handleCancel } from '../produce/handlers.js';
@@ -34,7 +33,7 @@ const validBundle = (n = 1) => ({ config: { seed: 7 }, roms: Array.from({ length
 
 function produceDeps(requests, over = {}) {
   return {
-    requests, classify, validateBundle,
+    requests, validateBundle,
     persistBundle: (id) => `/bundles/${id}.json`,
     idGen: () => 'req1',
     now: () => 1000,
@@ -47,8 +46,8 @@ function produceDeps(requests, over = {}) {
 
 test('eta grows with the ROMs queued ahead', () => {
   const { requests } = setup();
-  requests.create({ id: 'A', userId: 1, queueClass: 'fast', romsTotal: 2, bundlePath: '/A', seed: '1', params: {}, now: 1 });
-  requests.create({ id: 'B', userId: 2, queueClass: 'fast', romsTotal: 1, bundlePath: '/B', seed: '1', params: {}, now: 2 });
+  requests.create({ id: 'A', userId: 1, romsTotal: 2, bundlePath: '/A', seed: '1', params: {}, now: 1 });
+  requests.create({ id: 'B', userId: 2, romsTotal: 1, bundlePath: '/B', seed: '1', params: {}, now: 2 });
 
   assert.equal(estimateEta(requests, 'A', { avgRomSecs: 10 }), 20); // 2 own ROMs
   assert.equal(estimateEta(requests, 'B', { avgRomSecs: 10 }), 30); // A's 2 ahead + 1 own
@@ -62,7 +61,7 @@ test('produce validates, enqueues and returns a request id + eta', () => {
   assert.equal(res.statusCode, 201);
   assert.equal(res.body.requestId, 'req1');
   assert.ok(res.body.eta >= 0);
-  assert.equal(requests.get('req1').state, 'queued_fast'); // 1 ROM => fast
+  assert.equal(requests.get('req1').state, 'queued'); // T-245 — one lane, no classification
 });
 
 test('produce rejects an invalid bundle with 400 and enqueues nothing', () => {
@@ -78,7 +77,7 @@ test('a second produce REPLACES the previous active request (one per user, T-053
   const removed = [];
   const killed = [];
   handleProduce(produceDeps(requests))({ userId: 1, body: validBundle(1) }, fakeRes());
-  assert.equal(requests.get('req1').state, 'queued_fast');
+  assert.equal(requests.get('req1').state, 'queued');
 
   const res2 = fakeRes();
   handleProduce(produceDeps(requests, {
@@ -98,7 +97,7 @@ test('an invalid new bundle does NOT destroy the existing request', () => {
   const res2 = fakeRes();
   handleProduce(produceDeps(requests, { idGen: () => 'req2' }))({ userId: 1, body: { roms: [] } }, res2);
   assert.equal(res2.statusCode, 400);
-  assert.equal(requests.get('req1').state, 'queued_fast', 'the good run survives an invalid replace attempt');
+  assert.equal(requests.get('req1').state, 'queued', 'the good run survives an invalid replace attempt');
 });
 
 test('status reports the active request state + eta, or 404', () => {
@@ -106,7 +105,7 @@ test('status reports the active request state + eta, or 404', () => {
   handleProduce(produceDeps(requests))({ userId: 1, body: validBundle(3) }, fakeRes()); // 3 ROMs => slow
   const res = fakeRes();
   handleStatus({ requests, avgRomSecs: 10 })({ userId: 1 }, res);
-  assert.equal(res.body.state, 'queued_slow');
+  assert.equal(res.body.state, 'queued');
   assert.equal(res.body.romsTotal, 3);
 
   const res404 = fakeRes();
@@ -134,7 +133,7 @@ test('produce and status expose romsAhead (ROMs queued before this one)', () => 
 
 test('download streams the ready patch and leaves it re-downloadable (T-053)', () => {
   const { requests } = setup();
-  requests.create({ id: 'r1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b/r1', outputPath: null, seed: '1', params: {}, now: 1 });
+  requests.create({ id: 'r1', userId: 1, romsTotal: 1, bundlePath: '/b/r1', outputPath: null, seed: '1', params: {}, now: 1 });
   requests.setState('r1', 'building', 2);
   requests.markReady('r1', 3);
 
@@ -151,7 +150,7 @@ test('download streams the ready patch and leaves it re-downloadable (T-053)', (
 
 test('cancel marks the active request failed, frees the slot and deletes its files (T-035)', () => {
   const { requests } = setup();
-  requests.create({ id: 'c1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b/c1.json', seed: '1', params: {}, now: 1 });
+  requests.create({ id: 'c1', userId: 1, romsTotal: 1, bundlePath: '/b/c1.json', seed: '1', params: {}, now: 1 });
 
   const removed = [];
   const res = fakeRes();
@@ -165,7 +164,7 @@ test('cancel marks the active request failed, frees the slot and deletes its fil
 
 test('cancel discards a ready (re-downloadable) run too — frees the slot + deletes files (T-053)', () => {
   const { requests } = setup();
-  requests.create({ id: 'd1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b/d1.json', seed: '1', params: {}, now: 1 });
+  requests.create({ id: 'd1', userId: 1, romsTotal: 1, bundlePath: '/b/d1.json', seed: '1', params: {}, now: 1 });
   requests.setState('d1', 'building', 2);
   requests.markReady('d1', 3);
   requests.setOutputPath('d1', '/out/d1', 4);
@@ -182,7 +181,7 @@ test('cancel discards a ready (re-downloadable) run too — frees the slot + del
 
 test('buildProgress derives progress + eta from server state, not a client clock (B-013)', () => {
   const { requests } = setup();
-  requests.create({ id: 'b1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, now: 1000 });
+  requests.create({ id: 'b1', userId: 1, romsTotal: 1, bundlePath: '/b', seed: '1', params: {}, now: 1000 });
   requests.setState('b1', 'building', 1000); // the ROM started building at t=1000 ms
   // 135 s into a 270 s/ROM build → halfway, regardless of any client/page state
   const p = buildProgress(requests, 'b1', { avgRomSecs: 270, now: 1000 + 135_000 });
@@ -190,7 +189,7 @@ test('buildProgress derives progress + eta from server state, not a client clock
   assert.equal(p.etaSecs, 135);
 
   // a queued (not-yet-started) request reports 0 %
-  requests.create({ id: 'b2', userId: 2, queueClass: 'slow', romsTotal: 3, bundlePath: '/b2', seed: '1', params: {}, now: 2000 });
+  requests.create({ id: 'b2', userId: 2, romsTotal: 3, bundlePath: '/b2', seed: '1', params: {}, now: 2000 });
   assert.equal(buildProgress(requests, 'b2', { avgRomSecs: 270, now: 9_000_000 }).progress, 0);
 });
 
@@ -203,7 +202,7 @@ test('cancel with no active request is a no-op (ok:false)', () => {
 
 test('download refuses when the request is not ready (409)', () => {
   const { requests } = setup();
-  requests.create({ id: 'r1', userId: 1, queueClass: 'fast', romsTotal: 1, bundlePath: '/b/r1', seed: '1', params: {}, now: 1 });
+  requests.create({ id: 'r1', userId: 1, romsTotal: 1, bundlePath: '/b/r1', seed: '1', params: {}, now: 1 });
   const res = fakeRes();
   handleDownload({ requests, readOutput: () => Buffer.from('x'), removeFile: () => {} })({ userId: 1 }, res);
   assert.equal(res.statusCode, 409);

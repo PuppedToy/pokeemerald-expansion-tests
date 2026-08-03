@@ -8,7 +8,7 @@ import { estimateEta, romsAhead, buildProgress } from './eta.js';
 
 const DEFER_THRESHOLD_SECS = 120; // offer email-on-ready when the initial ETA is >= 2 min
 
-export function handleProduce({ requests, users, beta = false, classify, validateBundle, persistBundle, idGen, now = () => Date.now(), avgRomSecs, removeFile, killActiveBuild }) {
+export function handleProduce({ requests, users, beta = false, validateBundle, persistBundle, idGen, now = () => Date.now(), avgRomSecs, removeFile, killActiveBuild }) {
   return (req, res) => {
     const bundle = req.body;
     const { ok, errors } = validateBundle(bundle);
@@ -30,7 +30,7 @@ export function handleProduce({ requests, users, beta = false, classify, validat
     // Accepted users (and everyone when BETA is off) build normally.
     const held = beta && users?.get(req.userId)?.invite_state !== 'accepted';
     requests.create({
-      id, userId: req.userId, queueClass: classify(romsTotal), romsTotal, bundlePath,
+      id, userId: req.userId, romsTotal, bundlePath,
       seed: String(bundle.config?.seed ?? '0'), params: bundle.config ?? {},
       state: held ? 'pending' : null, emailOnReady: held, now: now(),
     });

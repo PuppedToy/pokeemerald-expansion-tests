@@ -8,7 +8,6 @@
 import express from 'express';
 import { randomUUID } from 'node:crypto';
 import { requireAuth, requireVerified } from '../auth/middleware.js';
-import { classify } from '../queue/scheduler.js';
 import { validateBundle } from '../build/bundleSchema.js';
 import { handleProduce, handleStatus, handleDownload, handleNotifyOnReady, handleCancel } from './handlers.js';
 
@@ -24,7 +23,7 @@ export function createProduceRouter({
     '/produce',
     auth, requireVerified(users),
     express.json({ limit: '50mb' }),
-    handleProduce({ requests, users, beta, classify, validateBundle, persistBundle, idGen, avgRomSecs, removeFile, killActiveBuild }),
+    handleProduce({ requests, users, beta, validateBundle, persistBundle, idGen, avgRomSecs, removeFile, killActiveBuild }),
   );
 
   router.post('/notify-on-ready', auth, handleNotifyOnReady({ requests }));

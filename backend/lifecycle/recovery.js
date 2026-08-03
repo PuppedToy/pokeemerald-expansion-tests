@@ -7,6 +7,7 @@
  */
 
 import { spawnSync } from 'node:child_process';
+import { LEGACY_QUEUE_STATES } from '../db/index.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -22,10 +23,12 @@ export function defaultRestoreTree() {
 
 export function runOnStartup({ requests, restoreTree = defaultRestoreTree, now = Date.now() }) {
   restoreTree();
-  const inflight = requests.findByStates(['building', 'paused']);
+  // T-245 — also sweeps up the legacy tier states: a request left in `queued_fast`/`queued_slow`/`paused`
+  // by the previous version is rewritten into the single `queued` lane on the first boot after the deploy,
+  // so the tier states disappear from live data without a migration.
+  const inflight = requests.findByStates(['building', ...LEGACY_QUEUE_STATES]);
   for (const row of inflight) {
-    const back = row.queue_class === 'slow' ? 'queued_slow' : 'queued_fast';
-    requests.setState(row.id, back, now); // roms_done is untouched
+    requests.setState(row.id, 'queued', now); // roms_done is untouched
   }
   return inflight.length;
 }

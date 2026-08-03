@@ -46,6 +46,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   for every request, we now write your randomized data straight into a game we built once — the same
   result, produced in a few seconds. (T-244)
 
+- **No more "slow queue".** Big runs used to be sorted into a slower lane behind small ones, and the
+  randomizer warned you about it. Now that a patch takes seconds, everyone is simply served in the order
+  they arrive — the warning is gone, and the countdown you see is accurate instead of pessimistic. (T-245)
+
 - **Item-ball choice menus now use the game's own item names.** When you open an item ball that lets you
   pick, the options are spelled exactly as the item is in your bag (e.g. "Heavy-Duty Boots"). Same items,
   same choices — only the spelling of a few names changes. (T-236)

@@ -1,50 +1,35 @@
 /**
- * Two-tier preemptive serial build scheduler (T-024, ADR-005).
+ * Serial FIFO build scheduler (T-024/ADR-005, simplified in T-245).
  *
- * One serial worker; fast requests beat slow ones; a slow request is preempted
- * **between ROMs** (never mid-build) and resumes later without redoing ROMs; an
- * aged paused slow periodically jumps the fast queue so it cannot starve.
+ * ADR-005 specified **two preemptive queues** because a ROM took ~4–5 minutes: a 6-ROM run held the box
+ * for ~27 minutes, so a 1-ROM run queued behind it had to be able to jump ahead, which in turn needed
+ * pausing, resuming and anti-starvation aging. Injection (T-244) put a ROM at ~16.5 s measured on the box,
+ * so the worst case a small run can wait behind the largest one is **~100 s**. The machinery that bought
+ * that 27-minute reprieve now buys ~90 s, at the cost of three extra queue states and a policy nobody can
+ * reason about from a log line. It is retired: one lane, oldest first.
+ * See docs/adr/ADR-005-two-tier-preemptive-build-queue.md (superseding note).
  *
- * The policy is a pure function of the DB state: there is no persistent `building`
- * state between ticks — after each ROM a job returns to its resting state
- * (`queued_fast` for a started fast, `paused` for a started slow, `queued_slow`
- * for a fresh one), so `selectNext` re-applies fast-priority every ROM.
+ * What is kept, because latency was never its justification:
+ *  · **Serial.** One build at a time — a 2-core box with a 32 MB ROM buffer per build (T-228).
+ *  · **Per-ROM advancement.** The worker still advances one ROM at a time, so a cancel or an account
+ *    deletion mid-run stops at the next boundary and startup recovery resumes without redoing ROMs.
  *
- * The actual compile is an injected `buildRom(requestId, romIndex)` — the real
- * per-ROM make.js adapter (with bounded `make -j`, inside the T-026 sandbox) is
- * wired at integration; tests inject a mock so no real `make` runs.
+ * The actual build is an injected `buildRom(requestId, romIndex)`; tests inject a mock.
  */
 
 import { finishBuild } from '../lifecycle/complete.js';
 
-// The fast-queue limit: a request that builds at most this many ROMs takes the priority (fast) lane.
-// Exported as the single source of truth so the frontend can mirror it (drift-guarded) to warn users
-// before they queue a slow build (T-172).
-export const FAST_MAX_ROMS = 2;
-const DEFAULT_AGING_MS = 5 * 60 * 1000;
+// The one waiting state; the legacy tier states are still selectable so requests already queued when this
+// deploys are not stranded (startup recovery rewrites them — lifecycle/recovery.js).
+const QUEUED = 'queued';
+export const LEGACY_QUEUED_STATES = ['queued_fast', 'queued_slow', 'paused'];
+const SELECTABLE = [QUEUED, ...LEGACY_QUEUED_STATES];
 
-/** A request is fast (priority) if it builds few ROMs, else slow. */
-export function classify(romsTotal, { fastMaxRoms = FAST_MAX_ROMS } = {}) {
-  return romsTotal <= fastMaxRoms ? 'fast' : 'slow';
-}
-
-/** Pick the next request to advance by one ROM, or null if the queues are empty. */
-export function selectNext(requests, { now, agingMs = DEFAULT_AGING_MS }) {
-  // 1. an aged paused (started slow) jumps the fast queue — anti-starvation
-  const aged = requests.findByStates(['paused'])
-    .filter((r) => now - r.updated_at >= agingMs)
-    .sort((a, b) => a.updated_at - b.updated_at)[0];
-  if (aged) return aged.id;
-
-  // 2. fast queue first (findByStates orders by created_at)
-  const fast = requests.findByStates(['queued_fast']);
-  if (fast.length) return fast[0].id;
-
-  // 3. resume started slows / start fresh ones, oldest first
-  const slows = requests.findByStates(['paused', 'queued_slow']);
-  if (slows.length) return slows[0].id;
-
-  return null;
+/** Pick the next request to advance by one ROM, or null if the queue is empty. Oldest first. */
+export function selectNext(requests, { now: _now } = {}) {
+  // findByStates orders by created_at, so the head of the list IS the FIFO head.
+  const waiting = requests.findByStates(SELECTABLE);
+  return waiting.length ? waiting[0].id : null;
 }
 
 /** Build exactly one ROM for `id`, then move it to its next resting/terminal state. */
@@ -83,15 +68,16 @@ export async function advanceOneRom(ctx, id, { now }) {
     finishBuild(ctx, id, now); // building -> ready + record run
     return;
   }
-  // more ROMs remain: a started fast keeps its lane; a started slow yields (can be preempted/aged)
-  requests.setState(id, after.queue_class === 'fast' ? 'queued_fast' : 'paused', now);
+  // More ROMs remain: back to the single waiting lane, keeping the row's created_at, so it stays at the
+  // FIFO head and finishes before a later arrival starts (T-245 — no preemption, no lane to choose).
+  requests.setState(id, QUEUED, now);
 }
 
 export function createWorker(ctx) {
-  const { requests, agingMs = DEFAULT_AGING_MS, now = () => Date.now() } = ctx;
+  const { requests, now = () => Date.now() } = ctx;
 
   async function runOnce() {
-    const id = selectNext(requests, { now: now(), agingMs });
+    const id = selectNext(requests, { now: now() });
     if (!id) return false;
     await advanceOneRom(ctx, id, { now: now() });
     return true;

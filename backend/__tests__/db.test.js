@@ -37,7 +37,7 @@ test('foreign keys are enforced', () => {
   assert.throws(() => {
     db.prepare(
       `INSERT INTO requests (id,user_id,state,queue_class,roms_total,roms_done,bundle_path,output_path,email_on_ready,seed,params_json,created_at,started_at,ready_at,updated_at)
-       VALUES ('r1',999,'queued_fast','fast',1,0,'/b',NULL,0,'1','{}',1,NULL,NULL,1)`
+       VALUES ('r1',999,'queued','fifo',1,0,'/b',NULL,0,'1','{}',1,NULL,NULL,1)`
     ).run();
   }, /FOREIGN KEY|constraint/i);
 });
