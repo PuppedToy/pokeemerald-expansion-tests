@@ -157,4 +157,38 @@ Acceptance criteria:
   was inside `make.js`. The browser needs the same answer and the seed decides values the writers
   re-derive, so it is now `randomizer/injector/romData.js` and `make.js` calls it.
 
+- **2026-08-04 — it runs in a real browser, in both engines, and produces the same bytes.**
+  `visual-tests/injector-browser-check.mjs` (a harness, not a Playwright test — it needs the gitignored
+  32 MB base, like verify-corpus needs the box) builds the two artifacts, injects the bundle in Node, then
+  does it again in a real **Worker** created by a page, over HTTP, with the ROM transferred both ways.
+
+  | | sha256 | inject |
+  |---|---|---|
+  | Node | `8c8d1c5f4e6d…` | 0.7 s |
+  | Chromium Worker | `8c8d1c5f4e6d…` | 1.0 s |
+  | **WebKit** (Safari's engine) Worker | `8c8d1c5f4e6d…` | 1.8 s |
+
+  So **acceptance criterion 1 is met** for a real production bundle, and the shims' riskiest assumptions
+  (transferables, DataView, TextEncoder inside a Worker) hold in Safari's engine too. Node's 0.7 s is worth
+  noting on its own: it was ~7.7 s before, because loading `base-offsets.inject.json` skips the 4.1 s
+  `.map` parse [[T-250]] measures.
+
+  **Memory, measured** (Chromium, `--enable-precise-memory-info`; `performance.memory` does not exist inside
+  a Worker, so this pass runs the same `injectOne` on the page thread):
+
+  | | |
+  |---|---|
+  | inputs held before injecting | **142 MB** (32 MB base + a 15 MB bundle parsed to objects + 6.6 MB sources) |
+  | peak | **213 MB** |
+  | the injection itself | **+71 MB** |
+
+  Read carefully, that says the bundle — which the browser *already* holds today, since the randomizer runs
+  there — is the biggest single item, and client injection adds ~100 MB on top (32 MB base + 71 MB, of which
+  32 MB is `Rom`'s byte-per-byte ownership map, the INV-BYTES guard). Two gratuitous 32 MB copies were
+  removed on the way: the Worker now writes the transferred base **in place** and transfers `image.buffer`
+  itself instead of `toBuffer()`-ing and re-slicing it.
+
+  213 MB is comfortable on desktop and marginal on a phone, so the criterion's second half — a real iOS
+  Safari tab — still needs a device; the engine half is done.
+
 ## Outcome

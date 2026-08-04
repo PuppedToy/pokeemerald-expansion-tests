@@ -43,6 +43,16 @@ describe('the Buffer shim', () => {
         expect(new Uint8Array(ab)[1]).toBe(7);
     });
 
+    test('from: bytes that arrive from ANOTHER REALM, which is how a transferred buffer arrives', () => {
+        // `instanceof Uint8Array` is false for a real Uint8Array built in another realm — the case that
+        // would make the browser path throw on the very ROM it was handed.
+        const vm = require('vm');
+        const foreign = vm.runInNewContext('new Uint8Array([1, 2, 3])');
+        expect(bytes(ShimBuffer.from(foreign))).toEqual([1, 2, 3]);
+        const foreignArrayBuffer = vm.runInNewContext('new Uint8Array([4, 5, 6]).buffer');
+        expect(bytes(ShimBuffer.from(foreignArrayBuffer))).toEqual([4, 5, 6]);
+    });
+
     test('isBuffer accepts a shim buffer and rejects a plain array', () => {
         expect(ShimBuffer.isBuffer(ShimBuffer.alloc(1))).toBe(true);
         expect(ShimBuffer.isBuffer([1, 2])).toBe(false);

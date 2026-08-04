@@ -50,9 +50,14 @@ function injectOne({ baseRom, offsets, sources, bundle, romIndex = 0 }) {
     const rng = require('../../randomizer/rng');
 
     const offsetMap = OffsetMap.fromJSON(offsets);
+
+    // Written IN PLACE, deliberately. `baseRom` arrives as a transferred ArrayBuffer, so this Worker owns
+    // it and `Buffer.from(arrayBuffer)` is a view — no copy. Every avoided 32 MB matters here: a phone has
+    // to hold the base, the ROM being built, the journal's ownership map and a ~19 MB bundle at once. The
+    // price is that the base is CONSUMED: a multi-ROM bundle sends one base per ROM.
+    const image = new Rom(Buffer.from(baseRom));
     // A base and the artifacts describing it are only valid together (T-249): a stale cached base with a
     // fresh offset map writes real data to wrong addresses, and nothing downstream would notice.
-    const image = new Rom(Buffer.from(baseRom instanceof Uint8Array ? baseRom : new Uint8Array(baseRom)));
     if (baseSources.buildId && baseSources.buildId !== image.sha256()) {
         throw new Error(
             `injector-worker: these base sources were baked for base ${baseSources.buildId.slice(0, 12)}…, ` +
@@ -65,7 +70,8 @@ function injectOne({ baseRom, offsets, sources, bundle, romIndex = 0 }) {
     rng.seed(romSeed);                                  // same seeding as the Node path, same values
 
     const { applied } = injectRom({ rom: image, offsetMap, data, baseSources });
-    return { bytes: image.toBuffer(), sha256: image.sha256(), applied, bytesWritten: image.bytesWritten };
+    // `image.buffer`, not `toBuffer()`: the copy is 32 MB and this Rom is finished with.
+    return { bytes: image.buffer, sha256: image.sha256(), applied, bytesWritten: image.bytesWritten };
 }
 
 if (typeof self !== 'undefined') {
@@ -77,9 +83,11 @@ if (typeof self !== 'undefined') {
         if (type !== 'inject') return;
         try {
             const { bytes, sha256, applied, bytesWritten } = injectOne(args);
-            // Transferred, not copied: a 32 MB structured clone per ROM is exactly the memory pressure a
-            // phone cannot afford.
-            const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.length);
+            // Transferred, not copied — a 32 MB structured clone per ROM is exactly the memory pressure a
+            // phone cannot afford. The ROM owns its whole ArrayBuffer (see injectOne), so it goes as-is;
+            // the slice is only for the case where some caller handed us a view into a larger buffer.
+            const whole = bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength;
+            const buffer = whole ? bytes.buffer : bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
             self.postMessage({ type: 'done', rom: buffer, sha256, applied, bytesWritten }, [buffer]);
         } catch (err) {
             self.postMessage({ type: 'error', message: err.message });

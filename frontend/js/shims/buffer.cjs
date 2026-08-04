@@ -19,6 +19,8 @@
 const utf8Encoder = new TextEncoder();
 const utf8Decoder = new TextDecoder();
 
+const isArrayBuffer = (value) => Object.prototype.toString.call(value) === '[object ArrayBuffer]';
+
 class Buffer extends Uint8Array {
     // ── Statics ──────────────────────────────────────────────────────────────
 
@@ -35,8 +37,14 @@ class Buffer extends Uint8Array {
             }
             return Buffer._wrap(utf8Encoder.encode(value));
         }
-        if (value instanceof ArrayBuffer) return new Buffer(value);            // a view, as Node does
-        if (value instanceof Uint8Array) return Buffer._wrap(new Uint8Array(value));   // a copy
+        // Duck-typed, not `instanceof`: bytes can arrive from another realm (a transferred buffer, a `vm`
+        // sandbox in the equivalence test) where `instanceof Uint8Array` is false for a real Uint8Array.
+        if (isArrayBuffer(value)) return new Buffer(value);              // a view, as Node does
+        if (ArrayBuffer.isView(value)) {                                 // …but a copy, also as Node does
+            const copy = new Buffer(value.byteLength);
+            copy.set(new Uint8Array(value.buffer, value.byteOffset, value.byteLength));
+            return copy;
+        }
         if (Array.isArray(value)) return Buffer._wrap(new Uint8Array(value));
         throw new Error('buffer shim: Buffer.from expects a string, Uint8Array, Array or ArrayBuffer');
     }
