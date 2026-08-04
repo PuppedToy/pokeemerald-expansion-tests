@@ -1,7 +1,7 @@
 ---
 id: T-249
 title: "Run the injector in the browser — zero-server-compute / offline artifact generation"
-status: proposed
+status: in-progress
 type: feature
 created: 2026-08-04
 updated: 2026-08-04
@@ -46,5 +46,53 @@ Acceptance criteria:
 ## Progress log
 
 - **2026-08-04** — Created out of T-246's evaluation criterion.
+
+- **2026-08-04 — started; step 1 scoped against the code.** Read every `fs` call site in
+  `randomizer/injector/` (14 files) and settled the seam before writing any of it:
+
+  **One provider keyed by repo-relative path, not per-module keys.** The existing per-module `sources`
+  object (`{ encountersJson, speciesSources, tradeSource, … }`) stays exactly as it is — it is what the
+  module tests pass — but its *fallback* stops being `fs.readFileSync(<abs path>)` and becomes
+  `ctx.sources.read('<repo-relative path>')`. So one object carries every input, and the browser fills it
+  from an artifact while Node keeps reading the tree.
+
+  **The paths are relative literals, pinned by a test.** The modules resolve absolute paths today
+  (`SPECIES_DIR`, `itemPriceWriter.file`, `wildData.file`) via `path.resolve(__dirname, …)`, which in a
+  browser bundle resolves against the `path` shim and yields garbage — so an absolute key cannot survive
+  bundling. `gameConstants.DEFAULT_HEADERS` already sets the precedent of relative literals. To keep
+  ADR-012 honest, every literal is asserted equal to the constant the module actually reads, so a moved
+  file fails a test instead of silently missing from the artifact.
+
+  Also noted: the `path` shim (`frontend/js/shims/path.cjs`) has no `relative()`, which is the other
+  reason not to derive relative paths at runtime.
+
+- **2026-08-04 — step 1 done: the injector no longer reads the disk, and the base's sources are an
+  artifact.** `randomizer/injector/sources.js` is the seam: a `BaseSources` keyed by repo-relative path,
+  answering either from the tree (`treeSources()`, the Node default — unchanged behaviour) or from a baked
+  artifact (`BaseSources.fromJSON`). `buildOffsetMap.js --sources=base-sources.json` emits it beside
+  `base-offsets.json`, keyed by the base ROM's sha256 when `--rom` is given, so base and inputs can never
+  be cached apart.
+
+  The contract that makes step 3 possible is now **enforced by a test, not by discipline**: of the 15
+  files under `randomizer/injector/`, only five may `require('fs')` — `sources.js`, `rom.js`,
+  `symbolMap.js`, `buildOffsetMap.js`, `verifyParity.js`. Everything that runs *during* an injection is
+  fs-free, including the five modules and `gameConstants` / `charmap` / `scriptPatch`, which now read
+  through the seam and default to a tree provider instead of calling `readFileSync` themselves.
+
+  One thing moved home: `DEFAULT_HEADERS` now lives in `sources.js` as `CONSTANT_HEADERS`
+  (`gameConstants` re-exports it under the old name). It had to — `gameConstants` needs the seam and the
+  seam needs the header list, and a require cycle between them would have left `DEFAULT_HEADERS`
+  `undefined` depending on which file loaded first.
+
+  **Measured** (52 files): 6.36 MB of source text, 6.61 MB as JSON — **650 KB gzipped, 440 KB brotli**,
+  against the evaluation's ~1 MB guess. The three biggest files are `gen_9.h` (770 KB),
+  `gen_1_families.h` (740 KB) and `teachable_learnsets.h` (700 KB). Baking takes ~6.7 s, once per base
+  build.
+
+  **Proven end-to-end, not just unit-tested.** Injecting `debug/run-m2/bundle.json`'s first ROM against
+  the production base twice — once reading the tree, once from the round-tripped artifact — produced
+  `8c8d1c5f4e6d3d6033bfd72597b756afbfd9691462b63c5cfef7eccfe35657af` both times. Same 420,081 bytes
+  written, same five modules. `make.js`'s `injectOneRom` takes an optional `baseSources` for exactly this
+  (null keeps today's behaviour). Suite: 2169 passing, 23 skipped.
 
 ## Outcome

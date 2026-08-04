@@ -36,10 +36,8 @@
  * same array names. Same technique as `wildEncounters` proving its 165 tables (T-239).
  */
 
-const fs = require('fs');
-const path = require('path');
 const { LEVEL_UP_MOVE, TEACHABLE_MOVE } = require('../structLayout');
-const { LEVEL_UP_LEARNSETS_DIR, SPECIES_DIR } = require('../../constants');
+const { BASE_SOURCE_FILES } = require('../sources');
 const { LEVEL_UP_LEARNSET_CAPACITY, TEACHABLE_LEARNSET_CAPACITY } = require('../../layout');
 const { BANNED_SPECIES_FOR_PICKING } = require('../../modules/wildModule');
 const { buildInjectionContext } = require('../context');
@@ -57,8 +55,8 @@ const TEACHABLE_ENTRY = /^\s*([A-Z_][A-Z0-9_]*)\s*,?\s*$/;
 const TEACHABLE_END = /^\s*MOVE_UNAVAILABLE\s*,?\s*$/;
 
 /** The base's `gen_9.h` — the only level-up file the writer edits (see the P_LVL_UP_LEARNSETS note above). */
-const levelUpSourcePath = () => path.resolve(LEVEL_UP_LEARNSETS_DIR, 'gen_9.h');
-const teachableSourcePath = () => path.resolve(SPECIES_DIR, '..', 'teachable_learnsets.h');
+const LEVEL_UP_REL = BASE_SOURCE_FILES.levelUpLearnsets;
+const TEACHABLE_REL = BASE_SOURCE_FILES.teachableLearnsets;
 
 /**
  * Walk one learnset source file. Blocks are read the way the writers read them — declaration line,
@@ -191,9 +189,9 @@ function moveId(ctx, move, name) {
  * One family: verify every slot first (so a build mismatch throws before anything is written), then
  * write the arrays the run claims.
  */
-function injectFamily(ctx, { source, sourcePath, parse, match, payloadOf, encode, stride, capacity, tag, kind }) {
+function injectFamily(ctx, { source, sourceRel, parse, match, payloadOf, encode, stride, capacity, tag, kind }) {
     const { rom, data, log } = ctx;
-    const text = source ?? fs.readFileSync(sourcePath(), 'utf8');
+    const text = source ?? ctx.baseSources.read(sourceRel);
     const baseArrays = parse(text);
     const pokes = pickablePokes(data);
 
@@ -245,7 +243,7 @@ function injectFamily(ctx, { source, sourcePath, parse, match, payloadOf, encode
 function injectLevelUpLearnsets(ctx, { source = null } = {}) {
     return injectFamily(ctx, {
         source,
-        sourcePath: levelUpSourcePath,
+        sourceRel: LEVEL_UP_REL,
         parse: parseLevelUpSource,
         match: (poke) => poke.levelUpLearnset,
         // An EMPTY level-up list is still written: the writer emits a block holding only LEVEL_UP_END.
@@ -266,7 +264,7 @@ function injectLevelUpLearnsets(ctx, { source = null } = {}) {
 function injectTeachableLearnsets(ctx, { source = null } = {}) {
     return injectFamily(ctx, {
         source,
-        sourcePath: teachableSourcePath,
+        sourceRel: TEACHABLE_REL,
         parse: parseTeachableSource,
         match: (poke) => poke.teachableLearnset,
         // An empty teachable list is SKIPPED — editTeachableLearnsets returns before replacing the block.
@@ -284,8 +282,8 @@ function injectTeachableLearnsets(ctx, { source = null } = {}) {
  * @param {object} [args.sources]  base source text instead of reading the tree —
  *        `{ levelUpSource, teachableSource }`
  */
-function applyLearnsets({ rom, offsetMap, data = {}, log = () => {}, sources = {} }) {
-    const ctx = buildInjectionContext({ rom, offsetMap, data, log });
+function applyLearnsets({ rom, offsetMap, data = {}, log = () => {}, sources = {}, baseSources = null }) {
+    const ctx = buildInjectionContext({ rom, offsetMap, data, log, baseSources });
     return {
         levelUp: injectLevelUpLearnsets(ctx, { source: sources.levelUpSource || null }),
         teachable: injectTeachableLearnsets(ctx, { source: sources.teachableSource || null }),

@@ -24,11 +24,10 @@
  * Every table is byte-matched against the **committed** initializers before anything is written.
  */
 
-const fs = require('fs');
-const path = require('path');
 const {
     RANDOMIZER_SETTINGS, GYM_REWARD, STATIC_ENCOUNTER, ITEM_PICK,
 } = require('../structLayout');
+const { BASE_SOURCE_FILES } = require('../sources');
 const { buildInjectionContext } = require('../context');
 const { patchSetvar, findSetvarOperand } = require('../scriptPatch');
 const moneyWriter = require('../../moneyWriter');
@@ -42,8 +41,6 @@ const { resolveRewardMegaStone } = require('../../modules/wildModule');
 const { injectMegaMapItems, megaAssignment } = require('./megaMapItems');
 
 const TAG = 'dataDrivenAndToggles';
-const REPO_ROOT = path.resolve(__dirname, '..', '..', '..');
-const read = (...parts) => fs.readFileSync(path.resolve(REPO_ROOT, ...parts), 'utf8');
 
 // The reward table's order — the same list writer.js builds, and the enum in randomizer_rewards.h.
 const GYM_REWARD_KEYS = [
@@ -149,7 +146,7 @@ function encodeSettings(values) {
 }
 
 function injectSettings(ctx, { settingsSource = null } = {}) {
-    const source = settingsSource ?? read('src', 'randomizer_settings.c');
+    const source = settingsSource ?? ctx.baseSources.read(BASE_SOURCE_FILES.randomizerSettings);
     const config = ctx.data.config || {};
     // The writers own the clamping and the defaults (an absent/invalid value must land on the same
     // number the compile path would have written), so they produce the text and this reads it back.
@@ -172,7 +169,7 @@ function injectSettings(ctx, { settingsSource = null } = {}) {
 // ── gGymRewards + gStaticEncounters (T-235) ───────────────────────────────────
 
 function injectRewards(ctx, { rewardsSource = null } = {}) {
-    const source = rewardsSource ?? read('src', 'randomizer_rewards.c');
+    const source = rewardsSource ?? ctx.baseSources.read(BASE_SOURCE_FILES.randomizerRewards);
     const { data } = ctx;
     const gymRewards = (data.wild && data.wild.gymRewards) || null;
     const staticRewards = (data.wild && data.wild.staticRewards) || null;
@@ -248,7 +245,7 @@ function hiddenMegaIndices(data) {
 }
 
 function injectPicks(ctx, { picksSource = null } = {}) {
-    const source = picksSource ?? read('src', 'randomizer_picks.c');
+    const source = picksSource ?? ctx.baseSources.read(BASE_SOURCE_FILES.randomizerPicks);
     const { data } = ctx;
     const assignments = (data.trainers && data.trainers.itemAssignments) || null;
 
@@ -331,13 +328,13 @@ function parseSetvars(text) {
 const TOGGLE_SCRIPTS = [
     {
         label: 'EverGrandeCity_SidneysRoom_EventScript_InitRunAndBun',
-        file: ['data', 'maps', 'EverGrandeCity_SidneysRoom', 'scripts.inc'],
+        file: BASE_SOURCE_FILES.mapScripts('EverGrandeCity_SidneysRoom'),
         vars: ['VAR_RUNANDBUN_MODE', 'VAR_RUNANDBUN_SINGLES_LEFT', 'VAR_RUNANDBUN_DOUBLES_LEFT'],
         patch: (text, config) => runAndBunWriter.patchRunAndBunInContent(text, config),
     },
     {
         label: 'MossdeepCity_SpaceCenter_2F_OnTransition',
-        file: ['data', 'maps', 'MossdeepCity_SpaceCenter_2F', 'scripts.inc'],
+        file: BASE_SOURCE_FILES.mapScripts('MossdeepCity_SpaceCenter_2F'),
         vars: ['VAR_DISABLE_STEVEN_TAG_BATTLE'],
         patch: (text, config) => stevenTagWriter.patchStevenTagInContent(text, config),
     },
@@ -349,7 +346,7 @@ function injectToggles(ctx, { scriptSources = {} } = {}) {
     let written = 0;
 
     for (const script of TOGGLE_SCRIPTS) {
-        const source = scriptSources[script.label] ?? read(...script.file);
+        const source = scriptSources[script.label] ?? ctx.baseSources.read(script.file);
         const before = parseSetvars(source);
         const after = parseSetvars(script.patch(source, config));
         // The script label is LOCAL — it only exists in the `.sym`. A base whose map is `.map`-only
@@ -365,7 +362,7 @@ function injectToggles(ctx, { scriptSources = {} } = {}) {
             // expectValue pins the base's own immediate, so a wrong label or a moved script throws
             // instead of overwriting whatever bytes happen to sit there.
             patchSetvar(rom, {
-                at, var: name, limit: 512, expectValue: before.get(name),
+                at, var: name, sources: ctx.baseSources, limit: 512, expectValue: before.get(name),
                 value: after.get(name), tag: `${TAG}:${name}`,
             });
             written += 1;
@@ -383,7 +380,7 @@ const SYMBOLS = ['gRandomizerSettings', 'gGymRewards', 'gStaticEncounters', 'gIt
  * @param {object} args  `{ rom, offsetMap, data, log }` as the registry calls it (injector/index.js)
  * @param {object} [args.sources]  `{ settingsSource, rewardsSource, picksSource, scriptSources }`
  */
-function applyDataDrivenAndToggles({ rom, offsetMap, data = {}, log = () => {}, sources = {} }) {
+function applyDataDrivenAndToggles({ rom, offsetMap, data = {}, log = () => {}, sources = {}, baseSources = null }) {
     const missing = SYMBOLS.filter(symbol => !offsetMap.has(symbol));
     if (missing.length) {
         const claims = data.wild || data.config || (data.trainers && data.trainers.itemAssignments);
@@ -394,7 +391,7 @@ function applyDataDrivenAndToggles({ rom, offsetMap, data = {}, log = () => {}, 
             `from another build.`);
     }
 
-    const ctx = buildInjectionContext({ rom, offsetMap, data, log });
+    const ctx = buildInjectionContext({ rom, offsetMap, data, log, baseSources });
     return {
         ...injectSettings(ctx, sources),
         ...injectRewards(ctx, sources),
@@ -412,6 +409,7 @@ module.exports = {
     injectRewards,
     injectPicks,
     injectToggles,
+    TOGGLE_SCRIPTS,
     hiddenMegaIndices,
     parseRows,
     parseArrayRows,

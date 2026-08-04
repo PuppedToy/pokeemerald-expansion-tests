@@ -40,8 +40,8 @@ const { injectTmMoves } = require('./tmMoves');
  *        them in.
  * @returns {object} per-sub-module write counts, for the caller's log
  */
-function applyGroupAFixed({ rom, offsetMap, data = {}, log = () => {}, sources = {} }) {
-    const ctx = buildInjectionContext({ rom, offsetMap, data, log });
+function applyGroupAFixed({ rom, offsetMap, data = {}, log = () => {}, sources = {}, baseSources = null }) {
+    const ctx = buildInjectionContext({ rom, offsetMap, data, log, baseSources });
     return {
         species: injectSpeciesInfo(ctx, { speciesSources: sources.speciesSources || null }),
         moves: injectMoveData(ctx),

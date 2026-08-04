@@ -20,6 +20,7 @@ const { loadOffsetMap, OffsetMap, toRomOffset, toGbaPointer } = require('./symbo
 const { FreeSpaceArena, findFreeRuns, repoint } = require('./freeSpace');
 const { diffRegions, attributeDiff, formatDiff } = require('./parity');
 const { BUILD_MODES, resolveBuildMode, isInjectMode } = require('./mode');
+const { BaseSources, collectBaseSources, treeSources, baseSourcePaths } = require('./sources');
 
 /**
  * The Phase-3 migration board. `apply({ rom, offsetMap, data, log })` writes that module's outputs into
@@ -132,9 +133,15 @@ function loadBase({ romPath, mapPath }) {
 /**
  * Apply every migrated module to `rom`.
  *
+ * @param {object} args
+ * @param {import('./sources').BaseSources} [args.baseSources]  the base's own source text, which the
+ *        modules derive their writes from (T-249). Omitted, they read the tree — the Node default.
  * @returns {{ rom: Rom, applied: string[], pending: object[], journal: object[] }}
  */
-function injectRom({ rom, offsetMap, data = {}, modules = INJECTION_MODULES, allowPending = false, log = () => {} }) {
+function injectRom({
+    rom, offsetMap, data = {}, modules = INJECTION_MODULES, allowPending = false, log = () => {},
+    baseSources = null,
+}) {
     if (!(rom instanceof Rom)) throw new Error('injectRom needs a Rom (see injector/rom.js)');
     if (!offsetMap || typeof offsetMap.require !== 'function') throw new Error('injectRom needs an OffsetMap (see injector/symbolMap.js)');
 
@@ -152,7 +159,7 @@ function injectRom({ rom, offsetMap, data = {}, modules = INJECTION_MODULES, all
         if (module.status !== 'migrated') continue;
         if (typeof module.apply !== 'function') throw new Error(`Module '${module.id}' (${module.task}) is marked migrated but has no apply()`);
         try {
-            module.apply({ rom, offsetMap, data, log });
+            module.apply({ rom, offsetMap, data, log, baseSources });
         } catch (err) {
             throw new Error(`Injection module '${module.id}' (${module.task}) failed: ${err.message}`, { cause: err });
         }
@@ -183,6 +190,10 @@ module.exports = {
     diffRegions,
     attributeDiff,
     formatDiff,
+    BaseSources,
+    collectBaseSources,
+    treeSources,
+    baseSourcePaths,
     BUILD_MODES,
     resolveBuildMode,
     isInjectMode,

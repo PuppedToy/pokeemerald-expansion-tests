@@ -149,7 +149,7 @@ function resolveBasePaths({ env = process.env, root: repoRoot = root } = {}) {
  */
 async function injectOneRom({
     rom, bundle, seed, universeSeed = seed, outDir, fullRom = false,
-    allowPending = false, basePaths = resolveBasePaths(), modules = undefined,
+    allowPending = false, basePaths = resolveBasePaths(), modules = undefined, baseSources = null,
 }) {
     const rng = require('./randomizer/rng');
     const { loadBase, injectRom, loadOffsetMap } = require('./randomizer/injector');
@@ -182,6 +182,9 @@ async function injectOneRom({
 
     const { applied, pending, journal } = injectRom({
         rom: baseRom, offsetMap, data, allowPending, log: (msg) => console.log(`  · ${msg}`),
+        // null → the modules read the base's sources off the tree (T-249). A caller with no tree (a
+        // browser, an offline box) passes the baked artifact instead; the bytes are the same either way.
+        baseSources,
         // Defaults to the real registry; a harness can drive the wiring with its own module set.
         ...(modules ? { modules } : {}),
     });

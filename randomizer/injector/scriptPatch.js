@@ -15,8 +15,8 @@
  *    capacities T-237 reads out of `randomizer_layout.h`).
  */
 
-const fs = require('fs');
 const path = require('path');
+const { BASE_SOURCE_FILES, treeSources } = require('./sources');
 
 /** `setvar destination, value` → `.byte SCR_OP_SETVAR / .2byte dest / .2byte value` (asm/macros/event.inc). */
 const SCR_OP_SETVAR = 0x16;
@@ -34,9 +34,17 @@ const GROUP_D_VARS = [
 
 let varCache = null;
 
-/** name → id for every `#define VAR_… 0x….` in the header. */
-function loadVarConstants(file = VARS_HEADER) {
-    const text = fs.readFileSync(file, 'utf8');
+/**
+ * name → id for every `#define VAR_… 0x….` in the header.
+ *
+ * @param {string} [file]  which tree to read `vars.h` out of, when no base sources are given
+ * @param {object} [opts]
+ * @param {import('./sources').BaseSources} [opts.sources]  read `vars.h` from these instead (T-249)
+ */
+function loadVarConstants(file = VARS_HEADER, { sources = null } = {}) {
+    // `file` names the header inside SOME tree; the seam addresses it relative to that tree's root.
+    const from = sources || treeSources({ root: path.resolve(path.dirname(file), '..', '..') });
+    const text = from.read(BASE_SOURCE_FILES.vars);
     const vars = {};
     const re = /^#define\s+(VAR_\w+)\s+(0x[0-9a-fA-F]+|\d+)/gm;
     let m;
@@ -44,8 +52,9 @@ function loadVarConstants(file = VARS_HEADER) {
     return vars;
 }
 
-function varId(name, { file = VARS_HEADER } = {}) {
-    if (!varCache || varCache.file !== file) varCache = { file, vars: loadVarConstants(file) };
+function varId(name, { file = VARS_HEADER, sources = null } = {}) {
+    const key = sources || file;                   // one parse per header, whoever provided it
+    if (!varCache || varCache.key !== key) varCache = { key, vars: loadVarConstants(file, { sources }) };
     const id = varCache.vars[name];
     if (id === undefined) throw new Error(`${name} is not defined in ${path.basename(file)}`);
     return id;
@@ -53,7 +62,7 @@ function varId(name, { file = VARS_HEADER } = {}) {
 
 function resolveVar(opts) {
     if (typeof opts.varId === 'number') return opts.varId;
-    if (opts.var) return varId(opts.var);
+    if (opts.var) return varId(opts.var, { sources: opts.sources || null });
     throw new Error('findSetvarOperand needs { varId } or { var }');
 }
 

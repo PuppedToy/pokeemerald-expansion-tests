@@ -20,6 +20,7 @@
 
 const path = require('path');
 const { loadGameConstants } = require('./gameConstants');
+const { treeSources } = require('./sources');
 const {
     speciesLayout, moveLayout, itemLayout, verifyLayout, resolveEvolutionsOffset,
 } = require('./structLayout');
@@ -29,14 +30,23 @@ const REPO_ROOT = path.resolve(__dirname, '..', '..');
 // One context per Rom instance — see the header. WeakMap so a finished ROM is still collectable.
 const contexts = new WeakMap();
 
+// One tree provider per root, so its file cache — and its identity, which the constants cache below is
+// keyed on — survive across the ROMs of one bundle (T-249).
+const treeProviders = new Map();
+
+function treeSourcesFor(root) {
+    if (!treeProviders.has(root)) treeProviders.set(root, treeSources({ root }));
+    return treeProviders.get(root);
+}
+
 // The constant headers don't change between the ROMs of one bundle, so parse them once per process.
 let cachedConstants = null;
-let cachedConstantsRoot = null;
+let cachedConstantsKey = null;
 
-function gameConstantsFor(root) {
-    if (cachedConstants && cachedConstantsRoot === root) return cachedConstants;
-    cachedConstants = loadGameConstants({ root });
-    cachedConstantsRoot = root;
+function gameConstantsFor(root, sources) {
+    if (cachedConstants && cachedConstantsKey === sources) return cachedConstants;
+    cachedConstants = loadGameConstants({ root, sources });
+    cachedConstantsKey = sources;
     return cachedConstants;
 }
 
@@ -47,13 +57,18 @@ function gameConstantsFor(root) {
  * @param {object} [args.data]              the bundle's resolved artifacts (see make.js injectOneRom)
  * @param {Function} [args.log]
  * @param {string} [args.root]              repo root the base was built from (constant headers)
+ * @param {import('./sources').BaseSources} [args.baseSources]  the base's source text (T-249); defaults
+ *        to reading `root` off the disk, which is what Node does. A browser passes the baked artifact.
  * @param {boolean} [args.verify=true]      run the base anchors (only a test has reason to skip)
  */
-function buildInjectionContext({ rom, offsetMap, data = {}, log = () => {}, root = REPO_ROOT, verify = true }) {
+function buildInjectionContext({
+    rom, offsetMap, data = {}, log = () => {}, root = REPO_ROOT, baseSources = null, verify = true,
+}) {
     const built = contexts.get(rom);
     if (built) return built;                       // verified when this ROM was still the base
 
-    const constants = gameConstantsFor(root);
+    const sources = baseSources || treeSourcesFor(root);
+    const constants = gameConstantsFor(root, sources);
     if (verify) {
         if (rom.journal && rom.journal.length > 0) {
             throw new Error(
@@ -72,6 +87,8 @@ function buildInjectionContext({ rom, offsetMap, data = {}, log = () => {}, root
         data,
         log,
         root,
+        /** The base's own sources — every module reads its inputs through this, never the disk (T-249). */
+        baseSources: sources,
         layout: {
             species: speciesLayout({ offsetMap, constants }),
             moves: moveLayout({ offsetMap, constants, rom }),

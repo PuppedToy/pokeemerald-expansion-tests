@@ -14,8 +14,8 @@
  * are the same base sources the constant ids come from.
  */
 
-const fs = require('fs');
 const { ITEM_INFO } = require('../structLayout');
+const { BASE_SOURCE_FILES } = require('../sources');
 const itemPriceWriter = require('../../itemPriceWriter');
 
 const TAG = 'itemPrices';
@@ -62,7 +62,7 @@ function collectPriceChanges(baseSource, patchedSource) {
  */
 function injectItemPrices(ctx, { itemsSource = null, patchedSource = null, prices = undefined } = {}) {
     const { rom, constants, data, log } = ctx;
-    const source = itemsSource !== null ? itemsSource : fs.readFileSync(itemPriceWriter.file, 'utf8');
+    const source = itemsSource !== null ? itemsSource : ctx.baseSources.read(BASE_SOURCE_FILES.items);
     const config = prices !== undefined ? prices : (data.config || {}).prices;
     const patched = patchedSource !== null ? patchedSource : itemPriceWriter.patchPricesInContent(source, config);
 

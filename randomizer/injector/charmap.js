@@ -13,8 +13,8 @@
  * symbols (`SE_RG_SHOP = FF 00`), which are not characters and must not shadow one.
  */
 
-const fs = require('fs');
 const path = require('path');
+const { BASE_SOURCE_FILES, treeSources } = require('./sources');
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 
@@ -33,9 +33,17 @@ class Charmap {
     get size() { return this.chars.size; }
 }
 
-/** Parse `charmap.txt` + the EOS constant into a `Charmap`. */
-function loadCharmap({ root = REPO_ROOT } = {}) {
-    const text = fs.readFileSync(path.resolve(root, 'charmap.txt'), 'utf8');
+/**
+ * Parse `charmap.txt` + the EOS constant into a `Charmap`.
+ *
+ * @param {object} [opts]
+ * @param {string} [opts.root]
+ * @param {import('./sources').BaseSources} [opts.sources]  read both files from these instead of the
+ *        disk (T-249).
+ */
+function loadCharmap({ root = REPO_ROOT, sources = null } = {}) {
+    const from = sources || treeSources({ root });
+    const text = from.read(BASE_SOURCE_FILES.charmap);
     const chars = new Map();
     for (const line of text.split('\n')) {
         const match = line.replace(/@.*$/, '').match(CHAR_LINE);
@@ -46,7 +54,7 @@ function loadCharmap({ root = REPO_ROOT } = {}) {
     }
     if (chars.size === 0) throw new Error('injector/charmap: charmap.txt held no single-character mappings');
 
-    const characters = fs.readFileSync(path.resolve(root, 'include', 'constants', 'characters.h'), 'utf8');
+    const characters = from.read(BASE_SOURCE_FILES.characters);
     const eos = characters.match(EOS_DEFINE);
     if (!eos) throw new Error('injector/charmap: EOS is not defined in include/constants/characters.h');
 

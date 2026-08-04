@@ -94,7 +94,7 @@ function injectEvolutions(ctx, { speciesSources = null } = {}) {
 
     // target species id → level, for the two rules. A target whose literal name is absent from the
     // sources is dropped: the writer's regex would not have matched it either.
-    const sourceText = (speciesSources || loadSpeciesSources()).map(s => s.text).join('\n');
+    const sourceText = (speciesSources || loadSpeciesSources({ baseSources: ctx.baseSources })).map(s => s.text).join('\n');
     const idToName = new Map();               // ids read back from the ROM, named again for error messages
     const byId = (source, kind) => {
         const out = new Map();

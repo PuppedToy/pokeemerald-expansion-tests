@@ -29,9 +29,8 @@
  * +8, not the commented +4, because `aiFlags` is a u64) and that these sources built this ROM.
  */
 
-const fs = require('fs');
-const path = require('path');
 const { TRAINER, TRAINER_MON } = require('../structLayout');
+const { BASE_SOURCE_FILES } = require('../sources');
 const { parsePartyFile, encodeParty, encodeTrainerMon } = require('../partyFile');
 const { TRAINER_PARTY_CAPACITY } = require('../../layout');
 const { BANNED_SPECIES_FOR_PICKING } = require('../../modules/wildModule');
@@ -39,14 +38,11 @@ const { buildInjectionContext } = require('../context');
 const writer = require('../../writer');
 
 const TAG = 'trainerParties';
-const REPO_ROOT = path.resolve(__dirname, '..', '..', '..');
 
 const TABLES = [
-    { symbol: 'gTrainers', countConstant: 'TRAINERS_COUNT', source: 'trainersSource', file: 'trainers.party', partner: false },
-    { symbol: 'gBattlePartners', countConstant: 'PARTNER_COUNT', source: 'partnersSource', file: 'battle_partners.party', partner: true },
+    { symbol: 'gTrainers', countConstant: 'TRAINERS_COUNT', source: 'trainersSource', file: BASE_SOURCE_FILES.trainers, partner: false },
+    { symbol: 'gBattlePartners', countConstant: 'PARTNER_COUNT', source: 'partnersSource', file: BASE_SOURCE_FILES.battlePartners, partner: true },
 ];
-
-const readSource = (file) => fs.readFileSync(path.resolve(REPO_ROOT, 'src', 'data', file), 'utf8');
 
 /**
  * Where one trainer's `struct Trainer` sits. Both tables are `[DIFFICULTY_COUNT][COUNT]` and trainerproc
@@ -192,7 +188,7 @@ function injectTrainerParties(ctx, { trainersSource = null, partnersSource = nul
 
     const slots = new Map();
     for (const table of TABLES) {
-        const source = sources[table.source] ?? readSource(table.file);
+        const source = sources[table.source] ?? ctx.baseSources.read(table.file);
         for (const [id, slot] of verifyTable(ctx, table, source)) slots.set(id, { ...slot, table });
     }
 
@@ -231,8 +227,8 @@ function injectTrainerParties(ctx, { trainersSource = null, partnersSource = nul
  * @param {object} args  `{ rom, offsetMap, data, log }` as the registry calls it (injector/index.js)
  * @param {object} [args.sources]  `{ trainersSource, partnersSource }` instead of reading the tree
  */
-function applyTrainerParties({ rom, offsetMap, data = {}, log = () => {}, sources = {} }) {
-    const ctx = buildInjectionContext({ rom, offsetMap, data, log });
+function applyTrainerParties({ rom, offsetMap, data = {}, log = () => {}, sources = {}, baseSources = null }) {
+    const ctx = buildInjectionContext({ rom, offsetMap, data, log, baseSources });
     return injectTrainerParties(ctx, sources);
 }
 

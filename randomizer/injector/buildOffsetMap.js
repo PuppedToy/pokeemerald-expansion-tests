@@ -8,18 +8,21 @@
  * reusable `.map`→offset-map tool"). Run it on the build box right after building the base:
  *
  *   node randomizer/injector/buildOffsetMap.js --map=pokeemerald.map --sym=pokeemerald.sym \
- *        --rom=pokeemerald.gba --out=base-offsets.json
+ *        --rom=pokeemerald.gba --out=base-offsets.json --sources=base-sources.json
  *
  * It prints:
  *   - the ROM budget against the 32 MB ceiling (GATE-1, recomputed for this build);
  *   - per Phase-3 module, whether the base exports every symbol that module claims — the check that
  *     would have caught the T-234/T-237 trap (LTO folding a value and garbage-collecting its table)
  *     before a day of Phase-3 debugging;
- * and, with `--out`, writes the map as JSON so the injector can load it without re-parsing.
+ * and, with `--out`, writes the map as JSON so the injector can load it without re-parsing. `--sources`
+ * additionally bakes the base's own source text (T-249) — the inputs the injector derives its writes
+ * from, which a browser has no tree to read.
  */
 
 const fs = require('fs');
 const { loadOffsetMap, parseMapFile, parseSymFile } = require('./symbolMap');
+const { collectBaseSources } = require('./sources');
 const { INJECTION_MODULES, checkReadiness } = require('./index');
 
 const MB = 1024 * 1024;
@@ -125,6 +128,24 @@ function exportOffsetMap(offsetMap, outPath) {
     return outPath;
 }
 
+/**
+ * Bake the base's own source text next to the offset map (T-249).
+ *
+ * The injector derives its writes from these files at inject time, so a browser — which has no tree —
+ * needs them as data. They are a function of the base build, hence the `buildId` (the base ROM's sha256):
+ * one key invalidates the cached base and the cached inputs together.
+ *
+ * Not pretty-printed: this is ~6 MB of source text, and indentation would inflate what a browser
+ * downloads for no reader's benefit.
+ *
+ * @returns {{ outPath: string, paths: number, bytes: number }}
+ */
+function exportBaseSources({ root = undefined, outPath, buildId = null } = {}) {
+    const sources = collectBaseSources({ ...(root ? { root } : {}), buildId });
+    fs.writeFileSync(outPath, `${JSON.stringify(sources.toJSON())}\n`);
+    return { outPath, paths: sources.paths().length, bytes: sources.totalBytes };
+}
+
 function main(argv = process.argv.slice(2)) {
     const flag = (name) => {
         const hit = argv.find(a => a.startsWith(`--${name}=`));
@@ -134,9 +155,10 @@ function main(argv = process.argv.slice(2)) {
     const symPath = flag('sym');
     const outPath = flag('out');
     const romPath = flag('rom');
+    const sourcesPath = flag('sources');
 
     if (!mapPath) {
-        console.error('usage: node randomizer/injector/buildOffsetMap.js --map=pokeemerald.map [--sym=pokeemerald.sym] [--rom=pokeemerald.gba] [--out=base-offsets.json]');
+        console.error('usage: node randomizer/injector/buildOffsetMap.js --map=pokeemerald.map [--sym=pokeemerald.sym] [--rom=pokeemerald.gba] [--out=base-offsets.json] [--sources=base-sources.json]');
         process.exit(1);
     }
 
@@ -145,11 +167,19 @@ function main(argv = process.argv.slice(2)) {
 
     console.log(buildOffsetMapReport({ offsetMap, romPath }));
     if (outPath) console.log(`\nWrote ${exportOffsetMap(offsetMap, outPath)}`);
+    if (sourcesPath) {
+        // Keyed by the base's own sha256 when the ROM is at hand — the artifact and the base it was taken
+        // from must never be cached apart (T-249).
+        const buildId = romPath && fs.existsSync(romPath) ? require('./rom').Rom.load(romPath).sha256() : null;
+        const { paths, bytes } = exportBaseSources({ outPath: sourcesPath, buildId });
+        console.log(`Wrote ${sourcesPath}  ${paths} file(s), ${(bytes / (1024 * 1024)).toFixed(1)} MB of base sources` +
+            `${buildId ? `  (base ${buildId.slice(0, 12)}…)` : '  (no --rom: no build id)'}`);
+    }
 }
 
 if (require.main === module) main();
 
 module.exports = {
-    buildOffsetMapReport, exportOffsetMap, parseMapFile, parseSymFile, main,
+    buildOffsetMapReport, exportOffsetMap, exportBaseSources, parseMapFile, parseSymFile, main,
     foldedAccessors, INJECTABLE_SCALAR_ACCESSORS,
 };

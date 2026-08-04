@@ -19,9 +19,8 @@
  * which also catches an offset map that belongs to a different build.
  */
 
-const fs = require('fs');
 const { WILD_POKEMON } = require('../structLayout');
-const wildData = require('../../wild');
+const { BASE_SOURCE_FILES } = require('../sources');
 const writer = require('../../writer');
 
 const TAG = 'wildEncounters';
@@ -103,7 +102,7 @@ function resolveTable(ctx, baseLabel, tableType, baseSlots) {
  */
 function injectWildEncounters(ctx, { encountersJson = null } = {}) {
     const { rom, constants, data, log } = ctx;
-    const source = encountersJson ? JSON.stringify(encountersJson) : fs.readFileSync(wildData.file, 'utf8');
+    const source = encountersJson ? JSON.stringify(encountersJson) : ctx.baseSources.read(BASE_SOURCE_FILES.wildEncounters);
     const base = JSON.parse(source);
     const patched = patchedEncounters(source, data.wild);
     if (!patched) return { writes: 0, tables: 0 };
