@@ -70,6 +70,7 @@ node_modules/
 frontend/data/base-data.json
 frontend/js/randomizer.bundle.js
 frontend/js/bps.bundle.js
+frontend/js/injector.bundle.js
 # Minified docs viewer template (node build.js step 6 — T-219)
 frontend/template.min.html
 # Minified frontend build served in production (node build.js step 7 — T-220)

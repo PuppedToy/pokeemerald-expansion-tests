@@ -120,4 +120,41 @@ Acceptance criteria:
   Worth noting for [[T-250]]: loading that JSON map costs nothing, so the client artifact also sidesteps
   the 4.1 s `.map` parse — the same artifact would speed the server up.
 
+- **2026-08-04 — step 3: the injector bundles, and it produces the same ROM with no Node underneath it.**
+  `node build.js` now emits `frontend/js/injector.bundle.js` (935 KB) from
+  `frontend/js/injector-worker.cjs`, built with the config the randomizer worker already uses. `fs` was
+  never the hard part — the blockers were the two things Node hands the injector for free:
+
+  - **`Buffer`.** Used bare (`Buffer.alloc`, `Buffer.from`) by `rom.js` and every encoder, ~14 methods in
+    total. Hand-written shim rather than a polyfill dependency (the repo has exactly one devDependency),
+    pinned method-by-method against Node's Buffer in `browserShims.test.js`. The one that would have been
+    a silent ROM corruption: Node's `slice()` returns a **view**, `Uint8Array.prototype.slice` **copies** —
+    inheriting it would have thrown away writes the injector makes through slices. It is aliased to
+    `subarray`, and a test writes through both.
+  - **`crypto.createHash('sha256')`.** WebCrypto is async and `Rom.sha256()` is called synchronously
+    everywhere, so the shim is the algorithm (FIPS 180-4, ~40 lines), checked against Node's on the
+    padding edge cases (55/56/63/64/65 B) and on a megabyte.
+
+  Two traps worth recording:
+
+  1. **esbuild `inject` ignores CommonJS exports.** Injecting `buffer.cjs` bundled *fine* and then threw
+     `Buffer is not defined` at the first write: `inject` substitutes only names a module *exports*, and it
+     does not see them inside `module.exports = { … }`. Hence the two-line ESM wrapper
+     `shims/buffer-inject.mjs`.
+  2. **`randomizer/layout.js` reads its header at import time**, and five writers destructure the
+     capacities the moment they are imported (T-237's SSOT) — there is no seam to thread through an
+     `import`. So the `fs` shim stopped being a pure stub: the Worker registers the baked sources with it
+     before requiring the graph, and it serves those load-time reads out of **the same artifact**, matching
+     on the repo-relative tail of the shim-built path (the header joined the manifest: 53 files now). A path
+     the artifact does not carry still throws, and now says which file to add.
+
+  `injectorBrowserBundle.test.js` builds the bundle and runs it in a `vm` sandbox with **no Buffer, no
+  require, no process, no fs**, injecting the synthetic base: same `bytesWritten`, same sha256 as
+  `injectRom` in Node. Also proven on the real thing — the same bundle, same sandbox, the production base
+  and `debug/run-m2` gave `8c8d1c5f4e6d…` in **2.0 s**.
+
+  One more thing moved home on the way: `injectionDataFor` (which artifacts a ROM gets, under which seed)
+  was inside `make.js`. The browser needs the same answer and the seed decides values the writers
+  re-derive, so it is now `randomizer/injector/romData.js` and `make.js` calls it.
+
 ## Outcome

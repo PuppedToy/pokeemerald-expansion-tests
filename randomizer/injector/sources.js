@@ -77,6 +77,10 @@ const BASE_SOURCE_FILES = {
     characters: 'include/constants/characters.h',
     // the Group-D setvar toggles' var ids
     vars: 'include/constants/vars.h',
+    // the fixed table capacities (T-237). Not read by the injector itself but by `randomizer/layout.js`,
+    // which the writers it reuses import — and they read it at MODULE LOAD, before any seam exists, which
+    // is why the browser's `fs` shim serves it out of this same artifact (see frontend/js/shims/fs.cjs).
+    layout: 'include/constants/randomizer_layout.h',
     // gSpeciesInfo + the evolution arrays (T-239)
     speciesInfo: (gen) => `src/data/pokemon/species_info/gen_${gen}_families.h`,
     // learnsets (T-240)
@@ -183,7 +187,7 @@ function baseSourcePaths() {
     const F = BASE_SOURCE_FILES;
     const paths = [
         ...CONSTANT_HEADERS,
-        F.charmap, F.characters, F.vars,
+        F.charmap, F.characters, F.vars, F.layout,
         ...Array.from({ length: TOTAL_GENS }, (_, i) => F.speciesInfo(i + 1)),
         F.levelUpLearnsets, F.teachableLearnsets,
         F.trainers, F.battlePartners,

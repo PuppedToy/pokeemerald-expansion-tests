@@ -92,6 +92,9 @@ describe('the manifest', () => {
         expect(paths).toContain(BASE_SOURCE_FILES.charmap);
         expect(paths).toContain(BASE_SOURCE_FILES.characters);
         expect(paths).toContain(BASE_SOURCE_FILES.vars);
+        // Not the injector's own input: `randomizer/layout.js` reads it at import time, and in a browser
+        // that read is served from this artifact (T-249).
+        expect(paths).toContain(BASE_SOURCE_FILES.layout);
     });
 
     test('carries one map.json per mega-stone map (B-060) and the Group-D toggle scripts', () => {
@@ -117,6 +120,10 @@ describe('the relative literals name the same files the writers do (ADR-012)', (
     test('item prices and wild encounters', () => {
         expect(abs(BASE_SOURCE_FILES.items)).toBe(itemPriceWriter.file);
         expect(abs(BASE_SOURCE_FILES.wildEncounters)).toBe(wildData.file);
+    });
+
+    test('the layout header layout.js reads', () => {
+        expect(abs(BASE_SOURCE_FILES.layout)).toBe(require('../../layout').LAYOUT_HEADER);
     });
 });
 
