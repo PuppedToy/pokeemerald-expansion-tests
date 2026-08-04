@@ -149,3 +149,21 @@ test('init does not restore when there is no stored run and no active build', as
     assert.equal(recovered, false, 'nothing to restore → onRecover stays uncalled');
   } finally { env.restore(); }
 });
+
+// ── ETA copy (T-246) ─────────────────────────────────────────────────────────────────────────────
+// Injection put a ROM at ~17 s, so the whole visible range of a normal wait used to render as one flat
+// "Less than a minute remaining" that never moved. These pin the granularity, including the boundary that
+// decides seconds-vs-minutes — the bug this copy replaces was invisible precisely because it never changed.
+test('etaText quotes seconds for short waits and minutes only for long ones', async () => {
+  installDomEnv();
+  const { etaText } = await freshAccount();
+
+  assert.equal(etaText(null), 'Estimating…', 'no server estimate yet');
+  assert.equal(etaText(17), 'About 15 seconds remaining', 'a single injected ROM, in 5 s steps');
+  assert.equal(etaText(34), 'About 35 seconds remaining');
+  assert.equal(etaText(85), 'About 85 seconds remaining', 'still seconds just below the boundary');
+  assert.equal(etaText(90), 'About 2 min remaining', 'minutes take over at 90 s');
+  assert.equal(etaText(300), 'About 5 min remaining', 'a long queue is still quoted in minutes');
+  assert.equal(etaText(8), 'A few seconds remaining');
+  assert.equal(etaText(2), 'Finishing up…');
+});

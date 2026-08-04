@@ -20,12 +20,12 @@ function requireAdmin(users, adminEmails) {
   };
 }
 
-export function createBetaAdminRouter({ users, requests, betaInvites, mailer, adminEmails = [], jwtSecret, baseUrl, avgRomSecs, db }) {
+export function createBetaAdminRouter({ users, requests, betaInvites, mailer, adminEmails = [], jwtSecret, baseUrl, avgRomSecs, db, baseReady = true }) {
   const router = express.Router();
   const gate = [requireAuth(jwtSecret), requireAdmin(users, adminEmails)];
   const json = express.json({ limit: '256kb' });
 
-  router.get('/admin/beta/overview', ...gate, handleOverview({ users, requests, betaInvites, avgRomSecs }));
+  router.get('/admin/beta/overview', ...gate, handleOverview({ users, requests, betaInvites, avgRomSecs, baseReady }));
   router.get('/admin/beta/search', ...gate, handleSearch({ users, requests }));
   router.post('/admin/beta/invite', ...gate, json, handleInvite({ users, requests, betaInvites, mailer, baseUrl, avgRomSecs, db }));
   router.post('/admin/beta/accept', ...gate, json, handleAccept({ users, requests, betaInvites, mailer, baseUrl, avgRomSecs, db }));

@@ -103,3 +103,7 @@ deploy/.env.local
 # Task investigation assets (large bundle.json inputs, etc.) — kept locally, not versioned
 tasks/assets/
 .gate3-cache/
+
+# The prebuilt base ROM + its symbol files and precomputed offset map (T-244/T-246). Build artifacts, not
+# source: ~42 MB, box-managed by deploy/build-base.sh, never committed and never rsynced by update.sh.
+/base/

@@ -44,9 +44,10 @@ git push origin master --follow-tags
 
 One command does everything, and **aborts before touching the box if anything is red**:
 
-1. **Preflight** — runs the randomizer + backend test suites and `check-tracker`. Any failure → abort.
+1. **Preflight** — runs the randomizer + backend + frontend test suites and `check-tracker`. Any failure →
+   abort. It also checks that the box has a usable **base ROM** and warns if not (see below).
 2. **rsync** your working tree to the box (mirrors exactly what you have, including the gitignored
-   runtime assets), **preserving** the box's `.git`, `backend/data` (SQLite), `roms/` and the warm
+   runtime assets), **preserving** the box's `.git`, `backend/data` (SQLite), `roms/`, `base/` and the warm
    `build/` cache.
 3. **Recreate** the `app` container (picks up the new bind-mounted code) and **health-check** `/api/me`.
 
@@ -64,6 +65,21 @@ DEPLOY_USER=root                 # Hetzner default
 DEPLOY_PATH=/opt/emerald
 DEPLOY_KEY=~/.ssh/emerald_box
 ```
+
+### The base ROM — a second, much rarer step
+
+Since T-244 every delivered artifact is **injected** into `base/pokeemerald.{gba,map,sym}`. Those are
+gitignored build artifacts that `update.sh` deliberately does **not** carry, so they are installed
+separately and then survive every deploy:
+
+```bash
+deploy/build-base.sh          # build on the box + install + restart (~4 min warm, ~20 min cold)
+```
+
+Run it on the **first** bring-up and after **any** change to the C sources, `include/` or `data/maps/` — not
+on a normal code deploy. Full rules (including the all-three-from-one-build invariant) in
+[base-rom-provisioning.md](base-rom-provisioning.md). If the base is missing, the app starts but holds the
+build worker: requests queue instead of failing, the boot log says so, and the admin panel shows a warning.
 
 ## 5. Verify
 

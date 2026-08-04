@@ -42,6 +42,7 @@ export function overviewHtml(data) {
       <span class="admin-stat"><strong>${c.heldRoms || 0}</strong> prepared runs</span>
       <span class="admin-stat"><strong>${c.accepted || 0}</strong> accepted</span>
       <span class="admin-stat">queue: <strong>${q.building || 0}</strong> building · <strong>${q.queued || 0}</strong> queued · ETA ${fmtEta(q.etaSecs)}</span>
+      ${q.baseReady === false ? '<span class="admin-stat admin-stat-alert">⚠ no base ROM on the box — builds are held</span>' : ''}
       <button class="btn btn-ghost btn-sm" id="admin-refresh" type="button">Refresh</button>
     </div>
     <div class="admin-invite">

@@ -1,12 +1,12 @@
 ---
 id: T-246
 title: "Base+injection Phase 5 — frontend/delivery wiring + user acceptance"
-status: proposed
+status: in-progress
 type: feature
 created: 2026-07-27
-updated: 2026-07-27
+updated: 2026-08-04
 target-version: 0.7.0
-links: [T-229, T-244, docs/adr/ADR-013-bps-patch-delivery-client-side.md, docs/base-plus-injection-strategy.md]
+links: [T-229, T-244, T-245, T-249, T-250, docs/adr/ADR-013-bps-patch-delivery-client-side.md, docs/base-rom-provisioning.md, docs/client-side-injector-evaluation.md, docs/base-plus-injection-strategy.md]
 blocked-by: [T-244]
 ---
 
@@ -24,11 +24,69 @@ progress/ETA/download flow. Evaluate a client-side injector for offline. End wit
 testing across representative configs.
 
 Acceptance criteria:
-- [ ] Server-side injection wired end-to-end; frontend flow updated (progress/ETA/download).
-- [ ] Client-side/offline injector evaluated (spike or follow-up task).
-- [ ] Owner UAT across representative configs; sign-off.
+- [x] Server-side injection wired end-to-end; frontend flow updated (progress/ETA/download).
+- [x] Client-side/offline injector evaluated (spike or follow-up task).
+- [ ] Owner UAT across representative configs; sign-off. **← the only thing left; needs the deploy**
 
 ## Progress log
 - **2026-07-27** — Created (Phase 5).
+
+- **2026-08-04 — the blocker nobody had written down: the box has no base ROM.** Checked before writing any
+  code: `/app/base` and `/opt/emerald/base` **do not exist**, and no `ROM_BUILD_MODE` is set in the
+  container. Since [[T-244]] made injection the default, deploying that commit as-is would have taken
+  production from "slow builds" to **no builds at all**. Two facts explain why it was never provisioned:
+  the artifacts are gitignored (`*.gba`, `*.map`, `*.sym`), and the only base that exists on the box is the
+  one inside the Phase-3 gate harness (`/opt/t239-gate3/base/`, built 2026-08-02), which production cannot
+  see. So provisioning *is* this task's first deliverable, not a footnote.
+
+  - **`deploy/build-base.sh`** — builds the base in the app container on the box (clean tree → `make -j` +
+    `make syms` → install all three artifacts from *that* build → `buildOffsetMap.js` for the GATE-1 budget
+    and the per-module readiness table → restart). `--fetch` copies them down for local gates; `--dry-run`
+    prints. Rules and the same-build invariant: [base-rom-provisioning.md](../docs/base-rom-provisioning.md).
+  - **`update.sh` now excludes `/base/`** — and this is the subtle one: the rsync runs with `--delete` and
+    deliberately mirrors gitignored runtime assets, so *without* the exclude, the first deploy from any
+    machine lacking a local `base/` would **delete the box's base** and break every build. The base is
+    box-managed state, like `backend/data/` and `roms/`. `update.sh` also gained a preflight that reports
+    whether the box's base is usable (warn, not abort — a docs-only deploy to a base-less box is fine).
+  - **A boot check** (`backend/build/baseReadiness.js`, 6 tests): with real builds on, a missing or
+    **zero-byte** (interrupted copy) artifact is named with its resolved path, the fix command is printed,
+    and **the worker is not started** — so requests wait in the queue instead of marching to `failed` one
+    at a time. Surfaced in the admin panel too (`⚠ no base ROM on the box — builds are held`), because
+    "nothing is building" must be answerable without reading container logs.
+  - `/base/` added to `.gitignore`: `*.gba`/`*.map`/`*.sym` already covered three of the files, but
+    `base/base-offsets.json` was committable.
+
+- **2026-08-04 — end-to-end, for real.** A throwaway harness drove a request through the **actual**
+  scheduler + `buildRom` adapter with `fake:false` against the real base: `queued` → worker → spawn
+  `make.js … --inject` → `ready (1/1)` in **8.6 s**, one run recorded, artifact `rom-0.bps` **31.8 MB**.
+  So the wiring T-244 changed is exercised by the queue, not just by a CLI invocation. Also confirmed the
+  box already has `pokeemerald-vanilla.gba` (16 MB), which BPS emission needs — otherwise every artifact
+  would have silently become a full ROM.
+
+- **2026-08-04 — frontend.** `etaText` was calibrated for the compile path: minutes, with everything under
+  60 s collapsing into one *"Less than a minute remaining"* that never moved — which is now the entire
+  visible range of a normal wait. It quotes seconds in 5 s steps below 90 s (`17 s → "About 15 seconds
+  remaining"`), minutes above. Exported + 8 assertions pinning the boundary. Also removed a stale
+  "slow/multi-ROM" comment left by [[T-245]]'s queue collapse. The state machinery needed **no** change:
+  `categoryOf` never enumerated `queued_fast`/`queued_slow`, so the new single `queued` state renders as
+  "queued" already.
+
+- **2026-08-04 — client-side injector: evaluated, follow-up opened as [[T-249]]** (owner's call: evaluate +
+  follow-up, not a spike inside this task). Full analysis in
+  [client-side-injector-evaluation.md](../docs/client-side-injector-evaluation.md). Verdict: feasible and
+  closer than it looks — the randomizer *already* runs in the browser and ADR-013 already ships a BPS
+  patcher plus the user's vanilla ROM in IndexedDB, so only the **sink** is server-side. The base need never
+  be shipped (`base = vanilla + a static base.bps`). The real work is that 14 injector files `readFileSync`
+  ~5.8 MB of the base's own sources at inject time *by design*, so those inputs must be baked at
+  base-build time and passed through the existing `sources` seam — a refactor, not a flag.
+
+- **2026-08-04 — found while measuring, registered not fixed: [[T-250]].** Parsing
+  `base/pokeemerald.map` takes **4.1 s** of a ~7.7 s local injection (48,406 symbols) while the `.sym`
+  parser does 87,908 symbols in **74 ms** — 56× faster for 1.8× the symbols. Cause: `parseMapFile`
+  re-`slice().sort()`s each section's whole symbol list, and `findIndex`es itself in it, **once per
+  symbol** — O(k² log k). On the box that is plausibly ~8 s of the measured 16.5 s. Deliberately not fixed
+  in this batch: it is an injector change needing its own byte-identity proof, and T-245's ETA constant is
+  correct for the code as shipped. It would cut the per-ROM time roughly in half, and the artifact it wants
+  (`base-offsets.json`) is the same one T-249 needs.
 
 ## Outcome

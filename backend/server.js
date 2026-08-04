@@ -28,6 +28,7 @@ import { createPresetsRouter } from './presets/routes.js';
 import { createMailer, brevoTransport } from './email/index.js';
 import { createStorage } from './build/storage.js';
 import { createBuildRom, killActiveBuild } from './build/buildRom.js';
+import { checkBaseReadiness, baseReadinessMessage } from './build/baseReadiness.js';
 import { createWorker } from './queue/scheduler.js';
 import { runOnStartup } from './lifecycle/recovery.js';
 import { startSweeper } from './lifecycle/sweeper.js';
@@ -92,8 +93,19 @@ if (!BETA) {
   if (held.length) console.log(`  beta: off → flushed ${held.length} held request(s) into the queue`);
 }
 
+// T-246 — a real build injects into base/pokeemerald.{gba,map,sym}, which are gitignored artifacts a
+// deploy does not carry. If they are absent, starting the worker would walk the queue and fail every
+// request; holding it keeps those requests queued until the base is installed and the app restarted.
+const baseReadiness = FAKE_BUILD
+  ? { ready: true, missing: [] }
+  : checkBaseReadiness({ repoRoot: path.join(__dirname, '..') });
+
 const worker = createWorker({ requests, runs, db, buildRom, mailer, users, baseUrl: BASE_URL });
-worker.start();
+if (baseReadiness.ready) {
+  worker.start();
+} else {
+  console.error(`\n[base] ${baseReadinessMessage(baseReadiness)}\n`);
+}
 startSweeper({ requests, diagnostics, decisionLogs, removeFile: storage.removeFile });
 
 // ── HTTP ────────────────────────────────────────────────────────────────────────
@@ -109,6 +121,8 @@ app.use('/api', createConfigRouter({ beta: BETA }));
 app.use('/api', createBetaAdminRouter({
   users, requests, betaInvites, mailer, adminEmails: ADMIN_EMAILS,
   jwtSecret: JWT_SECRET, baseUrl: BASE_URL, db,
+  // T-246 — so "nothing is building" is answerable from the admin panel, not only from docker logs.
+  baseReady: baseReadiness.ready,
 }));
 app.use('/api', createFeedbackRouter({ feedback, jwtSecret: JWT_SECRET }));
 app.use('/api', createDiagnosticsRouter({ diagnostics, jwtSecret: JWT_SECRET }));
@@ -137,6 +151,7 @@ app.use(express.static(FRONTEND_DIR));
 
 app.listen(PORT, () => {
   console.log(`Pokémon Emerald Cut backend → ${BASE_URL}`);
-  console.log(`  FAKE_BUILD=${FAKE_BUILD ? 'on (placeholder ROMs)' : 'off (real make)'}  data=${DATA_DIR}`);
+  console.log(`  FAKE_BUILD=${FAKE_BUILD ? 'on (placeholder ROMs)' : 'off (real build)'}  data=${DATA_DIR}`);
+  if (!FAKE_BUILD) console.log(`  build: injection${baseReadiness.ready ? '' : ' — BASE MISSING, worker held'}`);
   if (!process.env.BREVO_API_KEY) console.log('  email: dev console transport (set BREVO_API_KEY for real sends)');
 });
