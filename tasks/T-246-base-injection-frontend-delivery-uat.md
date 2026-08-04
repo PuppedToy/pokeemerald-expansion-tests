@@ -141,6 +141,21 @@ Acceptance criteria:
   diagnosing I moved the base aside so the worker held (a held queue drains; a failed request does not).
   Verified the DB had no waiting user requests at the time.
 
+- **2026-08-04 — base provisioned, and it landed on the gated bytes.** Third attempt (tidy → single-link
+  make → install → smoke inject) passed: `✓ injection works against this base`, app restarted with
+  `build: injection` and the worker running, site 200, `/api/me` 401.
+
+  The base's sha256 is **`af0dff6c92ef48c0863c38dc67204ac180c0cea1089a177aa600c6c58ac93084`** — byte-identical
+  to `baseRomSha256` in `backend/build/golden-corpus/manifest.json`, i.e. **the exact base T-243's 12/12
+  by-symbol gate and T-248's INV-LAYOUT measurement were run against**. A clean build from master on the box
+  reproduced the gated base bit for bit, which is [[T-231]]'s determinism holding across a different machine
+  and a different day, and it means Phase 3's verification applies to what is now in production.
+
+  Worth recording for the future: the base I had been testing against **locally** all day was
+  `c144386ff4f3…` — the older Phase-3 harness base from `/opt/t239-gate3` — which is why its symbol
+  addresses differed from the box's (`gSpeciesInfo` at 0x66c288 vs 0x66c2a8). My local `base/` has been
+  replaced with production's, so a local run now exercises the same bytes users get.
+
 - **2026-08-04 — found while measuring, registered not fixed: [[T-250]].** Parsing
   `base/pokeemerald.map` takes **4.1 s** of a ~7.7 s local injection (48,406 symbols) while the `.sym`
   parser does 87,908 symbols in **74 ms** — 56× faster for 1.8× the symbols. Cause: `parseMapFile`
