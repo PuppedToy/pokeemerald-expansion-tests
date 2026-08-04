@@ -1,24 +1,23 @@
 /**
- * ETA model (T-025, ADR-005). Best-effort: ETA = (ROMs ranked ahead + own remaining)
- * × avg seconds/ROM. avgRomSecs is seeded (~15s) and calibrated on the instance (T-019).
- * A slow request's ETA is intentionally non-monotonic (incoming fast requests push it back).
+ * ETA model (T-025, ADR-005; re-derived in T-245).
+ *
+ * ETA = (ROMs waiting ahead of this request + its own remaining) × avgRomSecs. With one FIFO lane
+ * (T-245) "ahead" is simply "queued earlier", so the ETA is monotonic again — ADR-005's deliberately
+ * non-monotonic ETA existed because a later small request could preempt an earlier big one, which no
+ * longer happens.
  */
 
-// A real ROM build is ~4–5 min on the box (T-019 measured ~277 s); 270 s makes the ETA + progress
-// bar meaningful out of the box. Override per-instance with AVG_ROM_SECS once calibrated.
-const DEFAULT_AVG = Number(process.env.AVG_ROM_SECS) || 270;
-const QUEUE_STATES = ['queued_fast', 'queued_slow', 'building', 'paused'];
+// Measured on the production box (2 vCPU Hetzner, 2026-08-03, T-245): three corpus bundles injected in an
+// ephemeral container — baseline 16.8 s, nicknames-on 16.9 s, nuzlocke-3 48.9 s for 3 ROMs (16.3 s/ROM).
+// Injection cost barely varies with the config (it writes the same tables either way), so a constant is a
+// good model — unlike the compile path it replaced, whose 270 s default swung between ~55 s warm and
+// ~230 s cold. 17 s is the honest default; AVG_ROM_SECS still overrides per instance.
+const DEFAULT_AVG = Number(process.env.AVG_ROM_SECS) || 17;
+// `building` counts: its remaining ROMs are still ahead of everyone else. The legacy tier states are here
+// so a request queued before the T-245 deploy is still counted while recovery has not yet rewritten it.
+const QUEUE_STATES = ['queued', 'building', 'queued_fast', 'queued_slow', 'paused'];
 
 const remaining = (r) => Math.max(0, r.roms_total - r.roms_done);
-
-function ranksAhead(r, target) {
-  if (r.state === 'building') return true;            // currently running
-  const rFast = r.queue_class === 'fast';
-  if (target.queue_class === 'fast') {
-    return rFast && r.created_at < target.created_at; // only earlier fasts beat a fast
-  }
-  return rFast || r.created_at < target.created_at;   // any fast, or an earlier slow, beats a slow
-}
 
 /** ROMs ranked ahead of this request in the queue (the currently-building one counts). */
 export function romsAhead(requests, id) {
@@ -26,7 +25,9 @@ export function romsAhead(requests, id) {
   if (!target) return 0;
   let ahead = 0;
   for (const r of requests.findByStates(QUEUE_STATES)) {
-    if (r.id !== id && ranksAhead(r, target)) ahead += remaining(r);
+    if (r.id === id) continue;
+    // FIFO: the currently-building request is ahead by definition; everyone else by arrival order.
+    if (r.state === 'building' || r.created_at < target.created_at) ahead += remaining(r);
   }
   return ahead;
 }

@@ -33,7 +33,7 @@ Inspected read-only via `root@pokemon-emerald-cut.com` (key `~/.ssh/emerald_box`
 | Where builds run | **Inside the `deploy-app-1` container that also serves the web app** (repo bind-mounted at `/app`; `build/`, `.git`, `backend/data` persist on the host across deploys) | ADR-002 (Docker/Compose/Caddy) ✓ matches |
 | Toolchain | `arm-none-eabi-gcc 12.2`, **no ccache** | — |
 | Built ROM | **32 MB** (vanilla is 16 MB) | — |
-| Per-ROM ETA | `AVG_ROM_SECS=180` in the container env | eta.js default 270 (T-019 "~277 s") |
+| Per-ROM ETA | `AVG_ROM_SECS=180` in the container env — **stale, must be unset or set to ~17** (T-245) | eta.js default **17 s**, the injection cost measured on the box (was 270 for the compile path) |
 
 **Docs to reconcile** (see [T-228](../tasks/T-228-analysis-rom-build-time-optimization.md)): `deploy/.env.local`
 (OCI → Hetzner), `docs/deploy-oracle.md` (Oracle-primary framing), ADR-001 (CX43 vs the actual small box).

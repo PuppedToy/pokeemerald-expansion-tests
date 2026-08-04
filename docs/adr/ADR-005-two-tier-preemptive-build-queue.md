@@ -1,8 +1,13 @@
 # ADR-005: A two-tier (fast/slow) preemptive serial queue schedules builds, preempting at ROM granularity
 
-- **Status:** accepted
+- **Status:** superseded by [ADR-024](ADR-024-single-fifo-build-queue.md)
 - **Date:** 2026-06-21
 - **Task:** T-018
+
+> **Superseded 2026-08-03 (T-245).** This ADR's premise is the per-ROM cost of the compile path (minutes).
+> Injection (T-244) put it at ~16.5 s measured on the box, so the two tiers, ROM-boundary preemption and
+> aging arbitrate a ~90 s wait instead of a ~27 min one. Retired in favour of one FIFO lane. The reasoning
+> below stays valid *for its own premise* — if per-ROM cost ever returns to minutes, start here again.
 
 ## Context
 

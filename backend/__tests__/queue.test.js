@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { openDatabase } from '../db/index.js';
 import { createRequestsRepo } from '../db/requests.js';
 import { createRunsRepo } from '../db/runs.js';
-import { classify, selectNext, createWorker, FAST_MAX_ROMS } from '../queue/scheduler.js';
+import { selectNext, createWorker, LEGACY_QUEUED_STATES } from '../queue/scheduler.js';
 
 function recordingBuild() {
   const calls = [];
@@ -21,7 +21,7 @@ function recordingBuild() {
   };
 }
 
-function setup({ agingMs = 1e9, now = () => 100 } = {}) {
+function setup({ now = () => 100 } = {}) {
   const db = openDatabase(':memory:');
   // several users: one active request per user, so concurrent requests need distinct users
   for (const id of [1, 2, 3, 4]) {
@@ -33,33 +33,50 @@ function setup({ agingMs = 1e9, now = () => 100 } = {}) {
   const requests = createRequestsRepo(db);
   const runs = createRunsRepo(db);
   const rec = recordingBuild();
-  const ctx = { db, requests, runs, buildRom: rec.build, agingMs, now };
+  const ctx = { db, requests, runs, buildRom: rec.build, now };
   return { db, requests, runs, rec, ctx };
 }
 
 const mk = (requests, over) => requests.create({
-  id: over.id, userId: over.userId, queueClass: over.queueClass, romsTotal: over.romsTotal,
+  id: over.id, userId: over.userId, romsTotal: over.romsTotal,
   bundlePath: `/b/${over.id}`, seed: '1', params: {}, now: over.now ?? 1,
 });
 
-test('classify splits fast vs slow by ROM count', () => {
-  assert.equal(classify(1), 'fast');
-  assert.equal(classify(2), 'fast');
-  assert.equal(classify(3), 'slow');
+// T-245 — one FIFO lane. `classify`/`FAST_MAX_ROMS` are gone with the tiers: at ~16.5 s/ROM the longest
+// a small run can wait behind the biggest one is ~100 s, which is not worth a preemption policy.
+test('every request enters the single queued lane, whatever its ROM count', () => {
+  const { requests } = setup();
+  mk(requests, { id: 'one', userId: 1, romsTotal: 1, now: 1 });
+  mk(requests, { id: 'six', userId: 2, romsTotal: 6, now: 2 });
+  assert.equal(requests.get('one').state, 'queued');
+  assert.equal(requests.get('six').state, 'queued', 'a 6-ROM run is not sorted into a slower lane');
 });
 
-// T-172 — the fast-queue limit is exported so the frontend can mirror it (drift-guarded there) to warn
-// the user before they queue a slow build. It must stay the exact cut-off classify() uses.
-test('FAST_MAX_ROMS is exported and is the classify cut-off', () => {
-  assert.equal(FAST_MAX_ROMS, 2);
-  assert.equal(classify(FAST_MAX_ROMS), 'fast');
-  assert.equal(classify(FAST_MAX_ROMS + 1), 'slow');
+test('selectNext is oldest-first, regardless of size (FIFO)', () => {
+  const { requests } = setup();
+  mk(requests, { id: 'big-first', userId: 1, romsTotal: 6, now: 1 });
+  mk(requests, { id: 'small-later', userId: 2, romsTotal: 1, now: 2 });
+  assert.equal(selectNext(requests, { now: 100 }), 'big-first', 'no preemption: arrival order wins');
+});
+
+// The deploy transition: rows queued by the two-tier version must still be selectable, or a request in
+// `queued_fast`/`queued_slow`/`paused` at deploy time would sit in the DB forever, invisible to the worker.
+test('legacy tier states are still selectable so a deploy strands nothing', () => {
+  const { db, requests } = setup();
+  assert.deepEqual(LEGACY_QUEUED_STATES, ['queued_fast', 'queued_slow', 'paused']);
+  for (const [i, state] of LEGACY_QUEUED_STATES.entries()) {
+    mk(requests, { id: `legacy-${i}`, userId: i + 1, romsTotal: 3, now: i + 1 });
+    // Written straight to the row: these states can no longer be *reached* through a legal transition,
+    // which is the point — this is what a request queued by the previous version looks like after a deploy.
+    db.prepare('UPDATE requests SET state = ? WHERE id = ?').run(state, `legacy-${i}`);
+  }
+  assert.equal(selectNext(requests, { now: 100 }), 'legacy-0', 'oldest legacy row is picked up');
 });
 
 test('a request cancelled mid-build is dropped cleanly; the worker keeps going (T-035)', async () => {
   const { db, requests, runs } = setup();
-  mk(requests, { id: 'c', userId: 1, queueClass: 'fast', romsTotal: 1, now: 1 });
-  mk(requests, { id: 'next', userId: 2, queueClass: 'fast', romsTotal: 1, now: 2 });
+  mk(requests, { id: 'c', userId: 1, romsTotal: 1, now: 1 });
+  mk(requests, { id: 'next', userId: 2, romsTotal: 1, now: 2 });
   // buildRom cancels 'c' WHILE it is building (exactly what POST /api/cancel does mid-build)
   const ctx = {
     db, requests, runs, agingMs: 1e9, now: () => 100,
@@ -76,53 +93,42 @@ test('a request cancelled mid-build is dropped cleanly; the worker keeps going (
   assert.equal(requests.get('next').state, 'ready');
 });
 
-test('the fast queue is served before a not-yet-started slow', async () => {
+test('a multi-ROM run keeps the head of the queue until it is done (no preemption)', async () => {
   const { requests, rec, ctx } = setup();
-  mk(requests, { id: 'slow', userId: 1, queueClass: 'slow', romsTotal: 3, now: 1 });
-  mk(requests, { id: 'fast', userId: 2, queueClass: 'fast', romsTotal: 1, now: 2 });
+  mk(requests, { id: 'big', userId: 1, romsTotal: 3, now: 1 });
   const worker = createWorker(ctx);
 
-  await worker.runOnce(); // first unit
-  assert.equal(rec.calls[0], 'fast:0', 'fast ROM is built before any slow ROM');
-  assert.equal(requests.get('fast').state, 'ready');
+  await worker.runOnce();                              // big ROM0 -> back to `queued`
+  assert.equal(requests.get('big').state, 'queued');
+  assert.equal(requests.get('big').roms_done, 1);
+
+  mk(requests, { id: 'small', userId: 2, romsTotal: 1, now: 5 });   // arrives later
+  await worker.runOnce();
+  assert.equal(rec.calls[rec.calls.length - 1], 'big:1', 'the earlier request is not preempted');
+
+  await worker.drain();
+  assert.equal(requests.get('big').state, 'ready');
+  assert.equal(requests.get('small').state, 'ready');
+  // every ROM built exactly once, in order, and the later arrival ran after the earlier run finished
+  assert.deepEqual(rec.calls, ['big:0', 'big:1', 'big:2', 'small:0']);
 });
 
-test('a fast request preempts a started slow at the ROM boundary; slow resumes with no lost ROMs', async () => {
+// Retiring aging is only safe because nothing can jump the queue any more: FIFO cannot starve a request.
+test('a request cannot be overtaken, so nothing needs aging to escape starvation', async () => {
   const { requests, rec, ctx } = setup();
-  mk(requests, { id: 'slow', userId: 1, queueClass: 'slow', romsTotal: 3, now: 1 });
+  mk(requests, { id: 'first', userId: 1, romsTotal: 2, now: 1 });
+  for (const [id, user] of [['later1', 2], ['later2', 3], ['later3', 4]]) {
+    mk(requests, { id, userId: user, romsTotal: 1, now: 10 });
+  }
   const worker = createWorker(ctx);
-
-  await worker.runOnce();                       // slow ROM0 -> paused (1/3)
-  assert.equal(requests.get('slow').state, 'paused');
-  assert.equal(requests.get('slow').roms_done, 1);
-
-  mk(requests, { id: 'fast', userId: 2, queueClass: 'fast', romsTotal: 1, now: 5 });
-  await worker.runOnce();                        // fast jumps the slow
-  assert.equal(rec.calls[rec.calls.length - 1], 'fast:0');
-  assert.equal(requests.get('slow').roms_done, 1, 'slow did not advance while fast ran');
-
-  await worker.drain();                          // finish everything
-  assert.equal(requests.get('slow').state, 'ready');
-  // each slow ROM built exactly once, in order
-  assert.deepEqual(rec.calls.filter((c) => c.startsWith('slow')), ['slow:0', 'slow:1', 'slow:2']);
-});
-
-test('aging lets a starved slow jump the fast queue', () => {
-  const { requests } = setup();
-  // a started slow, paused long ago
-  mk(requests, { id: 'slow', userId: 1, queueClass: 'slow', romsTotal: 5, now: 1 });
-  requests.setState('slow', 'building', 1);
-  requests.setState('slow', 'paused', 1);       // updated_at = 1
-  mk(requests, { id: 'fast', userId: 2, queueClass: 'fast', romsTotal: 1, now: 2 });
-
-  // now is far past the aging bound relative to the paused slow
-  const pick = selectNext(requests, { now: 1_000_000, agingMs: 1000 });
-  assert.equal(pick, 'slow', 'aged slow is chosen over the waiting fast');
+  await worker.drain();
+  assert.equal(rec.calls[0], 'first:0');
+  assert.equal(rec.calls[1], 'first:1', 'the oldest request finishes before any newcomer starts');
 });
 
 test('draining a job marks it ready and records exactly one run', async () => {
   const { requests, runs, ctx } = setup();
-  mk(requests, { id: 'r1', userId: 1, queueClass: 'fast', romsTotal: 2, now: 1 });
+  mk(requests, { id: 'r1', userId: 1, romsTotal: 2, now: 1 });
   const worker = createWorker(ctx);
 
   await worker.drain();
@@ -132,8 +138,8 @@ test('draining a job marks it ready and records exactly one run', async () => {
 
 test('builds run strictly one at a time (serial invariant)', async () => {
   const { requests, rec, ctx } = setup();
-  mk(requests, { id: 'a', userId: 1, queueClass: 'slow', romsTotal: 3, now: 1 });
-  mk(requests, { id: 'b', userId: 2, queueClass: 'fast', romsTotal: 2, now: 2 });
+  mk(requests, { id: 'a', userId: 1, romsTotal: 3, now: 1 });
+  mk(requests, { id: 'b', userId: 2, romsTotal: 2, now: 2 });
   const worker = createWorker(ctx);
 
   await worker.drain();
@@ -145,7 +151,7 @@ test('builds run strictly one at a time (serial invariant)', async () => {
 // and startup recovery re-queued the still-`building` request, crash-looping the site (502).
 test('a failing build marks the request failed and does not crash the worker (B-008)', async () => {
   const { requests, ctx } = setup();
-  mk(requests, { id: 'boom', userId: 1, queueClass: 'fast', romsTotal: 1, now: 1 });
+  mk(requests, { id: 'boom', userId: 1, romsTotal: 1, now: 1 });
   const worker = createWorker({ ...ctx, buildRom: async () => { throw new Error('make exploded'); } });
 
   await assert.doesNotReject(() => worker.runOnce(), 'a build failure must not reject out of the worker');
@@ -155,8 +161,8 @@ test('a failing build marks the request failed and does not crash the worker (B-
 
 test('the worker keeps serving other jobs after one build fails (B-008)', async () => {
   const { requests, ctx } = setup();
-  mk(requests, { id: 'boom', userId: 1, queueClass: 'fast', romsTotal: 1, now: 1 });
-  mk(requests, { id: 'ok',   userId: 2, queueClass: 'fast', romsTotal: 1, now: 2 });
+  mk(requests, { id: 'boom', userId: 1, romsTotal: 1, now: 1 });
+  mk(requests, { id: 'ok',   userId: 2, romsTotal: 1, now: 2 });
   const worker = createWorker({
     ...ctx,
     buildRom: async (id) => { if (id === 'boom') throw new Error('boom'); },

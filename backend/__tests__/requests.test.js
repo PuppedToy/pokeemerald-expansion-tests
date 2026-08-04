@@ -17,7 +17,7 @@ function setup() {
 }
 
 const req = (over = {}) => ({
-  id: 'r1', userId: 1, queueClass: 'fast', romsTotal: 1,
+  id: 'r1', userId: 1, romsTotal: 1,
   bundlePath: '/tmp/r1.json', seed: '42', params: { difficulty: 'fair' }, now: 1000, ...over,
 });
 
@@ -47,7 +47,7 @@ test('the partial unique index is the atomic backstop', () => {
   const { db } = setup();
   const cols = `(id,user_id,state,queue_class,roms_total,roms_done,bundle_path,output_path,email_on_ready,seed,params_json,created_at,started_at,ready_at,updated_at)`;
   const ins = db.prepare(`INSERT INTO requests ${cols} VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`);
-  ins.run('x1', 1, 'queued_fast', 'fast', 1, 0, '/b', null, 0, '1', '{}', 1, null, null, 1);
+  ins.run('x1', 1, 'queued', 'fast', 1, 0, '/b', null, 0, '1', '{}', 1, null, null, 1);
   assert.throws(
     () => ins.run('x2', 1, 'building', 'fast', 1, 0, '/b', null, 0, '1', '{}', 1, null, null, 1),
     /UNIQUE|constraint/i

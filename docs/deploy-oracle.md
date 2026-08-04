@@ -90,7 +90,9 @@ set **`BREVO_API_KEY`** in `deploy/.env`; re-run to build deps and start the sta
   Validate everything over real HTTPS first. Until `BREVO_API_KEY` is set, verification links print in
   the container logs (`docker compose -f deploy/docker-compose.yml logs -f`).
 - **C2 — real build:** once the per-ROM `make.js` adapter (T-019 step 1) is in, remove `FAKE_BUILD` from
-  `deploy/.env`, `deploy/update.sh`, run one build, and record the time into `AVG_ROM_SECS` (benchmark).
+  `deploy/.env`, `deploy/update.sh`, run one build, and record the time into `AVG_ROM_SECS` (benchmark). Since
+  T-245 the eta.js default (17 s, injection measured on the box) is already right — set `AVG_ROM_SECS` only
+  if a measurement disagrees, and make sure no stale compile-era value (180/270) is left in the env.
 
 ## 4. Push an update later
 

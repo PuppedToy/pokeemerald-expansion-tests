@@ -9,8 +9,9 @@
 
 import { selectBatch } from './lottery.js';
 
-const DEFAULT_AVG = Number(process.env.AVG_ROM_SECS) || 270;
-const QUEUE_STATES = ['queued_fast', 'queued_slow', 'building', 'paused'];
+// T-245 — ~16.5 s/ROM measured on the box by injection (see produce/eta.js for the measurement).
+const DEFAULT_AVG = Number(process.env.AVG_ROM_SECS) || 17;
+const QUEUE_STATES = ['queued', 'building', 'queued_fast', 'queued_slow', 'paused'];
 
 // userId → its held `pending` request (at most one per user: the one-active-per-user rule).
 function heldRomMap(requests) {

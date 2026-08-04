@@ -247,7 +247,7 @@
 | [T-242](T-242-base-injection-inject-trades-starters-nicknames.md) | "Base+injection Phase 3 — inject trades + extra starters + nickname tables (Group B)" | done | 0.7.0 | 2026-08-03 |
 | [T-243](T-243-base-injection-inject-datadriven-and-toggles.md) | "Base+injection Phase 3 — inject data-driven rewards/items/settings + feature-toggle setvars" | done | 0.7.0 | 2026-08-03 |
 | [T-244](T-244-base-injection-decommission-old-maker.md) | "Base+injection Phase 4 — decommission the old compile-per-user maker, clean up" | in-progress | 0.7.0 | 2026-08-03 |
-| [T-245](T-245-base-injection-etas-queue-simplification.md) | "Base+injection Phase 5 — recompute ETAs + simplify the build queue" | proposed | 0.7.0 | 2026-07-27 |
+| [T-245](T-245-base-injection-etas-queue-simplification.md) | "Base+injection Phase 5 — recompute ETAs + simplify the build queue" | in-progress | 0.7.0 | 2026-08-03 |
 | [T-246](T-246-base-injection-frontend-delivery-uat.md) | "Base+injection Phase 5 — frontend/delivery wiring + user acceptance" | proposed | 0.7.0 | 2026-07-27 |
 | [T-247](T-247-phase2-dead-multichoice-and-writer-cleanup.md) | "Phase-2 cleanup — delete the multichoice lists and writer loops the data-driven migration orphaned" | in-progress | 0.7.0 | 2026-08-01 |
 | [T-248](T-248-base-layout-stability-under-injected-data.md) | "Make the base's ROM layout independent of the data it carries (B-057) — decide with a measurement" | done | 0.7.0 | 2026-08-03 |
