@@ -17,13 +17,14 @@
  *     before a day of Phase-3 debugging;
  * and, with `--out`, writes the map as JSON so the injector can load it without re-parsing. `--sources`
  * additionally bakes the base's own source text (T-249) — the inputs the injector derives its writes
- * from, which a browser has no tree to read.
+ * from, which a browser has no tree to read — and `--inject-out` writes the map trimmed to the symbols
+ * injection can actually address (also T-249: 21 MB of JSON down to what a Worker can hold).
  */
 
 const fs = require('fs');
 const { loadOffsetMap, parseMapFile, parseSymFile } = require('./symbolMap');
 const { collectBaseSources } = require('./sources');
-const { INJECTION_MODULES, checkReadiness } = require('./index');
+const { INJECTION_MODULES, checkReadiness, filterOffsetMapForInjection } = require('./index');
 
 const MB = 1024 * 1024;
 
@@ -123,9 +124,24 @@ function buildOffsetMapReport({ offsetMap, modules = INJECTION_MODULES, romPath 
     return lines.join('\n');
 }
 
-function exportOffsetMap(offsetMap, outPath) {
-    fs.writeFileSync(outPath, `${JSON.stringify(offsetMap.toJSON(), null, 2)}\n`);
+function exportOffsetMap(offsetMap, outPath, { pretty = true } = {}) {
+    fs.writeFileSync(outPath, `${JSON.stringify(offsetMap.toJSON(), null, pretty ? 2 : undefined)}\n`);
     return outPath;
+}
+
+/**
+ * The injection-only map: every symbol the module registry can address, and nothing else (T-249).
+ *
+ * The full map of the real base is 88,000 symbols / 21 MB of JSON — 1.5 MB gzipped, and a heap a mobile
+ * Worker would rather not hold next to a 32 MB ROM. Filtering is derived from the registry, and proven
+ * byte-neutral in `__tests__/unit/injectorInjectionMap.test.js`.
+ *
+ * @returns {{ outPath: string, symbols: number, of: number }}
+ */
+function exportInjectionOffsetMap(offsetMap, outPath, modules = INJECTION_MODULES) {
+    const filtered = filterOffsetMapForInjection(offsetMap, modules);
+    exportOffsetMap(filtered, outPath, { pretty: false });
+    return { outPath, symbols: filtered.symbolCount, of: offsetMap.symbolCount };
 }
 
 /**
@@ -156,9 +172,10 @@ function main(argv = process.argv.slice(2)) {
     const outPath = flag('out');
     const romPath = flag('rom');
     const sourcesPath = flag('sources');
+    const injectOutPath = flag('inject-out');
 
     if (!mapPath) {
-        console.error('usage: node randomizer/injector/buildOffsetMap.js --map=pokeemerald.map [--sym=pokeemerald.sym] [--rom=pokeemerald.gba] [--out=base-offsets.json] [--sources=base-sources.json]');
+        console.error('usage: node randomizer/injector/buildOffsetMap.js --map=pokeemerald.map [--sym=pokeemerald.sym] [--rom=pokeemerald.gba] [--out=base-offsets.json] [--inject-out=base-offsets.inject.json] [--sources=base-sources.json]');
         process.exit(1);
     }
 
@@ -167,6 +184,11 @@ function main(argv = process.argv.slice(2)) {
 
     console.log(buildOffsetMapReport({ offsetMap, romPath }));
     if (outPath) console.log(`\nWrote ${exportOffsetMap(offsetMap, outPath)}`);
+    if (injectOutPath) {
+        const { symbols, of } = exportInjectionOffsetMap(offsetMap, injectOutPath);
+        console.log(`Wrote ${injectOutPath}  ${symbols.toLocaleString()} of ${of.toLocaleString()} symbol(s) — ` +
+            `everything the module registry can address`);
+    }
     if (sourcesPath) {
         // Keyed by the base's own sha256 when the ROM is at hand — the artifact and the base it was taken
         // from must never be cached apart (T-249).
@@ -180,6 +202,7 @@ function main(argv = process.argv.slice(2)) {
 if (require.main === module) main();
 
 module.exports = {
-    buildOffsetMapReport, exportOffsetMap, exportBaseSources, parseMapFile, parseSymFile, main,
+    buildOffsetMapReport, exportOffsetMap, exportInjectionOffsetMap, exportBaseSources,
+    parseMapFile, parseSymFile, main,
     foldedAccessors, INJECTABLE_SCALAR_ACCESSORS,
 };

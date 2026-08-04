@@ -95,4 +95,29 @@ Acceptance criteria:
   written, same five modules. `make.js`'s `injectOneRom` takes an optional `baseSources` for exactly this
   (null keeps today's behaviour). Suite: 2169 passing, 23 skipped.
 
+- **2026-08-04 — the offset map is the artifact that needed trimming, not the sources.** Baking the local
+  base's full map to JSON gave **21 MB / 87,988 symbols** — worse than the source text, and a heap no
+  mobile Worker wants beside a 32 MB ROM. But injection can only *address* what the module registry names
+  or matches: `filterOffsetMapForInjection` (derived from the registry, never hand-listed) cuts it to
+  **2,819 symbols — 492 KB raw, 48 KB gzipped, 30 KB brotli**, emitted by
+  `buildOffsetMap.js --inject-out=…`.
+
+  The danger there is silence: `learnsets` reads a missing symbol as "the base does not export this array"
+  and leaves the base's data in place, so an over-eager filter ships a plausible un-randomized ROM. Two
+  things hold it down — the filter takes the registry's `symbols`, its `symbolPatterns` matches **and** a
+  new `localLabels` (the two Group-D script labels, which are local and therefore in no linker map, so
+  they could never have been in `symbols`) — and a test injects the same bundle through both maps and
+  demands the same sha256.
+
+  Re-ran the real-base check with all three input combinations against `debug/run-m2`'s first ROM:
+
+  | inputs | sha256 |
+  |---|---|
+  | tree sources + full `.map`+`.sym` (today) | `8c8d1c5f4e6d…` |
+  | baked sources + full map | `8c8d1c5f4e6d…` |
+  | baked sources + filtered map (**what the browser gets**) | `8c8d1c5f4e6d…` |
+
+  Worth noting for [[T-250]]: loading that JSON map costs nothing, so the client artifact also sidesteps
+  the 4.1 s `.map` parse — the same artifact would speed the server up.
+
 ## Outcome
