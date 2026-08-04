@@ -45,6 +45,10 @@ test('real build spawns make.js for the given ROM and sets output_path', async (
   assert.ok(calls[0].args.includes('--rom=2'));
   assert.ok(calls[0].args.includes('--bundle=/bundles/x.json'));
   assert.ok(calls[0].args.some((a) => a.startsWith('--out=')));
+  // T-244: delivery injects by construction. The flag beats ROM_BUILD_MODE, so a stale compile env on the
+  // box cannot silently put user builds back on the 4-minute compile path.
+  assert.ok(calls[0].args.includes('--inject'), 'the delivery path must ask for injection explicitly');
+  assert.ok(!calls[0].args.includes('--compile'));
   assert.equal(calls[0].opts.cwd, '/repo');
   assert.deepEqual(setOut, [['r1', dir]]);
   clean();

@@ -156,17 +156,21 @@ Aborts before running if `data/` has uncommitted changes (guard against silent d
 
 ### `make.js`
 
-Full ROM production pipeline.
+ROM production pipeline. Since T-244 it produces artifacts **by injecting** a bundle's data into the
+prebuilt base ROM (`randomizer/docs/injection.md`) — no source mutation, no `make`.
 
 ```
---randomize   Run the randomizer, then compile the ROM(s)
---bundle=...  Compile ROM(s) from a pre-generated bundle (skip randomization)
---seed=N      Fix the RNG seed
---difficulty  easy | fair | hard
---no-balance  Skip stat rebalancing
+--bundle=...  Produce artifact(s) from a pre-generated bundle (required)
+--rom=N       Only ROM N of the bundle (the backend's per-ROM unit)
+--out=DIR     Write artifacts here instead of roms/<sessionId>/
+--full-rom    Emit the full .gba instead of the default BPS patch (ADR-013)
 --debug       Level 5 teams, useful for fast testing
---clean       Clean build before compiling
+--compile     GATE-3 reference path only: writers mutate src/, `make`, restore. Not for delivery
+--clean       `make clean` first (compile path only)
 ```
+
+`--randomize` and the interactive prompt were decommissioned in T-244 along with the compile-per-user
+path.
 
 Bundle mode resolves trainer-sharing-aware ROM seeds via `resolveRomSeed(rom, seed)`,
 matching the seed logic used by the browser Worker and `backend/generator.js`.

@@ -21,7 +21,6 @@ const {
 } = require('./constants');
 const { typeMainColors } = require('./trainerColors');
 const { BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone } = require('./modules/wildModule');
-const { displayNameToItemConst } = require('./itemRandomizer');
 const { updateMegaHiddenTable } = require('./megaHiddenWriter');
 const { createTeamResolver, normalizeTrainerBagTms } = require('./modules/resolveTrainerTeam');
 const { nameizyPokemonId } = require('./parser');
@@ -59,36 +58,6 @@ const GYM_REWARD_ENUM = [
     'GYM_REWARD_RUSTBORO', 'GYM_REWARD_DEWFORD', 'GYM_REWARD_MAUVILLE', 'GYM_REWARD_LAVARIDGE',
     'GYM_REWARD_PETALBURG', 'GYM_REWARD_FORTREE', 'GYM_REWARD_MOSSDEEP', 'GYM_REWARD_SOOTOPOLIS',
     'GYM_REWARD_SLATEPORT_MUSEUM', 'GYM_REWARD_WEATHER_INSTITUTE', 'GYM_REWARD_LILYCOVE',
-];
-
-const mapsBase = path.resolve(__dirname, '..', 'data', 'maps');
-const routeFiles = [
-    path.resolve(mapsBase, 'Route103', 'map.json'),
-    path.resolve(mapsBase, 'Route109', 'map.json'),
-    path.resolve(mapsBase, 'Route110', 'map.json'),
-    path.resolve(mapsBase, 'Route111', 'map.json'),
-    path.resolve(mapsBase, 'Route112', 'map.json'),
-    path.resolve(mapsBase, 'Route113', 'map.json'),
-    path.resolve(mapsBase, 'Route114', 'map.json'),
-    path.resolve(mapsBase, 'Route115', 'map.json'),
-    path.resolve(mapsBase, 'Route116', 'map.json'),
-    path.resolve(mapsBase, 'Route117', 'map.json'),
-    path.resolve(mapsBase, 'Route118', 'map.json'),
-    path.resolve(mapsBase, 'Route119', 'map.json'),
-    path.resolve(mapsBase, 'Route120', 'map.json'),
-    path.resolve(mapsBase, 'Route121', 'map.json'),
-    path.resolve(mapsBase, 'Route125', 'map.json'),
-    path.resolve(mapsBase, 'Route126', 'map.json'),
-    path.resolve(mapsBase, 'Route127', 'map.json'),
-    path.resolve(mapsBase, 'VictoryRoad_B1F', 'map.json'),
-    path.resolve(mapsBase, 'PetalburgCity', 'map.json'),
-    path.resolve(mapsBase, 'RustboroCity', 'map.json'),
-    path.resolve(mapsBase, 'VerdanturfTown', 'map.json'),
-    path.resolve(mapsBase, 'MauvilleCity', 'map.json'),
-    path.resolve(mapsBase, 'DewfordTown', 'map.json'),
-    path.resolve(mapsBase, 'SlateportCity', 'map.json'),
-    path.resolve(mapsBase, 'LilycoveCity', 'map.json'),
-    path.resolve(mapsBase, 'ScorchedSlab', 'map.json'),
 ];
 
 function nameify(text) {
@@ -255,21 +224,6 @@ function buildTrainersResultsFromDocs(docsTrainers, pokemonList) {
         };
     });
     return result;
-}
-
-// Resolve the ordered mint pools used to replace the route mail items, as ITEM_ consts.
-// The order is chosen once at bundle-creation time (randomizeItems) and stored on
-// itemAssignments as display names; here we just convert it back. Falls back to the
-// static pools (definition order) for older bundles / when not provided. No RNG.
-function resolveMailMints(itemAssignments, items) {
-    const toConsts = (stored, pool) => (stored && stored.length)
-        ? stored.map(displayNameToItemConst)
-        : [...pool];
-    return {
-        wood: toConsts(itemAssignments.woodMailMints, items.midMints),
-        wave: toConsts(itemAssignments.waveMailMints, items.strongDefMints),
-        mech: toConsts(itemAssignments.mechMailMints, items.strongAtkMints),
-    };
 }
 
 // baseRngSeed: when non-null, the RNG is reseeded at the start of each trainer slot
@@ -448,21 +402,12 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     console.log('Wild encounters updated successfully.');
 
     // Items
-
-    // Replace the route mail items with the pre-chosen mint order (no RNG): the order was
-    // decided at bundle-creation time and stored on itemAssignments. Consume it sequentially
-    // across all route files (awaited, deterministic — not fire-and-forget).
-    const mailMints = resolveMailMints(itemAssignments, items);
-    let woodIdx = 0, waveIdx = 0, mechIdx = 0;
-    for (const routeFile of routeFiles) {
-        let routeFileContent = await fs.readFile(routeFile, 'utf8');
-
-        routeFileContent = routeFileContent.replace(/ITEM_WOOD_MAIL/g, () => mailMints.wood[woodIdx++ % mailMints.wood.length]);
-        routeFileContent = routeFileContent.replace(/ITEM_WAVE_MAIL/g, () => mailMints.wave[waveIdx++ % mailMints.wave.length]);
-        routeFileContent = routeFileContent.replace(/ITEM_MECH_MAIL/g, () => mailMints.mech[mechIdx++ % mailMints.mech.length]);
-
-        await fs.writeFile(routeFile, routeFileContent, 'utf8');
-    }
+    //
+    // T-236 moved route item placement into gItemPicks, so the 26 route `map.json`s carry pick ids
+    // (ITEM_ROUTE_103_JABOCA …) instead of the ITEM_WOOD/WAVE/MECH_MAIL tokens this writer used to
+    // substitute — the loop matched nothing and rewrote 26 files unchanged. Deleted in T-244 with its
+    // `routeFiles` list and `resolveMailMints` helper; the mint order still reaches the ROM through
+    // `itemAssignments` → gItemPicks (injected by the data-driven-and-toggles module).
 
     // Sort mega evos
     const foundMegaEvos = [...wildFoundMegaEvos].sort((a, b) => a.level - b.level);
@@ -951,6 +896,5 @@ module.exports.substituteWildSpecies = substituteWildSpecies;
 module.exports.applyWildPlanToEncounters = applyWildPlanToEncounters;   // T-162
 module.exports.distributeSpeciesAcrossSlots = distributeSpeciesAcrossSlots; // T-162
 module.exports.buildTrainersResultsFromDocs = buildTrainersResultsFromDocs;
-module.exports.resolveMailMints = resolveMailMints;
 module.exports.applyDoubleBattleHeader = applyDoubleBattleHeader;   // T-087/ADR-014
 module.exports.effectiveBattleType = effectiveBattleType;          // T-087/ADR-014
