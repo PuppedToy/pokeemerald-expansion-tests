@@ -80,6 +80,24 @@ Acceptance criteria:
   ~5.8 MB of the base's own sources at inject time *by design*, so those inputs must be baked at
   base-build time and passed through the existing `sources` seam — a refactor, not a flag.
 
+- **2026-08-04 — deployed, and a dead end in my own script.** Owner pushed and greenlit; verified
+  `origin/master == local master == 67ce5cf` first, since `update.sh` deploys the *working tree*, not
+  `origin`. Removed the stale `AVG_ROM_SECS=180` from the box's `deploy/.env` (backed up first — it is
+  box-only state, not rsynced) so [[T-245]]'s measured 17 s default applies. Deploy green, `/api/me` 401.
+  **The two new guards both worked on their first real run:** `update.sh`'s preflight warned
+  `⚠ the box has no usable base ROM (missing)`, and the app booted with
+  `build: injection — BASE MISSING, worker held`, naming all three absent artifacts and the fix command
+  instead of failing user requests one at a time.
+
+  Then `deploy/build-base.sh` **printed `base installed ✓` having built nothing.** Root cause:
+  the remote script was piped into `bash -s`, and **`docker compose run` reads stdin** — so the first
+  compose call (the `git checkout`) swallowed the remaining script and every later step was skipped
+  silently; bash hit EOF and exited 0, so the local success line printed. Verified by looking rather than
+  believing: no `base/` and no `pokeemerald.gba` on the box. Fixed three ways, because the failure mode was
+  *silence*: the script is now copied to the box and run from a file (stdin is free), every compose call is
+  `-T` + `</dev/null`, and the script **re-checks the three artifacts over SSH before printing success** —
+  a run that installs nothing can no longer claim it did.
+
 - **2026-08-04 — found while measuring, registered not fixed: [[T-250]].** Parsing
   `base/pokeemerald.map` takes **4.1 s** of a ~7.7 s local injection (48,406 symbols) while the `.sym`
   parser does 87,908 symbols in **74 ms** — 56× faster for 1.8× the symbols. Cause: `parseMapFile`

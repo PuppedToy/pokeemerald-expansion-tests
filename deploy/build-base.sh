@@ -53,11 +53,11 @@ REMOTE_SCRIPT=$(cat <<'EOS'
 set -euo pipefail
 cd "$DEPLOY_PATH_IN"
 echo "==> clean tree (the base must never carry a run's data)"
-$COMPOSE_IN run --rm app sh -lc 'git checkout -- src/ include/ data/maps/ || true'
+$COMPOSE_IN run --rm -T app sh -lc 'git checkout -- src/ include/ data/maps/ || true' </dev/null
 echo "==> make (this is the slow part: ~4 min warm, ~20 min cold on 2 cores)"
-$COMPOSE_IN run --rm app sh -lc 'make -j"$(nproc)" && make syms'
+$COMPOSE_IN run --rm -T app sh -lc 'make -j"$(nproc)" && make syms' </dev/null
 echo "==> install base/ (all three artifacts from THIS build)"
-$COMPOSE_IN run --rm app sh -lc '
+$COMPOSE_IN run --rm -T app sh -lc '
   set -e
   mkdir -p base
   for f in pokeemerald.gba pokeemerald.map pokeemerald.sym; do
@@ -66,11 +66,11 @@ $COMPOSE_IN run --rm app sh -lc '
   done
   ls -l base/
   sha256sum base/pokeemerald.gba
-'
+' </dev/null
 echo "==> offset map + readiness table (GATE-1 budget, exported symbols per module)"
-$COMPOSE_IN run --rm app sh -lc 'node randomizer/injector/buildOffsetMap.js \
+$COMPOSE_IN run --rm -T app sh -lc 'node randomizer/injector/buildOffsetMap.js \
   --map=base/pokeemerald.map --sym=base/pokeemerald.sym --rom=base/pokeemerald.gba \
-  --out=base/base-offsets.json'
+  --out=base/base-offsets.json' </dev/null
 echo "==> restart app (its boot check now finds the base and starts the worker)"
 $COMPOSE_IN up -d --force-recreate app
 sleep 5
@@ -85,8 +85,13 @@ if [ -n "$DRY" ]; then
 fi
 
 echo "==> building the base on ${TARGET}:${DEPLOY_PATH}"
+# The script is COPIED to the box and run from a file, never piped into `bash -s`: `docker compose run`
+# reads stdin, so with `bash -s` the first compose call swallows the rest of the script and every later step
+# is silently skipped — the run then "succeeds" having built nothing (observed 2026-08-04).
 # shellcheck disable=SC2029
-${SSH} "${TARGET}" "DEPLOY_PATH_IN='${DEPLOY_PATH}' COMPOSE_IN='${COMPOSE}' bash -s" <<< "$REMOTE_SCRIPT"
+printf '%s\n' "$REMOTE_SCRIPT" | ${SSH} "${TARGET}" "cat > /tmp/ec-build-base.sh"
+# shellcheck disable=SC2029
+${SSH} "${TARGET}" "DEPLOY_PATH_IN='${DEPLOY_PATH}' COMPOSE_IN='${COMPOSE}' bash /tmp/ec-build-base.sh" </dev/null
 
 if [ -n "$FETCH" ]; then
   echo "==> fetching base/ into the local working tree"
@@ -97,4 +102,10 @@ if [ -n "$FETCH" ]; then
   ls -l base/
 fi
 
+# Never claim success without checking: the stdin bug above printed this line over a run that built nothing.
+echo "==> verifying the box actually has all three artifacts"
+if ! ${SSH} "${TARGET}" "cd ${DEPLOY_PATH} && for f in base/pokeemerald.gba base/pokeemerald.map base/pokeemerald.sym; do test -s \"\$f\" || exit 1; done" </dev/null; then
+  echo "  ✗ the base is missing or incomplete on the box — read the output above; nothing was installed"
+  exit 1
+fi
 echo "==> base installed ✓  (re-run this after any C source / include / data-maps change)"
