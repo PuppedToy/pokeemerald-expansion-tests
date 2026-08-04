@@ -60,6 +60,16 @@ plausible-looking un-randomized ROM. Hence the filter is derived from the regist
 `localLabels`, the two Group-D script labels that are local and therefore in no linker map), and a test
 injects one bundle through the full and filtered maps and demands the same sha256.
 
+### A side effect worth knowing: the client reads the base's sources, the server reads today's
+
+The artifacts are baked when the base is built, so a browser always derives its writes from **the sources
+that base was compiled from**. The server-side inject path reads the *current tree*. After a
+`deploy/update.sh` that changes an injectable source without a base rebuild, those two differ — and the
+baked one is the correct one. The server path does not silently produce a wrong ROM (the modules byte-match
+the base's tables against the source and refuse: "the base ROM and the base sources are not the same
+build"), but it does mean a deploy that touches base data must be followed by `deploy/build-base.sh`, while
+a client-injected run would have kept working.
+
 ## The flow in the browser
 
 `frontend/js/client-inject.js`, driven by `account.js` when the flag is on:
@@ -72,7 +82,8 @@ injects one bundle through the full and filtered maps and demands the same sha25
 4. One `injector.bundle.js` Worker per ROM: the base is **transferred in** (so the Worker writes it in
    place) and the finished ROM **transferred back** — no structured-clone copies of 32 MB.
 5. The result is the same `{ serverName, gbaBytes, bpsBytes }` the server path assembles, so the full
-   archive (T-211) is built identically. `bpsBytes` is computed locally with the same codec.
+   archive (T-211) is built identically. `bpsBytes` is computed locally with the same codec — 0.7 s per ROM
+   in Node for the full 32 MB, so a few seconds in a browser.
 
 ### The flag
 
