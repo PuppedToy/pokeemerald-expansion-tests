@@ -35,13 +35,22 @@ In the order that keeps each step independently useful:
    sha256 (the box and a Mac already agree byte-for-byte — T-244).
 
 Acceptance criteria:
-- [ ] The injector runs in the browser and produces, for at least one corpus bundle, a ROM whose sha256
-      equals the Node path's.
-- [ ] No 32 MB artifact is ever served: the base is reconstructed client-side from vanilla + a static BPS.
-- [ ] The Node/GATE-3 path still runs the same modules (no second implementation).
-- [ ] Mobile-Safari memory ceiling measured (32 MB ROM + 19 MB bundle in a Worker) and either passed or
-      documented as a supported-platform limit.
-- [ ] Decided + recorded: what happens to per-run diagnostics/decision logs for a client-injected run.
+- [x] The injector runs in the browser and produces, for at least one corpus bundle, a ROM whose sha256
+      equals the Node path's. — a real Chromium **and** WebKit Worker, `8c8d1c5f4e6d…` for `debug/run-m2`
+      against the production base (`visual-tests/injector-browser-check.mjs`).
+- [x] No 32 MB artifact is ever served: the base is reconstructed client-side from vanilla + a static BPS.
+      — `base.bps` + IndexedDB, keyed by the base's sha256; exercised end to end through the shipped
+      `client-inject.js`. (The patch is 31.8 MB / 16.5 MB gzipped — see the log; that is what is served
+      *per ROM per run* today, and now it is fetched once.)
+- [x] The Node/GATE-3 path still runs the same modules (no second implementation). — the browser bundles
+      `randomizer/injector/`; the fs boundary is enforced by test.
+- [~] Mobile-Safari memory ceiling measured (32 MB ROM + 19 MB bundle in a Worker) and either passed or
+      documented as a supported-platform limit. — **measured**: 213 MB peak, +71 MB for the injection, and
+      Safari's engine produces the same bytes. A real iOS device check is still open; documented in
+      `randomizer/docs/client-injection.md`, including what to give up if it has to come down.
+- [x] Decided + recorded: what happens to per-run diagnostics/decision logs for a client-injected run. —
+      unchanged (they are *generation* artifacts, already posted by the browser); what has no equivalent is
+      the server build log. Recorded in `randomizer/docs/client-injection.md`.
 
 ## Progress log
 
@@ -190,5 +199,33 @@ Acceptance criteria:
 
   213 MB is comfortable on desktop and marginal on a phone, so the criterion's second half — a real iOS
   Safari tab — still needs a device; the engine half is done.
+
+- **2026-08-04 — step 2: delivery, and the number the plan got wrong.**
+  `randomizer/injector/buildClientArtifacts.js` produces the whole set for one base build —
+  `base.bps` + `base-offsets.json` + `base-sources.json` + a `manifest.json` whose `buildId` is the base's
+  own sha256 — and `deploy/build-base.sh` runs it right after installing the base (skipped, not fatal, on a
+  box with no vanilla ROM). They live in `base/client/` (which `update.sh` does not carry, like the base
+  itself) and are served at `/client/`: `manifest.json` `no-store`, everything else `immutable`.
+
+  **`base.bps` is 31.8 MB, not the small file the plan implies.** The base is 32 MB where vanilla is 16 MB,
+  so half of it is expansion content with nothing to delta against and BPS carries it literally (16.5 MB
+  gzipped, which Caddy already does). This does not break the criterion, and it is worth being precise about
+  why: what is delivered *today* is `createBps(vanilla, randomizedRom)` — the same ~32 MB, **per ROM, per
+  run**. Now it is one immutable file, identical for every user and run, fetched once into IndexedDB. The
+  ROM itself is still never served, and bytes-per-user go down.
+
+  The browser side is `frontend/js/client-inject.js` (manifest → base from cache or vanilla+`base.bps` →
+  offsets+sources → one Worker per ROM, base transferred in, ROM transferred back), with `putBase`/`getBase`
+  added to `rom-store.js` keyed by `buildId` so only one base is ever stored. `account.js`'s `deliverPatch`
+  takes the local path when the flag is on, producing the same `{ serverName, gbaBytes, bpsBytes }` the
+  server path assembles — so T-211's full archive is built identically.
+
+  **The flag is off by default and that is a product decision, not a limitation**: the request queue is
+  where beta gating, quotas and the "your ROM is ready" email live. `?clientInject=1` sticks it in
+  localStorage per browser, `?clientInject=0` clears it.
+
+  Verified end to end in a real browser through the *shipped* module, not a hand-rolled harness: vanilla ROM
+  in IndexedDB → fetch+apply `base.bps` (0.3 s) → **14 ms** from the cache on the second call → inject →
+  `8c8d1c5f4e6d…`. Design reference: [randomizer/docs/client-injection.md](../randomizer/docs/client-injection.md).
 
 ## Outcome

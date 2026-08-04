@@ -95,6 +95,20 @@ echo "==> offset map + readiness table (GATE-1 budget, exported symbols per modu
 $COMPOSE_IN run --rm -T app sh -lc 'node randomizer/injector/buildOffsetMap.js \
   --map=base/pokeemerald.map --sym=base/pokeemerald.sym --rom=base/pokeemerald.gba \
   --out=base/base-offsets.json' </dev/null
+# T-249 — the artifact set a browser needs to inject for itself: base.bps (vanilla→base, so the 32 MB base
+# is never served), the injection-only offset map, the base's sources, and a manifest stamped with this
+# base's sha256. Served at /client/. Skipped, not fatal, when the box has no vanilla ROM: the server-side
+# inject path does not need them.
+echo "==> client-side injection artifacts (T-249)"
+$COMPOSE_IN run --rm -T app sh -lc '
+  VANILLA="${VANILLA_ROM:-pokeemerald-vanilla.gba}"
+  if [ ! -s "$VANILLA" ]; then
+    echo "   ⚠ no vanilla ROM at $VANILLA — skipping base.bps (client-side injection stays unavailable)"
+    exit 0
+  fi
+  node randomizer/injector/buildClientArtifacts.js --rom=base/pokeemerald.gba \
+    --map=base/pokeemerald.map --sym=base/pokeemerald.sym --vanilla="$VANILLA" --out=base/client
+' </dev/null
 # The proof that matters. Symbol-existence checks pass happily on a base whose .map belongs to another
 # link (they found every symbol — at the wrong address), so the only trustworthy check is to actually
 # INJECT into it: that runs structLayout's anchors, which read Bulbasaur's stats back out of the ROM.

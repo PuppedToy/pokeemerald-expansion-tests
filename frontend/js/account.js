@@ -5,6 +5,8 @@
 
 import { putRom, getRom, hasRom, clearRom, sha1Hex, isKnownEmeraldRom } from './rom-store.js';
 import { romName, romForServerName } from './romNaming.js'; // T-211 — download naming SSOT
+// T-249 — the browser can inject its own ROMs (no server build at all). Opt-in per browser; see the module.
+import { clientInjectEnabled, injectBundleLocally } from './client-inject.js';
 
 // applyBps comes from the generated ESM bundle (frontend/js/bps.bundle.js — the SAME codec the builder
 // uses to create patches). Loaded lazily and injectable so tests need not build the bundle.
@@ -654,14 +656,30 @@ async function zipRoms(roms) {
 // drives the live checklist (download → apply → zip). NOT gated on the button, so it also runs right
 // after an inline ROM add. If somehow no ROM is stored, the raw patch archive is handed over unchanged.
 async function deliverPatch(onStep = () => {}) {
+  const seed = lastBundle?.config?.seed ?? 'run';
+  const roms = lastBundle?.roms ?? [];
+
+  // T-249 — client-side injection: the ROMs are built HERE, so there is nothing to download. Same
+  // `artifacts` shape as the server path below, so the full archive is assembled identically.
+  if (clientInjectEnabled() && lastBundle && buildFullZip && await getRom()) {
+    onStep('download', 'active');
+    const artifacts = await injectBundleLocally(lastBundle, { onStep: (key, state) => onStep(key === 'base' ? 'download' : 'apply', state) });
+    onStep('apply', 'done');
+    onStep('zip', 'active');
+    const fullZip = await buildFullZip(lastBundle, artifacts);
+    onStep('zip', 'done');
+    triggerDownload(fullZip, `run-${seed}-full.zip`);
+    delivered = true;
+    markDelivered(lastBundle);
+    return;
+  }
+
   onStep('download', 'active');
   const res = await fetch('/api/download', { headers: { authorization: `Bearer ${getToken()}` } });
   if (!res.ok) throw new Error(`download failed (${res.status})`);
   const zipBlob = await res.blob();
   onStep('download', 'done');
 
-  const seed = lastBundle?.config?.seed ?? 'run';
-  const roms = lastBundle?.roms ?? [];
   const srcZip = await JSZip.loadAsync(zipBlob);
   const bpsEntries = Object.values(srcZip.files).filter((f) => !f.dir && /\.bps$/i.test(f.name));
 

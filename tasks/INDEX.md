@@ -251,5 +251,5 @@
 | [T-246](T-246-base-injection-frontend-delivery-uat.md) | "Base+injection Phase 5 — frontend/delivery wiring + user acceptance" | in-progress | 0.7.0 | 2026-08-04 |
 | [T-247](T-247-phase2-dead-multichoice-and-writer-cleanup.md) | "Phase-2 cleanup — delete the multichoice lists and writer loops the data-driven migration orphaned" | in-progress | 0.7.0 | 2026-08-01 |
 | [T-248](T-248-base-layout-stability-under-injected-data.md) | "Make the base's ROM layout independent of the data it carries (B-057) — decide with a measurement" | done | 0.7.0 | 2026-08-03 |
-| [T-249](T-249-client-side-offline-injector.md) | "Run the injector in the browser — zero-server-compute / offline artifact generation" | proposed | 0.8.0 | 2026-08-04 |
+| [T-249](T-249-client-side-offline-injector.md) | "Run the injector in the browser — zero-server-compute / offline artifact generation" | in-progress | 0.8.0 | 2026-08-04 |
 | [T-250](T-250-map-parse-quadratic-symbol-sizing.md) | "Cut ~4 s/ROM: the .map parser re-sorts each section's symbols once per symbol" | proposed | 0.7.0 | 2026-08-04 |

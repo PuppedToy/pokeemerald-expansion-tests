@@ -139,6 +139,7 @@ describe('the fs boundary', () => {
         'rom.js',               // load/save a ROM file (the browser hands `new Rom(buffer)` instead)
         'symbolMap.js',         // parse a `.map`/`.sym`; the browser gets base-offsets.json
         'buildOffsetMap.js',    // build-box CLI: emits base-offsets.json + base-sources.json
+        'buildClientArtifacts.js', // build-box CLI: emits base.bps + the client artifact set (T-249)
         'verifyParity.js',      // Node-only diagnostic tool (compares two ROM files)
     ];
 

@@ -68,10 +68,15 @@ function injectInNode({ romPath, offsetMap, baseSources, bundle, romIndex }) {
     return { sha256: image.sha256(), applied, bytesWritten: image.bytesWritten };
 }
 
-function serve(dir) {
+/** Static server over a prefix→directory table, so /js/ can come from the real frontend. */
+function serve(routes) {
     const server = http.createServer((req, res) => {
         const rel = decodeURIComponent(req.url.split('?')[0]).replace(/^\/+/, '');
-        const file = path.join(dir, rel);
+        const hit = Object.entries(routes)
+            .filter(([prefix]) => prefix && rel.startsWith(prefix))
+            .sort((a, b) => b[0].length - a[0].length)[0];
+        const dir = hit ? hit[1] : routes[''];
+        const file = path.join(dir, hit ? rel.slice(hit[0].length) : rel);
         if (!file.startsWith(dir) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
             res.writeHead(404).end('not found');
             return;
@@ -115,14 +120,29 @@ async function main() {
     console.log(`base       ${basePaths.romPath}  ${buildId.slice(0, 12)}…`);
     console.log(`bundle     ${bundlePath}`);
 
-    const full = loadOffsetMap(basePaths.mapPath).merge(loadOffsetMap(basePaths.symPath));
-    const { symbols, of } = exportInjectionOffsetMap(full, path.join(dir, 'base-offsets.inject.json'));
-    const { bytes } = exportBaseSources({ outPath: path.join(dir, 'base-sources.json'), buildId });
-    console.log(`artifacts  ${symbols}/${of} symbols, ${(bytes / 1048576).toFixed(1)} MB of sources → ${dir}`);
+    const { buildClientArtifacts } = require(path.join(ROOT, 'randomizer', 'injector', 'buildClientArtifacts'));
+    const vanillaPath = process.env.VANILLA_ROM || path.join(ROOT, 'pokeemerald-vanilla.gba');
+    const clientDir = path.join(dir, 'client');
+    let manifest = null;
+    if (fs.existsSync(vanillaPath)) {
+        // The whole set, exactly as deploy/build-base.sh produces it — base.bps included, so the
+        // `--flow client` run below can reconstruct the base the way a user's browser will.
+        manifest = buildClientArtifacts({
+            romPath: basePaths.romPath, mapPath: basePaths.mapPath, symPath: basePaths.symPath,
+            vanillaPath, outDir: clientDir, log: (line) => console.log(`  ${line}`),
+        });
+        fs.copyFileSync(vanillaPath, path.join(dir, 'vanilla.gba'));
+    } else {
+        fs.mkdirSync(clientDir, { recursive: true });
+        const full = loadOffsetMap(basePaths.mapPath).merge(loadOffsetMap(basePaths.symPath));
+        const { symbols, of } = exportInjectionOffsetMap(full, path.join(clientDir, 'base-offsets.json'));
+        const { bytes } = exportBaseSources({ outPath: path.join(clientDir, 'base-sources.json'), buildId });
+        console.log(`artifacts  ${symbols}/${of} symbols, ${(bytes / 1048576).toFixed(1)} MB of sources (no vanilla ROM: no base.bps)`);
+    }
 
     const bundle = JSON.parse(fs.readFileSync(bundlePath, 'utf8'));
-    const baseSources = BaseSources.fromJSON(JSON.parse(fs.readFileSync(path.join(dir, 'base-sources.json'), 'utf8')));
-    const offsetMap = loadOffsetMap(path.join(dir, 'base-offsets.inject.json'));
+    const baseSources = BaseSources.fromJSON(JSON.parse(fs.readFileSync(path.join(clientDir, 'base-sources.json'), 'utf8')));
+    const offsetMap = loadOffsetMap(path.join(clientDir, 'base-offsets.json'));
 
     console.log('\n── Node ──');
     const t0 = Date.now();
@@ -139,7 +159,11 @@ async function main() {
     fs.writeFileSync(path.join(dir, 'index.html'),
         '<!doctype html><meta charset="utf-8"><title>T-249</title><script src="/injector.bundle.js"></script>');
 
-    const { server, port } = await serve(dir);
+    const { server, port } = await serve({
+        '': dir,
+        'js/': path.join(ROOT, 'frontend', 'js'),
+        'client/': path.join(dir, 'client'),
+    });
     const engines = { chromium, webkit, firefox };
     const engineName = val('engine', 'chromium');
     const engine = engines[engineName];
@@ -162,8 +186,8 @@ async function main() {
             const started = performance.now();
             const [baseRom, offsets, sources, bundle] = await Promise.all([
                 fetch('/base.gba').then(r => r.arrayBuffer()),
-                fetch('/base-offsets.inject.json').then(r => r.json()),
-                fetch('/base-sources.json').then(r => r.json()),
+                fetch('/client/base-offsets.json').then(r => r.json()),
+                fetch('/client/base-sources.json').then(r => r.json()),
                 fetch('/bundle.json').then(r => r.json()),
             ]);
             const fetched = performance.now();
@@ -209,8 +233,8 @@ async function main() {
             if (!performance.memory) return null;
             const [baseRom, offsets, sources, bundle] = await Promise.all([
                 fetch('/base.gba').then(r => r.arrayBuffer()),
-                fetch('/base-offsets.inject.json').then(r => r.json()),
-                fetch('/base-sources.json').then(r => r.json()),
+                fetch('/client/base-offsets.json').then(r => r.json()),
+                fetch('/client/base-sources.json').then(r => r.json()),
                 fetch('/bundle.json').then(r => r.json()),
             ]);
             const inputs = performance.memory.usedJSHeapSize;
@@ -231,7 +255,46 @@ async function main() {
             if (heap.sha256 !== expected.sha256) console.log('  ⚠ the page-thread run disagreed with Node');
         }
 
-        const same = result.sha256 === expected.sha256;
+        // ── the real delivery path: frontend/js/client-inject.js, from manifest to finished ROM ──
+        let clientFlow = null;
+        if (manifest) {
+            console.log('\n── the shipped path (client-inject.js: manifest → vanilla + base.bps → Worker) ──');
+            clientFlow = await page.evaluate(async () => {
+                const { putRom } = await import('/js/rom-store.js');
+                // The user's own ROM, in IndexedDB, exactly as the app puts it there.
+                await putRom(new Uint8Array(await (await fetch('/vanilla.gba')).arrayBuffer()));
+
+                const { clientArtifactManifest, ensureBaseRom, injectBundleLocally } = await import('/js/client-inject.js');
+                const manifest = await clientArtifactManifest();
+                const steps = [];
+
+                const t0 = performance.now();
+                await ensureBaseRom(manifest, (step) => steps.push(step));   // fetches + applies base.bps
+                const built = performance.now();
+                await ensureBaseRom(manifest, (step) => steps.push(step));   // second call: the IDB cache
+                const cached = performance.now();
+
+                const bundle = await fetch('/bundle.json').then(r => r.json());
+                const artifacts = await injectBundleLocally(bundle, { withPatches: false });
+                return {
+                    buildId: manifest.buildId,
+                    steps,
+                    baseMs: Math.round(built - t0),
+                    cacheMs: Math.round(cached - built),
+                    injectMs: Math.round(performance.now() - cached),
+                    roms: artifacts.length,
+                    sha256: artifacts[0].sha256,
+                    bytes: artifacts[0].gbaBytes.length,
+                };
+            });
+            console.log(`base       ${(clientFlow.baseMs / 1000).toFixed(1)} s to fetch+apply base.bps, ${clientFlow.cacheMs} ms from the IndexedDB cache`);
+            console.log(`steps      ${clientFlow.steps.join(' → ')}`);
+            console.log(`inject     ${clientFlow.roms} ROM(s) in ${(clientFlow.injectMs / 1000).toFixed(1)} s, ${mb(clientFlow.bytes)} each`);
+            console.log(`sha256     ${clientFlow.sha256}`);
+            if (clientFlow.sha256 !== expected.sha256) console.log('  ✗ the shipped path disagreed with Node');
+        }
+
+        const same = result.sha256 === expected.sha256 && (!clientFlow || clientFlow.sha256 === expected.sha256);
         console.log(same
             ? '\n✓ the browser produced the Node path\'s ROM, byte for byte'
             : '\n✗ DIFFERENT — the browser and Node disagree');
