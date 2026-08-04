@@ -98,6 +98,49 @@ Acceptance criteria:
   `-T` + `</dev/null`, and the script **re-checks the three artifacts over SSH before printing success** —
   a run that installs nothing can no longer claim it did.
 
+- **2026-08-04 — the first installed base was unusable: `make && make syms` links TWICE.** The base built
+  and installed cleanly, the app started its worker — and then a smoke injection inside the deployed
+  container refused:
+  `structLayout: base anchor mismatch — SPECIES_BULBASAUR.baseHP should be 45 but the base reads 0`.
+
+  Chased it properly rather than guessing, and every intermediate suspicion was wrong, which is worth
+  recording: sources were **not** stale (box `include/pokemon.h` md5 `aabad5ad…` == local, deploy-snapshot
+  commit present, `git status src/ include/` clean), the struct was **not** reordered (master declares
+  `baseHP` at offset 0, and `structLayout.js` agrees), and the 765-of-897 stale objects in the warm
+  `build/` cache were a red herring — `src/pokemon.o`, which defines `gSpeciesInfo`, *was* rebuilt.
+
+  What the bytes said: `.map` and `.sym` agreed on `gSpeciesInfo`, the stride was a clean 260
+  (Bulbasaur→Ivysaur→Venusaur, and 396,500 / 260 = 1,525 exactly), but the stats sat at **+292 = 260 + 32**,
+  and the 48 bytes at the claimed array start decoded as `{10,40},{10,35},{10,30}…` — **`gStatStageRatios`**,
+  a different symbol. So the symbol table did not describe this ROM. Mtimes closed it:
+
+  | artifact | mtime |
+  |---|---|
+  | `pokeemerald.gba` | 05:15:35 |
+  | `pokeemerald.elf` | 05:16:35 — **60 s later** |
+  | `pokeemerald.map` / `.sym` | 05:16:35 / 05:16:36 |
+
+  `make syms` **relinked**. `$(SYM): $(ELF)` should be a no-op after a build, but the Makefile is not
+  idempotent (generated prerequisites come back newer than the ELF), so the second invocation links again:
+  the ROM is link #1, the symbols describe link #2, ~32 B apart. My script broke the one invariant its own
+  header states — all three artifacts from one build.
+
+  Fixes, at the cause *and* at detection, since a symbol table that is merely *shifted* looks perfectly
+  healthy:
+  1. **One invocation, two goals:** `make -j"$(nproc)" all syms` — the ELF is linked once and both the ROM
+     and the symbols derive from it.
+  2. **An install-time refusal:** if `pokeemerald.elf` is newer than `pokeemerald.gba`, they are different
+     links → do not install.
+  3. **A smoke injection before the base is trusted.** This is the check that actually works:
+     `buildOffsetMap.js` reported all five modules `READY` and all four B-058 accessors `OK` **against this
+     broken base**, because every symbol did exist — at the wrong address. Only injecting runs
+     structLayout's anchors, which read Bulbasaur's stats back out of the ROM. A base that fails the smoke
+     test is moved aside and the run exits 1, so the app holds the queue rather than failing every request.
+
+  Production was never exposed to a corrupt artifact: the anchor check is what caught this, and while
+  diagnosing I moved the base aside so the worker held (a held queue drains; a failed request does not).
+  Verified the DB had no waiting user requests at the time.
+
 - **2026-08-04 — found while measuring, registered not fixed: [[T-250]].** Parsing
   `base/pokeemerald.map` takes **4.1 s** of a ~7.7 s local injection (48,406 symbols) while the `.sym`
   parser does 87,908 symbols in **74 ms** — 56× faster for 1.8× the symbols. Cause: `parseMapFile`

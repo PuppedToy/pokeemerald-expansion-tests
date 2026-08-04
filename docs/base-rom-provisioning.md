@@ -22,6 +22,28 @@ back out of the ROM and refuses on a mismatch: see
 [injection.md](../randomizer/docs/injection.md#ids-and-struct-offsets)), but the way to not have the problem
 is to always install the three together, which is what the script below does.
 
+### Two ways a base looks fine and isn't
+
+Both were hit on the first real provisioning run (2026-08-04, T-246). Both produce a base that passes every
+*existence* check and fails only when something reads actual data out of it, so they are worth knowing:
+
+- **`make && make syms` links twice.** `$(SYM): $(ELF)` ought to be a no-op after a build, but the Makefile
+  is not idempotent — generated prerequisites come back newer than the ELF, so the second invocation
+  relinks. The ROM is then from link #1 and the symbols describe link #2, ~32 bytes apart: `gStatStageRatios`
+  sat where the map claimed `gSpeciesInfo`. Use **one** invocation with both goals: `make -j$(nproc) all syms`.
+  The script also refuses to install when `pokeemerald.elf` is newer than `pokeemerald.gba`.
+- **A warm `build/` cache silently mixes revisions.** `update.sh` rsyncs with `-a`, preserving the
+  *developer's* mtimes, which are usually older than objects the box compiled days ago — so `make` sees an
+  up-to-date object and reuses one built from a different revision. Observed: `src/randomizer_rewards.c`
+  (mtime Jul 29) vs its object (Aug 1); the ROM carried the old `gGymRewards` and injection refused because
+  the table did not match the committed initializer it verifies against. The script runs **`make tidy`**
+  first, which drops the objects but keeps converted graphics and tools.
+
+The lesson both share: symbol-existence checks are not enough. `buildOffsetMap.js` reported every module
+`READY` and all four B-058 accessors `OK` against the broken base, because the symbols *did* exist — at the
+wrong addresses. Only injecting reads data back out, which is why the script ends with a smoke injection and
+moves the base aside if it fails.
+
 Two more rules the script enforces:
 
 - **Build from a clean tree.** `git checkout -- src/ include/ data/maps/` first. A base built from a

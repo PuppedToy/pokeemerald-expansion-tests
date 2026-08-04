@@ -54,12 +54,36 @@ set -euo pipefail
 cd "$DEPLOY_PATH_IN"
 echo "==> clean tree (the base must never carry a run's data)"
 $COMPOSE_IN run --rm -T app sh -lc 'git checkout -- src/ include/ data/maps/ || true' </dev/null
-echo "==> make (this is the slow part: ~4 min warm, ~20 min cold on 2 cores)"
-$COMPOSE_IN run --rm -T app sh -lc 'make -j"$(nproc)" && make syms' </dev/null
+# A base build may NOT trust the warm build/ cache, and the reason is not obvious: `update.sh` rsyncs with
+# -a, which preserves the mtimes from the developer's machine. Those are usually OLDER than the objects the
+# box compiled days ago, so `make` sees an up-to-date object and silently reuses one compiled from a
+# DIFFERENT revision. Measured 2026-08-04: src/randomizer_rewards.c (mtime Jul 29) against
+# build/modern/src/randomizer_rewards.o (Aug 1) — the linked ROM carried the old gGymRewards data, and
+# injection refused because the table did not match the committed initializer it was verified against.
+# `tidy` drops the objects + ROM/ELF/MAP but keeps the converted graphics and tools, so this costs minutes,
+# not the full cold build. Correctness is not optional here: every user's ROM is this artifact.
+echo "==> tidy (drop every object — a warm cache silently mixes revisions, see the note above)"
+$COMPOSE_IN run --rm -T app sh -lc 'make tidy' </dev/null
+echo "==> make (this is the slow part: ~10-20 min on 2 cores after a tidy)"
+# ONE invocation for both goals, and this is not a style preference — it is the whole ballgame.
+# `make && make syms` links TWICE: the Makefile is not idempotent (generated prerequisites come back
+# newer than the ELF), so the second invocation relinks, and then pokeemerald.gba is from link #1 while
+# pokeemerald.map/.sym describe link #2. Every symbol offset is then subtly wrong — measured 2026-08-04:
+# a 32-byte shift that put `gStatStageRatios` where the map claimed `gSpeciesInfo`. Injection cannot
+# survive that (randomizer/docs/injection.md: all three MUST come from one build). With `all` and `syms`
+# as goals of a single make, the ELF is linked once and the ROM and the symbols both derive from it.
+$COMPOSE_IN run --rm -T app sh -lc 'make -j"$(nproc)" all syms' </dev/null
 echo "==> install base/ (all three artifacts from THIS build)"
 $COMPOSE_IN run --rm -T app sh -lc '
   set -e
   mkdir -p base
+  # The ROM must not predate the ELF the symbols were read from: if it does, they are different links and
+  # the base is unusable (see the note above). Cheap, and it catches the failure at its source.
+  if [ pokeemerald.elf -nt pokeemerald.gba ]; then
+    echo "   ✗ pokeemerald.elf is NEWER than pokeemerald.gba — the ROM and the symbols are from different"
+    echo "     links, so every offset would be wrong. Not installing. Re-run: make -j all syms"
+    exit 1
+  fi
   for f in pokeemerald.gba pokeemerald.map pokeemerald.sym; do
     test -s "$f" || { echo "   ✗ $f missing or empty after make — aborting"; exit 1; }
     cp -f "$f" "base/$f"
@@ -71,6 +95,26 @@ echo "==> offset map + readiness table (GATE-1 budget, exported symbols per modu
 $COMPOSE_IN run --rm -T app sh -lc 'node randomizer/injector/buildOffsetMap.js \
   --map=base/pokeemerald.map --sym=base/pokeemerald.sym --rom=base/pokeemerald.gba \
   --out=base/base-offsets.json' </dev/null
+# The proof that matters. Symbol-existence checks pass happily on a base whose .map belongs to another
+# link (they found every symbol — at the wrong address), so the only trustworthy check is to actually
+# INJECT into it: that runs structLayout's anchors, which read Bulbasaur's stats back out of the ROM.
+# A base that fails here is moved aside, so the app holds the queue instead of failing every request.
+echo "==> smoke-test: inject one bundle into the new base"
+BUNDLE=$(ls backend/data/golden-corpus/*.bundle.json 2>/dev/null | head -1)
+if [ -z "$BUNDLE" ]; then
+  echo "   ⚠ no golden-corpus bundle on this box — cannot verify the base is injectable."
+  echo "     The app's boot check only proves the FILES exist, not that their offsets are right."
+else
+  if $COMPOSE_IN run --rm -T app sh -lc "node make.js --bundle=$BUNDLE --rom=0 --out=/tmp/base-smoke --full-rom --inject" </dev/null > /tmp/ec-base-smoke.log 2>&1; then
+    echo "   ✓ injection works against this base"
+    grep -E "Injected|·" /tmp/ec-base-smoke.log | tail -8
+  else
+    echo "   ✗ INJECTION FAILED against the freshly built base — not installing it:"
+    tail -6 /tmp/ec-base-smoke.log | sed 's/^/     /'
+    mv base "base-rejected-$(date +%Y%m%d-%H%M%S)"
+    exit 1
+  fi
+fi
 echo "==> restart app (its boot check now finds the base and starts the worker)"
 $COMPOSE_IN up -d --force-recreate app
 sleep 5
