@@ -94,3 +94,31 @@ export async function hasRom() {
 export async function clearRom() {
   try { await kvDel(ROM_KEY); } catch { /* best effort */ }
 }
+
+// ── The base ROM, for client-side injection (T-249) ───────────────────────────
+//
+// `base = vanilla + base.bps`. Reconstructing it costs a 32 MB patch fetch and an apply, so it is kept
+// here next to the vanilla ROM that produced it — and keyed by the base build's own sha256 (`buildId`),
+// because a base from another build with this build's offset map would write real data to wrong addresses.
+// Only ONE base is ever stored: a new build replaces it rather than accumulating 32 MB copies.
+
+const BASE_KEY = 'base-rom';
+const BASE_ID_KEY = 'base-rom-build-id';
+
+/** The stored base ROM for `buildId`, or null when there is none (or it belongs to another build). */
+export async function getBase(buildId) {
+  const storedId = await kvGet(BASE_ID_KEY);
+  if (!storedId || storedId !== buildId) return null;
+  const v = await kvGet(BASE_KEY);
+  return v == null ? null : asU8(v);
+}
+
+/** Store the base ROM for `buildId`, replacing any older base. */
+export async function putBase(buildId, bytes) {
+  await kvSet(BASE_KEY, asU8(bytes));
+  await kvSet(BASE_ID_KEY, buildId);
+}
+
+export async function clearBase() {
+  try { await kvDel(BASE_KEY); await kvDel(BASE_ID_KEY); } catch { /* best effort */ }
+}

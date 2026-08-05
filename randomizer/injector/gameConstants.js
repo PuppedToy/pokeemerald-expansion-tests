@@ -18,41 +18,15 @@
  * id is exactly the failure this table exists to prevent.
  */
 
-const fs = require('fs');
 const path = require('path');
+const { CONSTANT_HEADERS, treeSources } = require('./sources');
 
-/** The headers that hold every id the migrated modules write. */
-const DEFAULT_HEADERS = [
-    'include/constants/species.h',
-    'include/constants/moves.h',
-    'include/constants/items.h',
-    'include/constants/abilities.h',
-    'include/constants/pokemon.h',
-    // T-241 — trainers: the TRAINER_*/PARTNER_* indices into gTrainers/gBattlePartners, the difficulty
-    // row, and the party-entry constants trainerproc bakes in (TRAINER_MON_RANDOM_GENDER). `data.h` is
-    // not a constants header, but it is where `enum TrainerBattleType` and MAX_TRAINER_ITEMS live, and
-    // re-typing either here is exactly what ADR-012 says not to do.
-    'include/constants/opponents.h',
-    'include/constants/battle_partner.h',
-    'include/constants/difficulty.h',
-    'include/constants/trainers.h',
-    'include/data.h',
-    // T-242 — the nickname/trade tables: MAP_* (a `(num | (group << 8))` bit expression, which is why
-    // the evaluator below understands `|` and `<<`), INGAME_TRADE_*, and MON_MALE/FEMALE/GENDERLESS.
-    'include/constants/map_groups.h',
-    'include/constants/trade.h',
-    // POKEMON_NAME_LENGTH / TRAINER_NAME_LENGTH (the width of every inline name field) and MALE/FEMALE.
-    'include/constants/global.h',
-    // T-243 — the Phase-2 tables' own indices and sizes: PICK_* / PICK_COUNT / MAX_PICK_ITEMS /
-    // MEGA_TRAINER_COUNT, GYM_REWARD_* and STATIC_ENCOUNTER_* (the last two are enums in a non-constants
-    // header, which is where T-234/235/236 put them).
-    'include/constants/randomizer_picks.h',
-    'include/randomizer_rewards.h',
-    // B-060 — the map object events the mega-stone balls live in: OBJ_EVENT_GFX_* to prove a map's
-    // table against its own JSON before writing the stone into it.
-    'include/constants/event_objects.h',
-    'include/constants/flags.h',
-];
+/**
+ * The headers that hold every id the migrated modules write. They live in `sources.js` with the rest of
+ * the injector's source paths (T-249) and are re-exported here, where every caller already looks.
+ */
+const DEFAULT_HEADERS = CONSTANT_HEADERS;
+
 
 // A `#define` of a plain constant: no `(` directly after the name (that is a function-like macro).
 const DEFINE_RE = /^\s*#\s*define\s+([A-Za-z_]\w*)(?![\w(])\s*(.*)$/;
@@ -299,14 +273,14 @@ class ConstantTable {
  * @param {object}   [opts]
  * @param {string}   [opts.root]    repo root (defaults to this file's repo)
  * @param {string[]} [opts.headers] header paths relative to `root`
+ * @param {import('./sources').BaseSources} [opts.sources]  read the headers from these instead of the
+ *        disk (T-249) — how the browser gets them; `root` is then only a label.
  * @returns {ConstantTable}
  */
-function loadGameConstants({ root = path.resolve(__dirname, '..', '..'), headers = DEFAULT_HEADERS } = {}) {
+function loadGameConstants({ root = path.resolve(__dirname, '..', '..'), headers = DEFAULT_HEADERS, sources = null } = {}) {
     const table = new ConstantTable();
-    for (const rel of headers) {
-        const full = path.isAbsolute(rel) ? rel : path.join(root, rel);
-        table.merge(parseConstantHeader(fs.readFileSync(full, 'utf8')));
-    }
+    const from = sources || treeSources({ root });
+    for (const rel of headers) table.merge(parseConstantHeader(from.read(rel)));
     return table;
 }
 

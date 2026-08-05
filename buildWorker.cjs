@@ -23,6 +23,13 @@ const DEFAULT_OUTFILE = path.join(FRONT_JS, 'randomizer.bundle.js');
 const BPS_ENTRY = path.join(__dirname, 'randomizer', 'bps.js');
 const BPS_OUTFILE = path.join(FRONT_JS, 'bps.bundle.js');
 
+// The injector Worker (T-249) — the same randomizer/injector modules the Node path runs, bundled for the
+// browser. Its two extra shims are what Node gives the injector for free:
+//   - `Buffer`, INJECTED as a global, because the modules reference it bare (rom.js and every encoder);
+//   - `crypto`, aliased, for the synchronous sha256 that identifies a ROM.
+const INJECTOR_ENTRY = path.join(FRONT_JS, 'injector-worker.cjs');
+const INJECTOR_OUTFILE = path.join(FRONT_JS, 'injector.bundle.js');
+
 async function bundleWorker(outfile = DEFAULT_OUTFILE) {
   const esbuild = require('esbuild');
   await esbuild.build({
@@ -54,4 +61,27 @@ async function bundleBps(outfile = BPS_OUTFILE) {
   return outfile;
 }
 
-module.exports = { bundleWorker, bundleBps, WORKER_ENTRY, DEFAULT_OUTFILE, BPS_ENTRY, BPS_OUTFILE };
+async function bundleInjector(outfile = INJECTOR_OUTFILE) {
+  const esbuild = require('esbuild');
+  await esbuild.build({
+    entryPoints: [INJECTOR_ENTRY],
+    bundle: true,
+    platform: 'browser',
+    format: 'iife',
+    outfile,
+    define: { 'process.env.NODE_ENV': '"production"', '__dirname': '"."' },
+    alias: {
+      fs: path.join(SHIMS, 'fs.cjs'),
+      path: path.join(SHIMS, 'path.cjs'),
+      child_process: path.join(SHIMS, 'child_process.cjs'),
+      crypto: path.join(SHIMS, 'crypto.cjs'),
+    },
+    inject: [path.join(SHIMS, 'buffer-inject.mjs')],
+  });
+  return outfile;
+}
+
+module.exports = {
+  bundleWorker, bundleBps, bundleInjector,
+  WORKER_ENTRY, DEFAULT_OUTFILE, BPS_ENTRY, BPS_OUTFILE, INJECTOR_ENTRY, INJECTOR_OUTFILE,
+};

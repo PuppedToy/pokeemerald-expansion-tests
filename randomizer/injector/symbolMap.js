@@ -109,6 +109,24 @@ class OffsetMap {
         });
     }
 
+    /**
+     * A new map holding only `names` (those it has), with the same ROM budget.
+     *
+     * The full map of a real base is 88,000 symbols; injection can only address a few thousand of them.
+     * See `filterOffsetMapForInjection` in injector/index.js for who decides which, and T-249 for why a
+     * browser cannot be handed the whole thing.
+     */
+    pick(names) {
+        const symbols = {};
+        for (const name of names) if (this.has(name)) symbols[name] = this.symbols[name];
+        return new OffsetMap({
+            symbols,
+            romCapacity: this.romCapacity,
+            romEndOffset: this.romEndOffset,
+            source: this.source,
+        });
+    }
+
     /** Every symbol whose name matches, in address order — how families (2205 learnsets) are found. */
     findAll(pattern) {
         const re = pattern instanceof RegExp ? pattern : new RegExp(pattern);

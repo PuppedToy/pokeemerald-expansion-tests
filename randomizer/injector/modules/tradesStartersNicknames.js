@@ -24,9 +24,8 @@
  * base's own entries carry text: `_("DOTS")`, `_("KOBE")`).
  */
 
-const fs = require('fs');
-const path = require('path');
 const { LOCATION_NICKNAME, TRADE_NICKNAME, INGAME_TRADE } = require('../structLayout');
+const { BASE_SOURCE_FILES } = require('../sources');
 const { loadCharmap, encodeString } = require('../charmap');
 const { buildInjectionContext } = require('../context');
 const { sanitizeNickname, genderConst } = require('../../starterNameWriter');
@@ -38,9 +37,6 @@ const {
 } = require('../../layout');
 
 const TAG = 'tradesStartersNicknames';
-const REPO_ROOT = path.resolve(__dirname, '..', '..', '..');
-
-const TRADE_H = () => path.resolve(REPO_ROOT, 'src', 'data', 'trade.h');
 
 /**
  * The charmap, once per ROM. Every sub-writer needs it, and a test may call one of them directly.
@@ -58,7 +54,7 @@ function charmapFor(ctx) {
                 `structLayout declares ${LOCATION_NICKNAME.nicknameWidth}/${INGAME_TRADE.otNameWidth}. ` +
                 `Every field after a name has moved — re-derive the offsets before injecting.`);
         }
-        ctx.charmap = loadCharmap({ root: ctx.root });
+        ctx.charmap = loadCharmap({ root: ctx.root, sources: ctx.baseSources });
     }
     return ctx.charmap;
 }
@@ -336,7 +332,7 @@ function verifyTradeTable(ctx, sourceText) {
 
 function injectIngameTrades(ctx, { tradeSource = null } = {}) {
     const { rom, data, log } = ctx;
-    const source = tradeSource ?? fs.readFileSync(TRADE_H(), 'utf8');
+    const source = tradeSource ?? ctx.baseSources.read(BASE_SOURCE_FILES.trade);
     verifyTradeTable(ctx, source);                    // always, even when this run writes no trades
 
     const trades = (data.artifacts && data.artifacts.trades) || null;
@@ -363,7 +359,7 @@ const SYMBOLS = [
  * @param {object} args  `{ rom, offsetMap, data, log }` as the registry calls it (injector/index.js)
  * @param {object} [args.sources]  `{ tradeSource }` instead of reading the tree
  */
-function applyTradesStartersNicknames({ rom, offsetMap, data = {}, log = () => {}, sources = {} }) {
+function applyTradesStartersNicknames({ rom, offsetMap, data = {}, log = () => {}, sources = {}, baseSources = null }) {
     const missing = SYMBOLS.filter(symbol => !offsetMap.has(symbol));
     if (missing.length) {
         // Nothing claimed → a harness base without these tables; anything claimed → the T-234/T-237 trap.
@@ -376,7 +372,7 @@ function applyTradesStartersNicknames({ rom, offsetMap, data = {}, log = () => {
             `map is from another build.`);
     }
 
-    const ctx = buildInjectionContext({ rom, offsetMap, data, log });
+    const ctx = buildInjectionContext({ rom, offsetMap, data, log, baseSources });
     return {
         starters: injectStarters(ctx),
         locationNicknames: injectLocationNicknames(ctx),

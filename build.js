@@ -56,7 +56,7 @@ async function main() {
     // ── Step 2: Bundle randomizer worker ──────────────────────────────────────
     // esbuild config lives in buildWorker.cjs (shared with the B-014 regression test).
     console.log('[build] Bundling randomizer worker...');
-    const { bundleWorker, bundleBps } = require('./buildWorker.cjs');
+    const { bundleWorker, bundleBps, bundleInjector } = require('./buildWorker.cjs');
     const bundlePath = await bundleWorker();
     const bundleKb = Math.round(fs.statSync(bundlePath).size / 1024);
     console.log(`[build] Wrote randomizer.bundle.js (${bundleKb} KB) → ${bundlePath}`);
@@ -64,6 +64,10 @@ async function main() {
     // BPS codec for client-side patching (T-053, ADR-013).
     const bpsPath = await bundleBps();
     console.log(`[build] Wrote bps.bundle.js (${Math.round(fs.statSync(bpsPath).size / 1024)} KB) → ${bpsPath}`);
+
+    // The injector, for the browser (T-249) — the same randomizer/injector modules the ROM builder runs.
+    const injectorPath = await bundleInjector();
+    console.log(`[build] Wrote injector.bundle.js (${Math.round(fs.statSync(injectorPath).size / 1024)} KB) → ${injectorPath}`);
 
     // ── Step 3: Generate sprite map (T-001) ───────────────────────────────────
     // Encodes in-repo Pokémon/trainer art into frontend/data/sprites.json (base64).

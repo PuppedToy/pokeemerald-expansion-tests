@@ -251,6 +251,11 @@
 | [T-246](T-246-base-injection-frontend-delivery-uat.md) | "Base+injection Phase 5 — frontend/delivery wiring + user acceptance" | in-progress | 0.7.0 | 2026-08-04 |
 | [T-247](T-247-phase2-dead-multichoice-and-writer-cleanup.md) | "Phase-2 cleanup — delete the multichoice lists and writer loops the data-driven migration orphaned" | in-progress | 0.7.0 | 2026-08-01 |
 | [T-248](T-248-base-layout-stability-under-injected-data.md) | "Make the base's ROM layout independent of the data it carries (B-057) — decide with a measurement" | done | 0.7.0 | 2026-08-03 |
-| [T-249](T-249-client-side-offline-injector.md) | "Run the injector in the browser — zero-server-compute / offline artifact generation" | proposed | 0.8.0 | 2026-08-04 |
+| [T-249](T-249-client-side-offline-injector.md) | "Run the injector in the browser — zero-server-compute / offline artifact generation" | done | 0.8.0 | 2026-08-04 |
 | [T-250](T-250-map-parse-quadratic-symbol-sizing.md) | "Cut ~4 s/ROM: the .map parser re-sorts each section's symbols once per symbol" | proposed | 0.7.0 | 2026-08-04 |
 | [T-251](T-251-mega-stone-assignment-one-home.md) | Give the mega-stone assignment one home and stop it producing NaN levels | done | 0.8.0 | 2026-08-05 |
+| [T-252](T-252-mega-continuity-and-ability-coherence.md) | Carry the mega through the rival/Wally line from the Mega Ring on, and stop incoherent ability picks | proposed | 0.8.0 | 2026-08-05 |
+| [T-253](T-253-client-injection-device-aptitude.md) | "Decide which devices may build locally, and turn client injection on for them" | proposed | 0.9.0 | 2026-08-05 |
+| [T-254](T-254-client-run-telemetry.md) | "Measure the device fleet, so client injection can be decided on data" | proposed | 0.9.0 | 2026-08-05 |
+| [T-255](T-255-beta-gating-with-client-injection.md) | Decide what invite-only building means once building is local | proposed | 0.9.0 | 2026-08-05 |
+| [T-256](T-256-queue-redesign-after-client-injection.md) | "Rework the build queue once most runs never reach it" | proposed | 1.0.0 | 2026-08-05 |

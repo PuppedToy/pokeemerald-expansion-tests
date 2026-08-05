@@ -20,6 +20,7 @@ const { loadOffsetMap, OffsetMap, toRomOffset, toGbaPointer } = require('./symbo
 const { FreeSpaceArena, findFreeRuns, repoint } = require('./freeSpace');
 const { diffRegions, attributeDiff, formatDiff } = require('./parity');
 const { BUILD_MODES, resolveBuildMode, isInjectMode } = require('./mode');
+const { BaseSources, collectBaseSources, treeSources, baseSourcePaths } = require('./sources');
 
 /**
  * The Phase-3 migration board. `apply({ rom, offsetMap, data, log })` writes that module's outputs into
@@ -96,6 +97,10 @@ const INJECTION_MODULES = [
         // The `<Map>_ObjectEvents` tables carry the mega stones lying on the ground (B-060) — map data
         // rather than a Phase-2 table, which is exactly why no module claimed it until a play-test did.
         symbolPatterns: [/_ObjectEvents$/],
+        // Not `symbols`: these are LOCAL labels, absent from any linker map, so claiming them as exports
+        // would make every `.map`-only readiness report cry MISSING. They still have to survive the
+        // browser's symbol filter (T-249), which is what this list is for.
+        localLabels: () => require('./modules/dataDrivenAndToggles').TOGGLE_SCRIPTS.map(s => s.label),
     },
 ];
 
@@ -122,6 +127,39 @@ function checkReadiness(offsetMap, modules = INJECTION_MODULES) {
     });
 }
 
+/**
+ * Every symbol an injection can address: what the registry names, what its patterns match, and the local
+ * script labels a module resolves by name (the Group-D setvar sites, which live only in the `.sym`).
+ *
+ * @returns {Set<string>}
+ */
+function injectionSymbolNames(offsetMap, modules = INJECTION_MODULES) {
+    const names = new Set();
+    for (const m of modules) {
+        for (const name of m.symbols || []) if (offsetMap.has(name)) names.add(name);
+        for (const pattern of m.symbolPatterns || []) for (const sym of offsetMap.findAll(pattern)) names.add(sym.name);
+        for (const name of (typeof m.localLabels === 'function' ? m.localLabels() : [])) {
+            if (offsetMap.has(name)) names.add(name);
+        }
+    }
+    return names;
+}
+
+/**
+ * The map an injection actually needs — the shippable one (T-249).
+ *
+ * A real base exports ~88,000 symbols (21 MB as JSON); the modules can reach a few thousand. The browser
+ * downloads this instead, and parses it inside a Worker that is also holding a 32 MB ROM.
+ *
+ * Dropping a symbol a module needs would be **silent** — `learnsets` reads an absent array as "the base
+ * does not export it" and leaves the base's data in place — so the filter is derived from the registry
+ * itself, never hand-listed, and `__tests__/unit/injectorInjectionMap.test.js` demands that a bundle
+ * injected through the filtered map come out byte-identical.
+ */
+function filterOffsetMapForInjection(offsetMap, modules = INJECTION_MODULES) {
+    return offsetMap.pick(injectionSymbolNames(offsetMap, modules));
+}
+
 /** Load a base ROM together with the `.map` of that exact build — the two are a matched pair. */
 function loadBase({ romPath, mapPath }) {
     const rom = Rom.load(romPath);
@@ -132,9 +170,15 @@ function loadBase({ romPath, mapPath }) {
 /**
  * Apply every migrated module to `rom`.
  *
+ * @param {object} args
+ * @param {import('./sources').BaseSources} [args.baseSources]  the base's own source text, which the
+ *        modules derive their writes from (T-249). Omitted, they read the tree — the Node default.
  * @returns {{ rom: Rom, applied: string[], pending: object[], journal: object[] }}
  */
-function injectRom({ rom, offsetMap, data = {}, modules = INJECTION_MODULES, allowPending = false, log = () => {} }) {
+function injectRom({
+    rom, offsetMap, data = {}, modules = INJECTION_MODULES, allowPending = false, log = () => {},
+    baseSources = null,
+}) {
     if (!(rom instanceof Rom)) throw new Error('injectRom needs a Rom (see injector/rom.js)');
     if (!offsetMap || typeof offsetMap.require !== 'function') throw new Error('injectRom needs an OffsetMap (see injector/symbolMap.js)');
 
@@ -152,7 +196,7 @@ function injectRom({ rom, offsetMap, data = {}, modules = INJECTION_MODULES, all
         if (module.status !== 'migrated') continue;
         if (typeof module.apply !== 'function') throw new Error(`Module '${module.id}' (${module.task}) is marked migrated but has no apply()`);
         try {
-            module.apply({ rom, offsetMap, data, log });
+            module.apply({ rom, offsetMap, data, log, baseSources });
         } catch (err) {
             throw new Error(`Injection module '${module.id}' (${module.task}) failed: ${err.message}`, { cause: err });
         }
@@ -171,6 +215,8 @@ module.exports = {
     pendingModules,
     migratedModules,
     checkReadiness,
+    injectionSymbolNames,
+    filterOffsetMapForInjection,
     // primitives, re-exported so a module only ever imports 'injector'
     Rom,
     OffsetMap,
@@ -183,6 +229,10 @@ module.exports = {
     diffRegions,
     attributeDiff,
     formatDiff,
+    BaseSources,
+    collectBaseSources,
+    treeSources,
+    baseSourcePaths,
     BUILD_MODES,
     resolveBuildMode,
     isInjectMode,

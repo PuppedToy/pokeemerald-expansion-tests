@@ -20,6 +20,7 @@ import { parseAdminEmails } from './auth/admin.js';
 import { createAuthRouter } from './auth/routes.js';
 import { createConfigRouter } from './config/routes.js';
 import { createBetaAdminRouter } from './beta/routes.js';
+import { createClientArtifactsGate } from './beta/clientArtifactsGate.js';
 import { createProduceRouter } from './produce/routes.js';
 import { createFeedbackRouter } from './feedback/routes.js';
 import { createDiagnosticsRouter } from './diagnostics/routes.js';
@@ -144,6 +145,21 @@ app.use('/api', createProduceRouter({
 // build (frontend/dist, produced by `node build.js` step 7 — T-220) is mounted FIRST so it shadows the
 // hand-written source; the generated bundles/data/assets/template.min.html that live outside dist fall
 // through to the frontend/ mount. Dev serves raw source. A missing dist/ simply falls through — safe.
+// Client-side injection artifacts (T-249): base.bps + the injector's inputs for the base this box has
+// installed, produced by randomizer/injector/buildClientArtifacts.js at base-build time. They live next to
+// the base itself (base/, which update.sh deliberately does not carry) and are a function of that build, so
+// everything except the manifest is immutable — the manifest is the freshness check that names the build.
+// They are also gated exactly like building is (createClientArtifactsGate): this path bypasses the queue,
+// so an unguarded /client/ would be a way around the beta invite gate that lives in handleProduce.
+const CLIENT_ARTIFACTS_DIR = path.join(__dirname, '..', 'base', 'client');
+app.use('/client', createClientArtifactsGate({ beta: BETA, users, jwtSecret: JWT_SECRET }), express.static(CLIENT_ARTIFACTS_DIR, {
+  setHeaders: (res, filePath) => {
+    res.setHeader('Cache-Control', path.basename(filePath) === 'manifest.json'
+      ? 'no-store'
+      : 'public, max-age=31536000, immutable');
+  },
+}));
+
 const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
 const SERVE_DIST = process.env.NODE_ENV === 'production' || process.env.SERVE_DIST === '1';
 if (SERVE_DIST) app.use(express.static(path.join(FRONTEND_DIR, 'dist')));

@@ -93,37 +93,13 @@ function resolveJobs() {
 
 // ── Bundle sentinel resolution ───────────────────────────────────────────────
 
-function resolveArtifact(value, sharedData, key) {
-    if (value === 'shared' || value === 'global') return sharedData[key];
-    if (typeof value === 'string' && value.startsWith('player-')) {
-        const playerIndex = parseInt(value.split('-')[1], 10);
-        return sharedData.players[playerIndex][key];
-    }
-    return value;
-}
-
-// T-189 — seed derivations come from the shared randomizer/seeds.js module so the compile
-// side can never drift from generate.js. `seed` is the run seed; `universeSeed` (defaulting
-// to the run seed for bundles that predate the two-tier model) seeds the shared block.
-const { deriveSeed, romSeed: deriveRomSeed, trainerBaseSeed } = require('./randomizer/seeds');
-
-// Derive the RNG seed for a ROM based on its trainer-sharing level. Shared/player trainers
-// key off universeSeed (identical across the ROMs that share them); per-ROM trainers use a
-// run-seed-derived per-ROM seed.
-function resolveRomSeed(rom, seed, universeSeed = seed) {
-    const t = rom.artifacts.trainers;
-    if (t === 'shared' || t === 'global') return universeSeed;
-    if (typeof t === 'string' && t.startsWith('player-')) {
-        return deriveSeed(universeSeed, parseInt(t.split('-')[1], 10));
-    }
-    return deriveRomSeed(seed, rom.romIndex);
-}
-
-// Returns the baseRngSeed to pass to writer() for per-slot trainer reseeding.
-// Must match the trainingBaseSeed logic in generate.js so docs == ROM.
-function resolveTrainingBaseSeed(rom, seed, universeSeed = seed) {
-    return trainerBaseSeed(rom.artifacts.trainers, { universeSeed, unshared: null });
-}
+// T-249 — which artifacts a ROM gets and which seed it is built under live in
+// randomizer/injector/romData.js: the browser injector needs the same answers, and the seed
+// decides values the writers re-derive, so there is exactly one copy. The seed derivations
+// themselves are randomizer/seeds.js, shared with generate.js (T-189).
+const {
+    injectionDataFor, resolveArtifact, resolveRomSeed, resolveTrainingBaseSeed,
+} = require('./randomizer/injector/romData');
 
 function romFileName(rom) {
     if (rom.playerIndex !== undefined) {
@@ -149,22 +125,19 @@ function resolveBasePaths({ env = process.env, root: repoRoot = root } = {}) {
  */
 async function injectOneRom({
     rom, bundle, seed, universeSeed = seed, outDir, fullRom = false,
-    allowPending = false, basePaths = resolveBasePaths(), modules = undefined,
+    allowPending = false, basePaths = resolveBasePaths(), modules = undefined, baseSources = null,
 }) {
     const rng = require('./randomizer/rng');
     const { loadBase, injectRom, loadOffsetMap } = require('./randomizer/injector');
     const { emitArtifact, resolveVanillaPath } = require('./randomizer/romArtifact');
 
-    const label    = romFileName(rom);
-    const pokedex  = resolveArtifact(rom.artifacts.pokedex,  bundle.sharedData, 'pokedex');
-    const trainers = resolveArtifact(rom.artifacts.trainers, bundle.sharedData, 'trainers');
-    const starters = resolveArtifact(rom.artifacts.starters, bundle.sharedData, 'starters');
-    const wild     = rom.artifacts.wild;
+    const label = romFileName(rom);
+    const { data, romSeed } = injectionDataFor({ rom, bundle, seed, universeSeed });
 
     fs.mkdirSync(outDir, { recursive: true });
 
     // Same seeding as the compile path: injection changes the OUTPUT SINK, never the values.
-    rng.seed(resolveRomSeed(rom, seed, universeSeed));
+    rng.seed(romSeed);
 
     const { rom: baseRom, offsetMap: mapOnly } = loadBase({ romPath: basePaths.romPath, mapPath: basePaths.mapPath });
     // Local script labels (the Group-D setvar sites) only exist in the .sym — merge it when present.
@@ -172,16 +145,11 @@ async function injectOneRom({
         ? mapOnly.merge(loadOffsetMap(basePaths.symPath))
         : mapOnly;
 
-    const data = {
-        pokedex, trainers, starters, wild,
-        config: bundle.config || {},
-        artifacts: rom.artifacts,
-        baseRngSeed: resolveTrainingBaseSeed(rom, seed, universeSeed),
-        docs: rom.docs,
-    };
-
     const { applied, pending, journal } = injectRom({
         rom: baseRom, offsetMap, data, allowPending, log: (msg) => console.log(`  · ${msg}`),
+        // null → the modules read the base's sources off the tree (T-249). A caller with no tree (a
+        // browser, an offline box) passes the baked artifact instead; the bytes are the same either way.
+        baseSources,
         // Defaults to the real registry; a harness can drive the wiring with its own module set.
         ...(modules ? { modules } : {}),
     });

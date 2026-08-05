@@ -26,10 +26,10 @@
  * contents can never disagree.
  */
 
-const fs = require('fs');
 const path = require('path');
 const { MEGA_TRAINERS } = require('../../constants');
 const { assignMegaStones } = require('../../megaAssignment');
+const { BASE_SOURCE_FILES, treeSources } = require('../sources');
 
 const TAG = 'megaMapItems';
 const REPO_ROOT = path.resolve(__dirname, '..', '..', '..');
@@ -76,10 +76,16 @@ function megaAssignment(data) {
 /**
  * Every `ITEM_MEGA_nn` site in the committed maps: `[{ map, megaId, index, json }]`, where `index` is
  * the event's position in that map's `object_events` (the order the map compiler preserves).
+ *
+ * @param {object} [opts]
+ * @param {string} [opts.root]
+ * @param {object} [opts.maps]        `{ MapName: parsedMapJson }` instead of reading anything
+ * @param {import('../sources').BaseSources} [opts.baseSources]  the maps' JSON, instead of the disk (T-249)
  */
-function findMegaPlaceholders({ root = REPO_ROOT, maps = null } = {}) {
+function findMegaPlaceholders({ root = REPO_ROOT, maps = null, baseSources = null } = {}) {
     const sites = [];
-    const read = (map) => JSON.parse(fs.readFileSync(path.resolve(root, 'data', 'maps', map, 'map.json'), 'utf8'));
+    const from = baseSources || treeSources({ root });
+    const read = (map) => JSON.parse(from.read(BASE_SOURCE_FILES.mapJson(map)));
     const names = maps ? Object.keys(maps) : [...new Set(MEGA_TRAINERS.map(m => m.map))];
 
     for (const map of names) {
@@ -133,7 +139,7 @@ function verifyTable(ctx, map, json) {
  */
 function injectMegaMapItems(ctx, { maps = null } = {}) {
     const { rom, constants, data, log } = ctx;
-    const sites = findMegaPlaceholders({ maps });
+    const sites = findMegaPlaceholders({ maps, baseSources: ctx.baseSources });
     if (sites.length === 0) return { writes: 0, hidden: 0, sites: 0 };
 
     // A bundle with no wild artifact assigned no megas at all — the placeholders stay as the base has

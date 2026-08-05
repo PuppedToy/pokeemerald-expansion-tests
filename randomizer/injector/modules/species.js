@@ -26,10 +26,9 @@
  * stripper matches, so zeroing the whole table is the same thing.
  */
 
-const fs = require('fs');
-const path = require('path');
 const { SPECIES_INFO } = require('../structLayout');
-const { POKEMON_TYPES, SPECIES_DIR, TOTAL_GENS } = require('../../constants');
+const { POKEMON_TYPES, TOTAL_GENS } = require('../../constants');
+const { BASE_SOURCE_FILES, treeSources } = require('../sources');
 const { editSpeciesFile } = require('../../pokemonWriter');
 const { BANNED_SPECIES_FOR_PICKING } = require('../../modules/wildModule');
 
@@ -44,12 +43,19 @@ const STAT_LINE_RE = /^\s*\.(baseHP|baseAttack|baseDefense|baseSpeed|baseSpAttac
 const TYPES_LINE_RE = /^\s*\.types\s*=\s*MON_TYPES\(([^)]*)\)/;
 const ABILITIES_LINE_RE = /^\s*\.abilities\s*=\s*\{([^}]*)\}/;
 
-/** The base's species-info sources, `[{ name, text }]`. */
-function loadSpeciesSources(dir = SPECIES_DIR) {
+/**
+ * The base's species-info sources, `[{ name, text }]`.
+ *
+ * @param {object} [opts]
+ * @param {import('../sources').BaseSources} [opts.baseSources]  where to read them from (T-249);
+ *        defaults to this tree. A gen file the sources don't carry is skipped, as an absent file was.
+ */
+function loadSpeciesSources({ baseSources = null } = {}) {
+    const from = baseSources || treeSources();
     const sources = [];
     for (let gen = 1; gen <= TOTAL_GENS; gen++) {
-        const file = path.resolve(dir, `gen_${gen}_families.h`);
-        if (fs.existsSync(file)) sources.push({ name: `gen_${gen}_families.h`, text: fs.readFileSync(file, 'utf8') });
+        const text = from.tryRead(BASE_SOURCE_FILES.speciesInfo(gen));
+        if (text !== null) sources.push({ name: `gen_${gen}_families.h`, text });
     }
     return sources;
 }
@@ -173,7 +179,7 @@ function injectSpeciesInfo(ctx, { speciesSources = null } = {}) {
         .filter(poke => !BANNED_SPECIES_FOR_PICKING.includes(poke.id));
     const writes = { stats: 0, types: 0, abilities: 0, heldItems: 0 };
 
-    const sources = speciesSources || loadSpeciesSources();
+    const sources = speciesSources || loadSpeciesSources({ baseSources: ctx.baseSources });
     // (species, field) → change, in source order. A species can be hit twice — by its own block and by a
     // macro it invokes — and C's duplicate designated initializers keep the LAST one, so this does too.
     const perSpecies = new Map();
