@@ -37,6 +37,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **The mega stone you pick up is the one your documentation promised.** In some runs every mega-stone ball
+  on the ground handed over the wrong stone — Jagged Pass documented a Pidgeotite and gave a Scizorite —
+  because two of them (the ones whose Pokémon evolve with a stone rather than by level) were filed under no
+  level at all, which shifted the whole list. Runs already generated build correctly too. (T-251, B-062)
+
 - **Hidden Power (and Return/Frustration/Secret Power) now show for every Pokémon.** These moves are learnable
   by all species in-game, but the docs only listed them on a random ~half of the roster each run. They now
   appear consistently on every Pokémon's teachable list (and the team rater accounts for them uniformly). (T-207, B-054)

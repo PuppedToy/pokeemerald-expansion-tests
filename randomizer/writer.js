@@ -22,6 +22,7 @@ const {
 const { typeMainColors } = require('./trainerColors');
 const { BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone } = require('./modules/wildModule');
 const { updateMegaHiddenTable } = require('./megaHiddenWriter');
+const { assignMegaStones } = require('./megaAssignment');
 const { createTeamResolver, normalizeTrainerBagTms } = require('./modules/resolveTrainerTeam');
 const { nameizyPokemonId } = require('./parser');
 const { createSophisticationScale } = require('./modules/sophistication');
@@ -409,11 +410,10 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     // `routeFiles` list and `resolveMailMints` helper; the mint order still reaches the ROM through
     // `itemAssignments` → gItemPicks (injected by the data-driven-and-toggles module).
 
-    // Sort mega evos
-    const foundMegaEvos = [...wildFoundMegaEvos].sort((a, b) => a.level - b.level);
-    
-    // Assign mega evos to trainers
-    const megaTrainers = MEGA_TRAINERS;
+    // Assign mega evos to trainers. The rule lives in randomizer/megaAssignment.js (B-062) — the same
+    // function the docs (writerDocs.js) and the injector (injector/modules/megaMapItems.js) call, so a
+    // ball can never hand over a different stone than the one the run's documentation promised.
+    const { assigned: megaAssigned, hidden: megaHidden } = assignMegaStones(wildFoundMegaEvos, trainersData);
     const megaReplacementLog = {};
     const megaRemoveLog = [];
     
@@ -460,28 +460,11 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
         console.log(`Assigned mega evolution ${megaEvo.megaFormId} to mega trainer ${megaTrainer.id} on map ${megaTrainer.map}.`);
     }
 
-    let nextMegaEvo = foundMegaEvos.shift();
-    for (let i = 0; i < megaTrainers.length; i++) {
-        const foundTrainer = trainersData.find(trainer => trainer.id === megaTrainers[i].trainer);
-        if (!foundTrainer) {
-            throw new Error(`Could not find trainer with id ${megaTrainers[i].trainer} to assign mega evolution.`);
-        }
-        const level = foundTrainer.level;
-
-        if (!nextMegaEvo || nextMegaEvo.level > level) {
-            removeMegaTrainer(megaTrainers[i]);
-            continue;
-        }
-
-        await updateMegaTrainer(megaTrainers[i], nextMegaEvo);
-        
-        // End condition
-        if (!foundMegaEvos.length) {
-            nextMegaEvo = null;
-            continue;
-        }
-        nextMegaEvo = foundMegaEvos.shift();
+    const megaTrainerById = new Map(MEGA_TRAINERS.map(m => [m.id, m]));
+    for (const [megaId, megaEvo] of megaAssigned) {
+        await updateMegaTrainer(megaTrainerById.get(megaId), megaEvo);
     }
+    megaHidden.forEach(removeMegaTrainer);
 
     const contentEntries = Object.entries(megaTrainerFilesContent);
     for (let i = 0; i < contentEntries.length; i++) {
