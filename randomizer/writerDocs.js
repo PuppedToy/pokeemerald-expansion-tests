@@ -4,10 +4,10 @@ const rng = require('./rng');
 const wild = require('./wild.js');
 const trainers = require('./trainers.js');
 const {
-    MEGA_TRAINERS,
     PALAFIN_HERO_ID,
     GRENINJA_ASH_ID,
 } = require('./constants');
+const { assignMegaStones } = require('./megaAssignment');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
 const { createTeamResolver, normalizeTrainerBagTms } = require('./modules/resolveTrainerTeam');
 const { createSophisticationScale } = require('./modules/sophistication');
@@ -201,40 +201,16 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     if (staticRewards.legend2)   replacementLog['SPECIES_LEGEND2']   = staticRewards.legend2.id;
     if (staticRewards.legend3)   replacementLog['SPECIES_LEGEND3']   = staticRewards.legend3.id;
 
-    // Mega trainer processing — no file I/O, just build megaReplacementLog and splice trainersData
-    const foundMegaEvos = [...wildFoundMegaEvos].sort((a, b) => a.level - b.level);
+    // Mega trainer processing — no file I/O, just build megaReplacementLog and splice trainersData.
+    // The rule itself lives in randomizer/megaAssignment.js (B-062): the docs the player reads and the
+    // item the ball actually gives are decided by ONE function, on both sides of the bundle.
+    const { assigned: megaAssigned, hidden: megaHidden } = assignMegaStones(wildFoundMegaEvos, trainersData);
     const megaReplacementLog = {};
-
-    function removeMegaTrainer(megaTrainer) {
+    for (const [megaId, megaEvo] of megaAssigned) megaReplacementLog[`ITEM_MEGA_${megaId}`] = megaEvo.item;
+    // A mega trainer with no stone to give is spliced out — it gets no party and never appears here.
+    for (const megaTrainer of megaHidden) {
         const trainerIndex = trainersData.findIndex(t => t.id === megaTrainer.trainer);
         if (trainerIndex >= 0) trainersData.splice(trainerIndex, 1);
-    }
-
-    function updateMegaTrainer(megaTrainer, megaEvo) {
-        megaReplacementLog[`ITEM_MEGA_${megaTrainer.id}`] = megaEvo.item;
-    }
-
-    const megaTrainers = MEGA_TRAINERS;
-    let nextMegaEvo = foundMegaEvos.shift();
-    for (let i = 0; i < megaTrainers.length; i++) {
-        const foundTrainer = trainersData.find(t => t.id === megaTrainers[i].trainer);
-        if (!foundTrainer) {
-            throw new Error(`Could not find trainer with id ${megaTrainers[i].trainer} to assign mega evolution.`);
-        }
-        const level = foundTrainer.level;
-
-        if (!nextMegaEvo || nextMegaEvo.level > level) {
-            removeMegaTrainer(megaTrainers[i]);
-            continue;
-        }
-
-        updateMegaTrainer(megaTrainers[i], nextMegaEvo);
-
-        if (!foundMegaEvos.length) {
-            nextMegaEvo = null;
-            continue;
-        }
-        nextMegaEvo = foundMegaEvos.shift();
     }
 
     // T-104 — team resolution delegates to the single shared resolver

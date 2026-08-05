@@ -253,3 +253,4 @@
 | [T-248](T-248-base-layout-stability-under-injected-data.md) | "Make the base's ROM layout independent of the data it carries (B-057) — decide with a measurement" | done | 0.7.0 | 2026-08-03 |
 | [T-249](T-249-client-side-offline-injector.md) | "Run the injector in the browser — zero-server-compute / offline artifact generation" | proposed | 0.8.0 | 2026-08-04 |
 | [T-250](T-250-map-parse-quadratic-symbol-sizing.md) | "Cut ~4 s/ROM: the .map parser re-sorts each section's symbols once per symbol" | proposed | 0.7.0 | 2026-08-04 |
+| [T-251](T-251-mega-stone-assignment-one-home.md) | Give the mega-stone assignment one home and stop it producing NaN levels | in-progress | 0.8.0 | 2026-08-05 |

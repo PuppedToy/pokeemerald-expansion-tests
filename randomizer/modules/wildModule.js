@@ -153,6 +153,29 @@ function wildFoundLevel(map, method) {
     return map.level || 29; // land / surf / underwater / old
 }
 
+// The level a mega evolution is filed under in `foundMegaEvos` — the sort key that decides which mega
+// trainer hands out which stone (randomizer/megaAssignment.js).
+//
+// B-062: this used to be `Math.max(levelFound, Number(evolution.param))`, which is **NaN** whenever the
+// base form does not evolve by level. `param` is then an item constant — Scyther → Scizor by stone,
+// Kirlia → Gallade by Dawn Stone — and `Number('ITEM_DAWN_STONE')` is NaN. A NaN level does not survive
+// `JSON.stringify` (it becomes `null`), so the browser that wrote the docs and the builder that read
+// the bundle back sorted different values and handed out different stones. The level must always be a
+// finite number; a non-level evolution carries the level it becomes reachable at in `minLevel`.
+const DEFAULT_EVOLUTION_LEVEL = 25;
+function megaBaseFormLevel(levelFound, evolution) {
+    const found = Number.isFinite(Number(levelFound)) ? Number(levelFound) : 0;
+    if (!evolution) return found;                       // the base form has no pre-evolution
+
+    // `param` is the level for a LEVEL evolution and an item/constant for every other method; a
+    // non-level evolution keeps its reachable level in `minLevel`. Falsy and non-numeric alike fall
+    // through to the default, which is what the pre-B-062 `param || 25` did for a missing param.
+    const evolveLevel = [evolution.param, evolution.minLevel, DEFAULT_EVOLUTION_LEVEL]
+        .map(Number)
+        .find(value => Number.isFinite(value) && value > 0);
+    return Math.max(found, evolveLevel);
+}
+
 /**
  * Sweep generator ("batidas"). Fills every wild zone/method with `pokemonPerZone` distinct
  * species (capped to each method's physical slot count), drawn round-by-round across all zones
@@ -330,15 +353,15 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig, moduleConfi
                 const pokeThatEvolvesToBase = pokemonList.filter(p =>
                     (p.evolutions || []).some(e => e.pokemon === baseForm.id)
                 )[0];
-                const evolveLevel = (pokeThatEvolvesToBase && pokeThatEvolvesToBase.evolutions)
-                    ? (pokeThatEvolvesToBase.evolutions.find(e => e.pokemon === baseForm.id)?.param || 25)
-                    : 0;
+                const evolution = (pokeThatEvolvesToBase && pokeThatEvolvesToBase.evolutions)
+                    ? pokeThatEvolvesToBase.evolutions.find(e => e.pokemon === baseForm.id)
+                    : null;
                 foundMegaEvos.push({
                     family: poke.family,
                     megaFormId: megaForm.id,
                     baseFormId: baseForm.id,
                     item: megaForm.evolutionData.megaItem,
-                    level: Math.max(levelFound, Number(evolveLevel)),
+                    level: megaBaseFormLevel(levelFound, evolution),
                 });
             });
         }
@@ -739,6 +762,8 @@ function resolveRewardMegaStone(rewardPoke, pokemonList) {
 
 module.exports = {
     runWildModule, buildWildPlan, WILD_METHOD_SLOTS, BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone, rewardMegaStones,
+    // B-062 — the mega-evo sort key; exported so the level rule itself is testable.
+    megaBaseFormLevel,
     // Exported for the frontend default + unit testing (T-052).
     DEFAULT_EXTRA_STARTER_PRESET, isDefaultStarterPreset, EXTRA_STARTER_TIERS, pickExtraStartersFromSpecs,
 };

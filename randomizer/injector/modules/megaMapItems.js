@@ -20,14 +20,16 @@
  * an equivalence one: every file the compile path mutates must be claimed by a module. The write surface
  * was measured empirically for this fix (31 files; this was the only gap).
  *
- * The assignment rule — which trainer gets which stone, and which is hidden instead — is writer.js's
- * mega loop, mirrored once in `megaAssignment()` and used by **both** this module and
- * `gMegaTrainerHidden`, so the flag table and the ball contents can never disagree.
+ * The assignment rule — which trainer gets which stone, and which is hidden instead — lives in
+ * randomizer/megaAssignment.js, the one home writer.js and writerDocs.js call too (B-062). This module
+ * and `gMegaTrainerHidden` both read it through `megaAssignment()` below, so the flag table and the ball
+ * contents can never disagree.
  */
 
 const fs = require('fs');
 const path = require('path');
 const { MEGA_TRAINERS } = require('../../constants');
+const { assignMegaStones } = require('../../megaAssignment');
 
 const TAG = 'megaMapItems';
 const REPO_ROOT = path.resolve(__dirname, '..', '..', '..');
@@ -55,25 +57,18 @@ const PLACEHOLDER_RE = /^ITEM_MEGA_(\d+)$/;
 /**
  * Which mega trainer gets which stone — `Map<megaId, { item } | { hidden: true }>`.
  *
- * Mirrors writer.js: the found megas are sorted by level, then MEGA_TRAINERS is walked in order and each
- * trainer either takes the next stone (when its own level is high enough) or is HIDDEN and the stone
- * waits for a later trainer. This is the module's one re-implementation of a writer rule — writer.js
- * computes it inline, mid-function, so there is nothing to call.
+ * The rule itself is no longer re-implemented here: it lives in randomizer/megaAssignment.js, which
+ * writer.js and writerDocs.js call too (B-062). This wrapper only reshapes it into the
+ * `{ item } | { hidden: true }` map that this module and `gMegaTrainerHidden` consume.
  */
 function megaAssignment(data) {
-    const found = [...(((data.wild) || {}).foundMegaEvos || [])].sort((a, b) => a.level - b.level);
-    const trainers = ((data.trainers) || {}).trainersData || [];
+    const { assigned } = assignMegaStones(
+        ((data.wild) || {}).foundMegaEvos || [],
+        ((data.trainers) || {}).trainersData || [],
+    );
     const assignment = new Map();
-    let next = found.shift();
     for (const mega of MEGA_TRAINERS) {
-        const trainer = trainers.find(t => t.id === mega.trainer);
-        if (!trainer) throw new Error(`injector/${TAG}: no trainer '${mega.trainer}' for mega trainer ${mega.id}`);
-        if (!next || next.level > trainer.level) {
-            assignment.set(mega.id, { hidden: true });
-            continue;
-        }
-        assignment.set(mega.id, { item: next.item });
-        next = found.length ? found.shift() : null;
+        assignment.set(mega.id, assigned.has(mega.id) ? { item: assigned.get(mega.id).item } : { hidden: true });
     }
     return assignment;
 }
