@@ -6,7 +6,7 @@
 import { putRom, getRom, hasRom, clearRom, sha1Hex, isKnownEmeraldRom } from './rom-store.js';
 import { romName, romForServerName } from './romNaming.js'; // T-211 — download naming SSOT
 // T-249 — the browser can inject its own ROMs (no server build at all). Opt-in per browser; see the module.
-import { clientInjectEnabled, injectBundleLocally } from './client-inject.js';
+import { clientInjectEnabled, injectBundleLocally, clientArtifactManifest } from './client-inject.js';
 
 // applyBps comes from the generated ESM bundle (frontend/js/bps.bundle.js — the SAME codec the builder
 // uses to create patches). Loaded lazily and injectable so tests need not build the bundle.
@@ -661,9 +661,15 @@ async function deliverPatch(onStep = () => {}) {
 
   // T-249 — client-side injection: the ROMs are built HERE, so there is nothing to download. Same
   // `artifacts` shape as the server path below, so the full archive is assembled identically.
-  if (clientInjectEnabled() && lastBundle && buildFullZip && await getRom()) {
+  //
+  // The manifest is checked BEFORE committing to this path, because while BETA is on `/client/` is gated to
+  // accepted invites (backend/beta/clientArtifactsGate.js). A refused or artifact-less deployment answers
+  // null, and the run falls through to the server queue below rather than failing.
+  const localInject = clientInjectEnabled() && lastBundle && buildFullZip && await getRom()
+    && await clientArtifactManifest({ authToken: getToken() });
+  if (localInject) {
     onStep('download', 'active');
-    const artifacts = await injectBundleLocally(lastBundle, { onStep: (key, state) => onStep(key === 'base' ? 'download' : 'apply', state) });
+    const artifacts = await injectBundleLocally(lastBundle, { authToken: getToken(), onStep: (key, state) => onStep(key === 'base' ? 'download' : 'apply', state) });
     onStep('apply', 'done');
     onStep('zip', 'active');
     const fullZip = await buildFullZip(lastBundle, artifacts);

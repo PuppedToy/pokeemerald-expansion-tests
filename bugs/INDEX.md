@@ -66,3 +66,5 @@
 | [B-060](B-060-mega-stone-map-items-never-injected.md) | "Ground mega stones are never injected — the object-event item stays ITEM_MEGA_nn (= ITEM_NONE), so the ball hands over a corrupt item" | fixed | critical | 0.7.0 | 0.7.0 | randomizer/__tests__/unit/injectorMegaMapItems.test.js |
 | [B-061](B-061-reward-message-names-the-givemon-result.md) | "Boss reward message names the wrong species — it buffers VAR_RESULT after `givemon` has overwritten it" | fixed | major | 0.5.0 | 0.7.0 | randomizer/__tests__/unit/injectableAccessors.test.js |
 | [B-062](B-062-mega-stones-disagree-with-the-docs.md) | The mega stone on the ground is not the one the documentation promised | fixed | critical | 0.8.0 | 0.8.0 | randomizer/__tests__/unit/megaAssignment.test.js |
+| [B-063](B-063-poison-heal-without-toxic-orb.md) | A Poison Heal mon gets Leftovers because Toxic Orb is never offered in the trainer's bag | open | major | 0.5.0 |  |  |
+| [B-064](B-064-contrary-with-self-boosting-moves.md) | Contrary is assigned with no payoff move and coexists with self-boosting moves | open | major | 0.5.0 |  |  |

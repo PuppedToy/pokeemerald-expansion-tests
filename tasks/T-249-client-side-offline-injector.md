@@ -1,7 +1,7 @@
 ---
 id: T-249
 title: "Run the injector in the browser — zero-server-compute / offline artifact generation"
-status: in-progress
+status: done
 type: feature
 created: 2026-08-04
 updated: 2026-08-04
@@ -45,9 +45,11 @@ Acceptance criteria:
 - [x] The Node/GATE-3 path still runs the same modules (no second implementation). — the browser bundles
       `randomizer/injector/`; the fs boundary is enforced by test.
 - [~] Mobile-Safari memory ceiling measured (32 MB ROM + 19 MB bundle in a Worker) and either passed or
-      documented as a supported-platform limit. — **measured**: 213 MB peak, +71 MB for the injection, and
-      Safari's engine produces the same bytes. A real iOS device check is still open; documented in
-      `randomizer/docs/client-injection.md`, including what to give up if it has to come down.
+      documented as a supported-platform limit. — **measured on desktop**: 213 MB peak, +71 MB for the
+      injection, and Safari's engine produces the same bytes. The real-device check is **deferred by the
+      owner to after the beta** and carried by [T-253](T-253-client-injection-device-aptitude.md), together
+      with a finding from this task's shipping analysis: that 213 MB is the *1-ROM* figure and the peak
+      scales with ROM count. Shipping with the flag off is what makes deferring it safe.
 - [x] Decided + recorded: what happens to per-run diagnostics/decision logs for a client-injected run. —
       unchanged (they are *generation* artifacts, already posted by the browser); what has no equivalent is
       the server build log. Recorded in `randomizer/docs/client-injection.md`.
@@ -228,4 +230,60 @@ Acceptance criteria:
   in IndexedDB → fetch+apply `base.bps` (0.3 s) → **14 ms** from the cache on the second call → inject →
   `8c8d1c5f4e6d…`. Design reference: [randomizer/docs/client-injection.md](../randomizer/docs/client-injection.md).
 
+- **2026-08-05 — shipping decision: merge with the flag OFF, defer the device work.** Asked to choose an
+  aptitude criterion, the owner decided to keep the manual flag through the beta and do offline generation
+  afterwards. Every build keeps going through the server; nothing changes for any user.
+
+  The analysis behind that decision produced three things worth keeping:
+
+  **The fleet is unmeasured, not measured-and-fine.** PRO holds 6 users and **2 distinct user-agents ever**
+  (both Windows desktop), because `user_agent` only lives on `diagnostics`/`decision_logs` and those are
+  purged at 48 h. There was no data to answer "are all devices apt" with. → [T-254](T-254-client-run-telemetry.md).
+
+  **The published memory figure is the 1-ROM figure.** `injectBundleLocally` retains `gbaBytes` (32 MB) *and*
+  `bpsBytes` (~32 MB) per ROM until the loop ends, and `bundle`/`sources` are structured-**cloned** into every
+  Worker (the transfer list is `[base]` only). PRO's real request mix includes 2-, 4- and one 6-ROM run, and
+  a 6-ROM run is ~384 MB of retained artifacts before the archive blob exists. Also: the 213 MB was measured
+  with a 15 MB bundle, where production bundles are ~39 MB (measured locally: those parse to ~32 MB of
+  objects, factor ×0.8 — so the bundle is *not* where it explodes; the accumulation is). → [T-253](T-253-client-injection-device-aptitude.md).
+
+  **The beta gate was bypassable and is now closed.** The gate lives in `handleProduce`, and this path never
+  reaches it — `deliverPatch` short-circuits with no request row — while `/client/` was `express.static` with
+  no auth. So `?clientInject=1` was a way around invite-only building. Fixed here rather than deferred:
+  `backend/beta/clientArtifactsGate.js` gates the artifacts on an accepted invite (BETA off ⇒ public), the
+  four artifact fetches carry the caller's token, and `account.js` checks the manifest *before* committing so
+  a refusal falls back to the server queue instead of failing the run. Honest limit, recorded in the module:
+  it is a signal, not a lock — `base.bps` is identical for everyone, so one shared copy serves everyone.
+  → [T-255](T-255-beta-gating-with-client-injection.md).
+
+- **2026-08-05** — Merged `master` in to pick up the B-062 mega-stone fix, which landed after this branch was
+  cut. `megaMapItems.js` conflicted on its import block and was resolved keeping **both** halves: master's
+  shared `assignMegaStones` rule and this branch's `sources.js` seam. Re-verified after the merge: full
+  randomizer suite green (2220) and 21/21 mega stones against the presentation bundle's own docs.
+
 ## Outcome
+
+**Shipped, and deliberately not switched on.** The injector runs in the browser and produces byte-identical
+ROMs to the Node path — verified in a real Chromium *and* WebKit Worker against the production base — with the
+base reconstructed locally from the user's vanilla ROM plus one immutable `base.bps` cached in IndexedDB. All
+four plan steps landed: the `sources` seam, the static base patch, the de-`fs`'d module graph, and the
+same-sha256 proof. One implementation, not two, so GATE-3 still governs it (ADR-023).
+
+**Deviation from the plan, on the owner's call:** the plan implied turning it on. It ships behind the manual
+`?clientInject=1` flag with every build still going through the server, because the fleet is unmeasured and
+the memory peak scales with ROM count — both detailed in the shipping-decision log entry above. The
+capability is in place; enabling it is a separate, data-driven decision.
+
+**Added beyond the plan:** the beta-invite gate on `/client/` (`backend/beta/clientArtifactsGate.js`, 8
+tests). Without it this path was a way around invite-only building — the plan had not anticipated it because
+it did not expect to ship into a live closed beta.
+
+**Follow-ups spawned:**
+- [T-254](T-254-client-run-telemetry.md) — measure the device fleet. Sequenced first; the others need it.
+- [T-253](T-253-client-injection-device-aptitude.md) — flatten the memory peak, measure on a real device,
+  pre-flight check, then turn it on. Carries this task's one deferred criterion.
+- [T-255](T-255-beta-gating-with-client-injection.md) — what invite-only building means once building is local.
+- [T-256](T-256-queue-redesign-after-client-injection.md) — rework the queue once most runs never reach it.
+
+The design reference is `randomizer/docs/client-injection.md`; its "off by default is a product decision" note
+is now also the beta's safety margin, and T-253 supersedes it.

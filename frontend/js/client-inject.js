@@ -26,16 +26,25 @@ const loadCodec = () => (codec ||= import('./bps.bundle.js').then((m) => (m.appl
 let manifestPromise = null;
 
 /**
+ * While BETA is on, `/client/` is gated exactly like building is — accepted invite only, see
+ * backend/beta/clientArtifactsGate.js. Every request for an artifact therefore carries the caller's token;
+ * a refusal comes back as a non-ok response, which `clientArtifactManifest` turns into `null` so the caller
+ * falls back to the server queue instead of failing the run.
+ */
+const authHeaders = (token) => (token ? { authorization: `Bearer ${token}` } : {});
+
+/**
  * The artifact set the server is currently offering, or null when this deployment has none (no base built,
  * or the artifacts were not generated for it).
  */
-export function clientArtifactManifest({ refresh = false } = {}) {
+export function clientArtifactManifest({ refresh = false, authToken = null } = {}) {
   if (refresh) manifestPromise = null;
-  manifestPromise ||= fetch(MANIFEST_URL, { cache: 'no-store' })
+  manifestPromise ||= fetch(MANIFEST_URL, { cache: 'no-store', headers: authHeaders(authToken) })
     .then((r) => (r.ok ? r.json() : null))
     .catch(() => null);
   return manifestPromise;
 }
+
 
 /**
  * Is client-side injection turned on for this browser?
@@ -61,7 +70,7 @@ export function clientInjectEnabled() {
  * @param {Function} [onProgress]  (step, detail) — 'cache' | 'patch-fetch' | 'patch-apply'
  * @returns {Uint8Array}
  */
-export async function ensureBaseRom(manifest, onProgress = () => {}) {
+export async function ensureBaseRom(manifest, onProgress = () => {}, authToken = null) {
   const cached = await getBase(manifest.buildId);
   if (cached) {
     onProgress('cache', 'hit');
@@ -73,7 +82,7 @@ export async function ensureBaseRom(manifest, onProgress = () => {}) {
     throw new Error('Client-side injection needs your Emerald ROM: it is what the base is built from, and it never leaves this browser.');
   }
   onProgress('patch-fetch', manifest.artifacts.bps.bytes);
-  const res = await fetch(`/client/${manifest.artifacts.bps.file}`);
+  const res = await fetch(`/client/${manifest.artifacts.bps.file}`, { headers: authHeaders(authToken) });
   if (!res.ok) throw new Error(`base.bps download failed (${res.status})`);
   const patch = new Uint8Array(await res.arrayBuffer());
 
@@ -87,13 +96,14 @@ export async function ensureBaseRom(manifest, onProgress = () => {}) {
 }
 
 /** The injector's other two inputs. Immutable per build, so the HTTP cache does the caching. */
-async function fetchInjectorInputs(manifest) {
+async function fetchInjectorInputs(manifest, authToken = null) {
+  const headers = authHeaders(authToken);
   const [offsets, sources] = await Promise.all([
-    fetch(`/client/${manifest.artifacts.offsets.file}`).then((r) => {
+    fetch(`/client/${manifest.artifacts.offsets.file}`, { headers }).then((r) => {
       if (!r.ok) throw new Error(`offsets download failed (${r.status})`);
       return r.json();
     }),
-    fetch(`/client/${manifest.artifacts.sources.file}`).then((r) => {
+    fetch(`/client/${manifest.artifacts.sources.file}`, { headers }).then((r) => {
       if (!r.ok) throw new Error(`base sources download failed (${r.status})`);
       return r.json();
     }),
@@ -128,13 +138,13 @@ function injectInWorker({ baseRom, offsets, sources, bundle, romIndex }) {
  * @param {Function} [opts.onStep]  (key, state) for the delivery checklist
  * @param {boolean} [opts.withPatches=true]
  */
-export async function injectBundleLocally(bundle, { onStep = () => {}, withPatches = true } = {}) {
-  const manifest = await clientArtifactManifest();
+export async function injectBundleLocally(bundle, { onStep = () => {}, withPatches = true, authToken = null } = {}) {
+  const manifest = await clientArtifactManifest({ authToken });
   if (!manifest) throw new Error('This deployment has no client-injection artifacts (no /client/manifest.json).');
 
   onStep('base', 'active');
-  const baseRom = await ensureBaseRom(manifest);
-  const { offsets, sources } = await fetchInjectorInputs(manifest);
+  const baseRom = await ensureBaseRom(manifest, () => {}, authToken);
+  const { offsets, sources } = await fetchInjectorInputs(manifest, authToken);
   onStep('base', 'done');
 
   onStep('inject', 'active');

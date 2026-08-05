@@ -85,11 +85,22 @@ a client-injected run would have kept working.
    archive (T-211) is built identically. `bpsBytes` is computed locally with the same codec — 0.7 s per ROM
    in Node for the full 32 MB, so a few seconds in a browser.
 
-### The flag
+### The flag, and the gate behind it
 
-Off by default, per browser: `?clientInject=1` (sticky in `localStorage`), `?clientInject=0` to clear.
-That is deliberate and it is not a technical limitation — the request queue is where beta gating, quotas
-and the "your ROM is ready" email live, so moving delivery off the server is a product decision.
+Off by default, per browser: `?clientInject=1` (sticky in `localStorage`), `?clientInject=0` to clear. That
+is a product decision, not a technical limitation — the request queue is where beta gating, quotas and the
+"your ROM is ready" email live. It is also the beta's safety margin: the peak below is a **1-ROM** number and
+nobody has measured a phone, so until T-253 does, every build goes through the server.
+
+The flag is not, by itself, a way past the beta. `/client/` is behind `createClientArtifactsGate`
+(`backend/beta/clientArtifactsGate.js`): while `BETA` is on it serves only verified users with an **accepted**
+invite, so all four artifact requests carry the caller's token. A refusal is a plain 401/403, which
+`clientArtifactManifest` reads as `null`, and `account.js` checks the manifest *before* committing to the
+local path — so a refused user silently falls back to the server queue instead of failing their run.
+
+That gate is a **signal, not a lock**, and the difference is worth stating: `base.bps` is a function of the
+base build alone, byte-identical for every user and every run, so one copy shared outside the beta serves
+everyone indefinitely. It stops the casual bypass; nothing built on top of it should assume more (T-255).
 
 ## What it costs, measured
 
@@ -109,9 +120,23 @@ Client injection adds ~100 MB on top. Comfortable on desktop; **marginal on a ph
 exceeds its budget is killed rather than slowed — so an iOS Safari device check is the open question, not
 engine compatibility (WebKit produces the same bytes).
 
-If it has to come down: `Rom`'s ownership map is 32 MB and could be dropped (`trackWrites: false`) at the
-cost of the INV-BYTES overlap guard, and a multi-ROM run could release each finished ROM before starting the
-next instead of accumulating them for the archive.
+**Read that table as the 1-ROM, 15 MB-bundle case, because that is what it is.** Two things it does not cover,
+found while deciding whether to switch the flag on (T-249's shipping analysis, now T-253):
+
+- **The peak scales with ROM count.** `injectBundleLocally` retains `gbaBytes` (32 MB) *and* `bpsBytes`
+  (~32 MB) per ROM until the loop ends, then JSZip builds a blob from all of it. PRO's real request mix is not
+  1-ROM-only (20 requests: 16×1, 1×2, 2×4, 1×6), and a 6-ROM run is ~384 MB of retained artifacts alone.
+- **`bundle` and `sources` are cloned into every Worker**, not transferred — `postMessage`'s transfer list is
+  `[base]` only — so two copies are live per ROM. Production bundles are ~39 MB where the measurement used
+  15 MB; they parse to ~32 MB of objects (×0.8, measured), so the *bundle* is not where it explodes, but the
+  clone doubles whatever it is.
+
+A memory failure on iOS kills the tab rather than throwing, so a `try/catch` fallback to the server path
+cannot work: the decision has to be taken **before** injecting.
+
+If it has to come down: drop `bpsBytes` for client-injected runs (the patch is redundant next to a ROM the
+user already has), release each finished ROM into the archive before starting the next, and `Rom`'s ownership
+map is another 32 MB that could go (`trackWrites: false`) at the cost of the INV-BYTES overlap guard.
 
 ## Diagnostics and decision logs
 

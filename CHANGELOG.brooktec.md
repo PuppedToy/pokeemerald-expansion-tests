@@ -9,12 +9,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
-- **Your browser can now build your ROMs itself, with no server build at all.** Behind an opt-in flag
-  (`?clientInject=1`) the whole run happens on your machine: the base game is reconstructed from your own
-  Emerald ROM plus one patch that is the same for everyone and fetched once, and your randomized ROMs are
-  written locally — byte-identical to what the server would have produced, verified in Chromium and in
-  Safari's engine. Nothing about your ROM
-  ever leaves the browser, and there is nothing to queue or wait for. (T-249)
+- **Groundwork: your browser can build your ROMs itself, with no server build at all.** The whole run can now
+  happen on your machine — the base game is reconstructed from your own Emerald ROM plus one patch that is the
+  same for everyone and fetched once, and your randomized ROMs are written locally, byte-identical to what the
+  server would have produced (verified in Chromium and in Safari's engine). **Not switched on yet:** every
+  build still goes through the server while the beta runs, because the memory cost on phones has not been
+  measured on real devices. No change to how anything works today. (T-249, T-253)
 
 - **Privacy Policy, Terms and clear disclaimers.** New Privacy Policy and Terms pages (linked from a site
   footer), a required consent checkbox at registration, and prominent notices that this is a free,
