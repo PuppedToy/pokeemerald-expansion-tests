@@ -1,7 +1,7 @@
 ---
 id: T-251
 title: Give the mega-stone assignment one home and stop it producing NaN levels
-status: in-progress
+status: done
 type: fix
 created: 2026-08-05
 updated: 2026-08-05
@@ -36,7 +36,7 @@ Acceptance criteria:
 - [x] Both real bundles: every mega trainer's stone equals its `docs.viewerTrainers[trainer].reward`
       (21/21 on `bundle-735016030`, 21/21 on `bundle-2653882998`).
 - [x] Both ROMs built as PRO builds them, object-event bytes read back.
-- [ ] Owner play-tests Jagged Pass and confirms.
+- [x] Owner play-tests Jagged Pass and confirms. — confirmed 2026-08-05.
 
 ## Progress log
 
@@ -64,7 +64,29 @@ Acceptance criteria:
   straight out of the built images against the bundles' own docs: **21/21 on both ROMs**. The same reader
   over the ROM the owner played (`rom-1.gba` from the presentation archive) reports **0/21** and names
   Jagged Pass as `doc=Pidgeotite / rom=Scizorite`, which is exactly the symptom reported.
+- **2026-08-05** — Owner play-tested Jagged Pass on the rebuilt presentation ROM and confirmed the stone is
+  the documented one. Closing. Landed on `master` as a cherry-pick of the two T-251 commits only: the task
+  was developed on top of the still-`in-progress` [T-249](T-249-client-side-offline-injector.md) branch, and
+  merging the branch would have dragged six unrelated commits in with it (owner's call).
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped as planned, in two parts — the cause and the class:
+
+- `megaBaseFormLevel()` (`randomizer/modules/wildModule.js`) cannot return a non-finite level. A non-`LEVEL`
+  evolution uses its `minLevel`, falling back to the default evolution level. This is the fix that matters
+  going forward: no run can write a `NaN` level into a bundle again.
+- `randomizer/megaAssignment.js` is the assignment rule's only home. `writer.js`, `writerDocs.js` and
+  `injector/modules/megaMapItems.js` all call it; none re-implements it. Its `megaEvoLevel()` reads a
+  serialized `null` back as the `NaN` it was, which is what lets a bundle generated *before* the fix still
+  build the ROM its own documentation describes — the presentation bundle went from 0/21 to 21/21 without
+  regenerating it.
+
+Deviations from the plan: none in substance. One approach was considered and rejected mid-task (having the
+injector read the assignment out of `docs.viewerTrainers[].reward`) — see the log for why.
+
+Follow-ups: none spawned. Worth noting for whoever next crosses this boundary: the general hazard is that
+the docs are computed in the browser and the ROM on the box, with `JSON.stringify` between them, so a value
+that is not JSON-representable makes the two disagree while the code that computes them is identical. That
+is recorded in [B-062](../bugs/B-062-mega-stones-disagree-with-the-docs.md)'s root cause rather than as a
+new task.
