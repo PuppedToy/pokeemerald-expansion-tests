@@ -35,7 +35,8 @@ Acceptance criteria:
 - [x] `cd randomizer && npm test` green.
 - [x] Both real bundles: every mega trainer's stone equals its `docs.viewerTrainers[trainer].reward`
       (21/21 on `bundle-735016030`, 21/21 on `bundle-2653882998`).
-- [ ] Both ROMs built as PRO builds them, object-event bytes read back, owner play-tests Jagged Pass.
+- [x] Both ROMs built as PRO builds them, object-event bytes read back.
+- [ ] Owner play-tests Jagged Pass and confirms.
 
 ## Progress log
 
@@ -51,6 +52,18 @@ Acceptance criteria:
 - **2026-08-05** — Red → green: `megaEvoLevel.test.js` + `megaAssignment.test.js` written and watched
   fail, then `megaAssignment.js` + `megaBaseFormLevel` landed and the three call sites rewired. Full suite
   green (2220 passed). Both bundles verified 21/21 against their own docs.
+- **2026-08-05** — Built both ROMs on the PRO box the way PRO builds them (`make.js --bundle=… --full-rom`,
+  inject mode, the box's own `base/`). Production was **not** touched: the build ran in a throwaway
+  `/opt/emerald/.t251` whose `base/ src/ include/ data/ backend/ …` were relative symlinks into the real
+  tree and whose only real content was a copy of `randomizer/` + `make.js`. Two things had to be handled:
+  the box has no `randomizer/injector/sources.js` yet (T-249 is not deployed), so its own
+  `megaMapItems.js` got the same delegation patch rather than my T-249 copy; and the scratch dir must
+  **not** symlink `.git`, or `checkInjectInputsClean` sees the whole of `src/` as deleted and aborts.
+  Scratch removed afterwards and the four production files re-checksummed unchanged.
+- **2026-08-05** — Byte-level proof, reading `<Map>_ObjectEvents[i].trainer_sight_or_berry_tree_id`
+  straight out of the built images against the bundles' own docs: **21/21 on both ROMs**. The same reader
+  over the ROM the owner played (`rom-1.gba` from the presentation archive) reports **0/21** and names
+  Jagged Pass as `doc=Pidgeotite / rom=Scizorite`, which is exactly the symptom reported.
 
 ## Outcome
 
