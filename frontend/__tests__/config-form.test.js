@@ -391,7 +391,11 @@ test('T-163: docsVisibility round-trips via _read/_setDocsVisibility, migrates t
 test('T-186: Difficulty category exposes the non-boss quality slider + Advanced size/level controls', () => {
   const idx = src.indexOf('data-cat="difficulty"');
   assert.ok(idx > 0, 'Difficulty category must exist');
-  const block = src.slice(idx, idx + 5000);
+  // Take the whole category, not a fixed-size window: T-257 added three toggles to this panel and a
+  // magic-number slice silently stopped covering the Advanced controls it is meant to assert on.
+  const end = src.indexOf('</section>', idx);
+  assert.ok(end > idx, 'Difficulty category must be a closed <section>');
+  const block = src.slice(idx, end);
   assert.match(block, /id="difficultySlider"/, 'the general quality slider stays');
   assert.match(block, /id="nonBossQualitySlider"[^>]*min="-6"[^>]*max="0"[^>]*value="-2"/, 'non-boss quality slider -6..0 default -2');
   assert.match(block, /id="difficulty-advanced-toggle"/, 'Difficulty has a scoped Advanced toggle');
@@ -400,6 +404,50 @@ test('T-186: Difficulty category exposes the non-boss quality slider + Advanced 
   assert.match(block, /id="non-boss-team-size"[^>]*min="1"[^>]*max="6"/, 'non-boss team-size slider 1-6');
   assert.match(block, /id="boss-level-modifier"/, 'boss level modifier input');
   assert.match(block, /id="non-boss-level-modifier"/, 'non-boss level modifier input');
+});
+
+// ── T-257/T-258 — Pokémon League house rules (heal after combat, heal in the League, relearn in the League) ──
+
+test('T-257: the Difficulty category exposes the three League house-rule toggles, all off by default', () => {
+  const idx = src.indexOf('data-cat="difficulty"');
+  const end = src.indexOf('</section>', idx);
+  const block = src.slice(idx, end);
+  for (const id of ['heal-after-battle', 'heal-after-battle-league', 'league-move-relearn']) {
+    const input = new RegExp(`<input type="checkbox" id="${id}"\\s*>`);
+    assert.match(block, input, `${id} must be an unchecked checkbox in the Difficulty panel body`);
+  }
+  // They belong to the basic body, not the scoped Advanced sub-panel.
+  const advancedIdx = block.indexOf('id="difficulty-advanced-toggle"');
+  assert.ok(advancedIdx > 0, 'Difficulty still has its Advanced toggle');
+  assert.ok(block.indexOf('id="heal-after-battle"') < advancedIdx, 'heal toggle sits in the basic body');
+  assert.ok(block.indexOf('id="league-move-relearn"') < advancedIdx, 'relearn toggle sits in the basic body');
+});
+
+test('T-257: the three League house-rule keys round-trip through DEFAULTS/getConfig/setConfig', () => {
+  for (const key of ['healFaintedAfterBattle', 'healFaintedAfterBattleLeague', 'leagueMoveRelearnAllowed']) {
+    const occurrences = (src.match(new RegExp(key, 'g')) || []).length;
+    assert.ok(occurrences >= 3, `${key} must appear in DEFAULTS, getConfig and setConfig (found ${occurrences})`);
+    assert.match(src, new RegExp(`${key}:\\s*false`), `${key} defaults to off`);
+  }
+  // Opt-in on read AND on apply: anything that is not exactly true must read as off, so a stale saved
+  // config or a hand-edited JSON can never silently enable a rule.
+  assert.match(src, /#heal-after-battle'\)\?\.checked === true/, 'heal-after-battle read is strict-true');
+  assert.match(src, /#heal-after-battle-league'\)\?\.checked === true/, 'league heal read is strict-true');
+  assert.match(src, /#league-move-relearn'\)\?\.checked === true/, 'league relearn read is strict-true');
+  assert.match(src, /cfg\.healFaintedAfterBattle === true/, 'heal-after-battle apply is strict-true');
+  assert.match(src, /cfg\.healFaintedAfterBattleLeague === true/, 'league heal apply is strict-true');
+  assert.match(src, /cfg\.leagueMoveRelearnAllowed === true/, 'league relearn apply is strict-true');
+});
+
+test('T-257: the League house rules are ROM-build-time only — they never reach toModuleConfig', () => {
+  // They change no generation draw and no docs, exactly like the move-relearn price: they ride to the ROM
+  // inside bundle.config. Threading them into toModuleConfig would imply they alter the seeded stream.
+  const workerSrc = fs.readFileSync(path.join(FE, 'js', 'randomizer-worker.cjs'), 'utf8');
+  const backendSrc = fs.readFileSync(path.join(FE, '..', 'backend', 'generator.js'), 'utf8');
+  for (const key of ['healFaintedAfterBattle', 'healFaintedAfterBattleLeague', 'leagueMoveRelearnAllowed']) {
+    assert.ok(!workerSrc.includes(key), `browser worker toModuleConfig must NOT forward ${key}`);
+    assert.ok(!backendSrc.includes(key), `backend generator toModuleConfig must NOT forward ${key}`);
+  }
 });
 
 test('T-186: difficulty-settings keys round-trip through DEFAULTS/getConfig/setConfig and both engines', () => {

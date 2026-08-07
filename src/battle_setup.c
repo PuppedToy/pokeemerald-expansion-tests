@@ -14,6 +14,7 @@
 #include "field_player_avatar.h"
 #include "fieldmap.h"
 #include "follower_npc.h"
+#include "league_rules.h"
 #include "random.h"
 #include "starter_choose.h"
 #include "script_pokemon_util.h"
@@ -582,6 +583,21 @@ static void DowngradeBadPoison(void)
     }
 }
 
+// T-257 — optional post-battle healing, driven by gRandomizerSettings through league_rules.h (which also
+// decides whether this battle counted as a league battle). Called only on the paths where the player did
+// NOT lose: a loss either whites out — which heals anyway — or is a facility challenge, and facility
+// challenges are exactly what the guard below excludes. The Pyramid, Trainer Hill and the Pike run on party
+// attrition, so refilling between their battles would undo the challenge; they are also the three cases the
+// callbacks around here already special-case.
+static void TryHealPartyAfterBattle(void)
+{
+    if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE || InTrainerHillChallenge() || InBattlePike())
+        return;
+
+    if (ShouldHealPartyAfterBattle())
+        HealPlayerParty();
+}
+
 static void CB2_EndWildBattle(void)
 {
     CpuFill16(0, (void *)(BG_PLTT), BG_PLTT_SIZE);
@@ -604,6 +620,7 @@ static void CB2_EndWildBattle(void)
     {
         SetMainCallback2(CB2_ReturnToField);
         DowngradeBadPoison();
+        TryHealPartyAfterBattle();
         gFieldCallback = FieldCB_ReturnToFieldNoScriptCheckMusic;
     }
 }
@@ -623,6 +640,7 @@ static void CB2_EndScriptedWildBattle(void)
     else
     {
         DowngradeBadPoison();
+        TryHealPartyAfterBattle();
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
     }
 }
@@ -953,6 +971,7 @@ static void CB2_EndFirstBattle(void)
 {
     Overworld_ClearSavedMusic();
     DowngradeBadPoison();
+    TryHealPartyAfterBattle();
     SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
 }
 
@@ -1350,6 +1369,7 @@ static void CB2_EndTrainerBattle(void)
     if (TRAINER_BATTLE_PARAM.opponentA == TRAINER_SECRET_BASE)
     {
         DowngradeBadPoison();
+        TryHealPartyAfterBattle();
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
     }
     else if (IsPlayerDefeated(gBattleOutcome) == TRUE)
@@ -1367,6 +1387,7 @@ static void CB2_EndTrainerBattle(void)
     {
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
         DowngradeBadPoison();
+        TryHealPartyAfterBattle();
         if (CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE && !InTrainerHillChallenge())
         {
             RegisterTrainerInMatchCall();
@@ -1393,6 +1414,7 @@ static void CB2_EndRematchBattle(void)
         SetBattledTrainersFlags();
         HandleRematchVarsOnBattleEnd();
         DowngradeBadPoison();
+        TryHealPartyAfterBattle();
     }
 }
 

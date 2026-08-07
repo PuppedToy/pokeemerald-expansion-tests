@@ -9,6 +9,18 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Three new Difficulty options, and a Pokémon League that means it.** Under *Difficulty* you can now switch
+  on **Heal fainted Pokémon after combat** (your party is fully restored after every battle you win) and,
+  separately, **Heal fainted Pokémon after combat in the Pokémon League** (restored between Elite Four and
+  Champion fights). The two are independent, so "heal everywhere except the League" and "heal only between
+  League fights" are both valid setups. Both are off by default. (T-257)
+
+- **Inside the Elite Four gauntlet, the team you walk in with is the team you finish with.** From the moment
+  you step into the League's halls the **PC is unavailable** and you **cannot relearn moves** — unless you
+  switch on the new **Allow relearning moves in the Pokémon League** option (off by default). Teaching TMs
+  keeps working either way. Everything goes back to normal as soon as you lose a fight or beat the Champion.
+  The League lobby is untouched: heal, shop and reorganize there as much as you like before going in. (T-258)
+
 - **Groundwork: your browser can build your ROMs itself, with no server build at all.** The whole run can now
   happen on your machine — the base game is reconstructed from your own Emerald ROM plus one patch that is the
   same for everyone and fetched once, and your randomized ROMs are written locally, byte-identical to what the

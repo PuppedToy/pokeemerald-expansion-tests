@@ -10,6 +10,11 @@ const struct RandomizerSettings gRandomizerSettings = {
     .trainerMoneyBoss   = 3000,
     .trainerMoneyGym    = 5000,
     .moveRelearnerCost  = 250,
+    // T-257 — all three default to FALSE, so a ROM built straight from these sources behaves exactly as
+    // before: no post-battle healing anywhere, and the league blocks the relearner (T-258).
+    .healFaintedAfterBattle       = FALSE,
+    .healFaintedAfterBattleLeague = FALSE,
+    .leagueMoveRelearnAllowed     = FALSE,
 };
 
 // `noipa` blocks LTO/IPA from propagating gRandomizerSettings' const initializer into the callers (which
