@@ -17,7 +17,7 @@
 
 <!-- Top navigation -->
 <nav class="topnav">
-  <a class="topnav-brand" id="brand-home" href="#" aria-label="Pokémon Emerald Cut — go to home">
+  <a class="topnav-brand" id="brand-home" href="/" aria-label="Pokémon Emerald Cut — go to home">
     <span class="topnav-name">Pokémon <span class="title-accent">Emerald <img class="topnav-logo" src="/assets/emeraldCut.png" alt="C">ut</span><sup class="beta-badge" id="beta-badge" hidden>BETA</sup></span>
   </a>
   <!-- Mobile-only hamburger: hidden on desktop; toggles the drawer below. -->
@@ -26,14 +26,17 @@
   </button>
   <!-- .topnav-menu is display:contents on desktop (transparent), an off-canvas drawer on mobile. -->
   <div class="topnav-menu" id="topnav-menu">
+    <!-- Real links to real paths: the href IS the destination, and app.js only intercepts the click to
+ swap sections without a reload. Ctrl/cmd-click, middle-click and copy-link behave as they do
+ anywhere else, and the paths are what a crawler follows. -->
     <div class="topnav-tabs">
-      <button class="topnav-tab" data-tab="home">Home</button>
-      <button class="topnav-tab" data-tab="features">Features</button>
-      <button class="topnav-tab" data-tab="randomizer">Randomizer</button>
-      <button class="topnav-tab" data-tab="feedback">Feedback</button>
-      <button class="topnav-tab" data-tab="settings">Settings</button>
+      <a class="topnav-tab" data-tab="home" href="/">Home</a>
+      <a class="topnav-tab" data-tab="features" href="/features">Features</a>
+      <a class="topnav-tab" data-tab="randomizer" href="/randomizer">Randomizer</a>
+      <a class="topnav-tab" data-tab="feedback" href="/feedback">Feedback</a>
+      <a class="topnav-tab" data-tab="settings" href="/settings">Settings</a>
       <!-- Admin: revealed by admin.js only when /api/me.isAdmin. -->
-      <button class="topnav-tab" data-tab="admin" id="admin-tab" hidden>Admin</button>
+      <a class="topnav-tab" data-tab="admin" id="admin-tab" href="/admin" hidden>Admin</a>
     </div>
     <!-- account area: identity + log out when signed in, otherwise a Log in link -->
     <div class="topnav-account" id="nav-account"></div>
@@ -129,7 +132,7 @@
             Play it straight, nuzlocke it or soul-link it. Difficulty is fully customizable,
             so play it however you want.
           </p>
-          <button class="btn btn-ghost goto-tab" data-goto-tab="features">See the full feature list →</button>
+          <a class="btn btn-ghost goto-tab" data-goto-tab="features" href="/features">See the full feature list →</a>
         </div>
 
         <div class="card info-box">
@@ -301,14 +304,16 @@
         </ul>
       </div>
 
-      <div class="subtabs" role="tablist">
-        <button class="subtab active" data-subtab="rom" role="tab">ROM</button>
-        <button class="subtab" data-subtab="randomizer" role="tab">Randomizer</button>
-        <button class="subtab" data-subtab="docs" role="tab">Generated docs</button>
-      </div>
+      <!-- Each list is its own URL, so this is sub-navigation — a nav of links, with aria-current on
+ the one we're on — and not an ARIA tablist. -->
+      <nav class="subtabs" aria-label="Feature lists">
+        <a class="subtab active" data-subtab="rom" href="/features">ROM</a>
+        <a class="subtab" data-subtab="randomizer" href="/features/randomizer">Randomizer</a>
+        <a class="subtab" data-subtab="docs" href="/features/docs">Generated docs</a>
+      </nav>
 
       <!-- ROM features (brainstorm §3.2) -->
-      <div class="subtab-panel active" data-subtab-panel="rom" role="tabpanel">
+      <div class="subtab-panel active" data-subtab-panel="rom">
         <div class="card">
           <ul class="feature-list">
             <li>Automatic leveling to each cap, with no EXP management and no grinding.</li>
@@ -331,7 +336,7 @@
       </div>
 
       <!-- Randomizer features (brainstorm §3.3) -->
-      <div class="subtab-panel" data-subtab-panel="randomizer" role="tabpanel">
+      <div class="subtab-panel" data-subtab-panel="randomizer">
         <div class="card">
           <ul class="feature-list">
             <li>Pokémon are randomized by a mutating algorithm: by default they stay as in the original (updated) games, but a share of them receive mutations to stats, typing, learnsets and/or abilities. Mutations carry across evolutions. Customizable: by default, each Pokémon has a 20% chance to mutate.</li>
@@ -359,7 +364,7 @@
       </div>
 
       <!-- Generated docs features (brainstorm §3.4) -->
-      <div class="subtab-panel" data-subtab-panel="docs" role="tabpanel">
+      <div class="subtab-panel" data-subtab-panel="docs">
         <div class="card">
           <ul class="feature-list">
             <li>A single self-contained file per ROM: works 100% offline with zero network requests, every sprite and font embedded (~5.5 MB).</li>
@@ -392,14 +397,14 @@
 
       <!-- Curated lists — empty for now, filled by hand later. -->
       <div class="feedback-lists">
-        <div class="subtabs" role="tablist">
-          <button class="fb-tab active" data-fb-tab="features" role="tab">Most requested features</button>
-          <button class="fb-tab" data-fb-tab="bugs" role="tab">Known bugs</button>
-        </div>
-        <div class="fb-panel active" data-fb-panel="features" role="tabpanel">
+        <nav class="subtabs" aria-label="Feedback lists">
+          <a class="fb-tab active" data-fb-tab="features" href="/feedback">Most requested features</a>
+          <a class="fb-tab" data-fb-tab="bugs" href="/feedback/bugs">Known bugs</a>
+        </nav>
+        <div class="fb-panel active" data-fb-panel="features">
           <div class="card fb-empty">No requests have been processed yet. Coming soon!</div>
         </div>
-        <div class="fb-panel" data-fb-panel="bugs" role="tabpanel">
+        <div class="fb-panel" data-fb-panel="bugs">
           <div class="card fb-empty">No bugs have been processed yet. Coming soon!</div>
         </div>
       </div>

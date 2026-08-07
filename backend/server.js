@@ -26,6 +26,7 @@ import { createFeedbackRouter } from './feedback/routes.js';
 import { createDiagnosticsRouter } from './diagnostics/routes.js';
 import { createDecisionLogRouter } from './decisionLog/routes.js';
 import { createPresetsRouter } from './presets/routes.js';
+import { createShellRouter } from './shell/routes.js';
 import { createMailer, brevoTransport } from './email/index.js';
 import { createStorage } from './build/storage.js';
 import { createBuildRom, killActiveBuild } from './build/buildRom.js';
@@ -164,6 +165,13 @@ const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
 const SERVE_DIST = process.env.NODE_ENV === 'production' || process.env.SERVE_DIST === '1';
 if (SERVE_DIST) app.use(express.static(path.join(FRONTEND_DIR, 'dist')));
 app.use(express.static(FRONTEND_DIR));
+
+// T-259 — the frontend's destinations are real paths (/features, /features/docs, /randomizer…), so a
+// reload, a bookmark or a crawler on one of them must get the app shell back. Mounted after the static
+// mounts so a real file always wins, and limited to the paths frontend/js/router.js declares — an
+// unknown path keeps 404-ing instead of returning a page of HTML. Same router serves /robots.txt and
+// /sitemap.xml, built from that route table plus BASE_URL.
+app.use(createShellRouter({ frontendDir: FRONTEND_DIR, serveDist: SERVE_DIST, baseUrl: BASE_URL }));
 
 app.listen(PORT, () => {
   console.log(`Pokémon Emerald Cut backend → ${BASE_URL}`);

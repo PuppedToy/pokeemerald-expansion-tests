@@ -260,3 +260,4 @@
 | [T-256](T-256-queue-redesign-after-client-injection.md) | "Rework the build queue once most runs never reach it" | proposed | 1.0.0 | 2026-08-05 |
 | [T-257](T-257-league-rules-and-heal-toggles.md) | "Difficulty toggles: heal fainted Pokémon after combat (world / league) + allow relearn in the league" | done | 0.7.0 | 2026-08-07 |
 | [T-258](T-258-league-lockdown-pc-and-relearn.md) | "Lock the Pokémon League: no PC, and no move relearning unless allowed" | done | 0.7.0 | 2026-08-07 |
+| [T-259](T-259-frontend-url-routing.md) | Give the frontend real URLs and indexable links | in-progress | 0.9.0 | 2026-08-07 |
