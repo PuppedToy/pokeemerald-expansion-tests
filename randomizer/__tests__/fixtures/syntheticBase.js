@@ -306,7 +306,9 @@ function buildSyntheticBase({
         let cursor = DATA_DRIVEN_BASE;
         const add = (name, size) => { const at = cursor; cursor += size + (size % 2); dataDrivenSymbols[name] = { romOffset: at, size }; return at; };
 
-        const settings = add('gRandomizerSettings', 16);
+        // T-257 — four u32s then three bool8 league/heal rules (+1 B tail padding): sizeof() == 20. The
+        // rules stay zero here, matching the committed FALSE/FALSE/FALSE.
+        const settings = add('gRandomizerSettings', 20);
         [250, 3000, 5000, 250].forEach((v, i) => buffer.writeUInt32LE(v, settings + i * 4));
         add('gGymRewards', 11 * 4);                       // all SPECIES_NONE / ITEM_NONE = zeros
         const statics = add('gStaticEncounters', 7 * 4);

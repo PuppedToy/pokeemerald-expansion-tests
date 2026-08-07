@@ -21,6 +21,12 @@ struct RandomizerSettings
     u32 trainerMoneyBoss;   // rivals/admins/Steven/Wally etc. (museum/space-center grunts derive from this)
     u32 trainerMoneyGym;    // gym leaders
     u32 moveRelearnerCost;  // move relearner price (0 = always free)
+    // T-257 — the three league/heal house rules. Independent: a battle inside the Elite Four gauntlet
+    // (see league_rules.h) obeys healFaintedAfterBattleLeague and NOTHING else; every other battle obeys
+    // healFaintedAfterBattle and nothing else. All four combinations are legal.
+    bool8 healFaintedAfterBattle;       // fully restore the party after an ordinary battle
+    bool8 healFaintedAfterBattleLeague; // ... after an Elite Four / Champion battle
+    bool8 leagueMoveRelearnAllowed;     // T-258 — let the summary-screen relearner work inside the gauntlet
 };
 
 extern const struct RandomizerSettings gRandomizerSettings;

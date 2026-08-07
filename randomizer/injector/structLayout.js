@@ -180,8 +180,11 @@ const INGAME_TRADE = {
 // ── The Phase-2 data-driven tables (T-234/T-235/T-236, injected by T-243) ─────
 // These were designed for injection: plain structs of fixed-width fields, read through runtime indices
 // so LTO cannot fold them. Each module still derives the stride from its symbol.
+// T-257 added the three bool8 league/heal house rules after the four u32s, so sizeof() is 20 (byte 19 is
+// the tail padding the compiler zeroes and the injector leaves alone).
 const RANDOMIZER_SETTINGS = {
-    stride: 16, trainerMoneyNormal: 0, trainerMoneyBoss: 4, trainerMoneyGym: 8, moveRelearnerCost: 12,
+    stride: 20, trainerMoneyNormal: 0, trainerMoneyBoss: 4, trainerMoneyGym: 8, moveRelearnerCost: 12,
+    healFaintedAfterBattle: 16, healFaintedAfterBattleLeague: 17, leagueMoveRelearnAllowed: 18,
 };
 const GYM_REWARD = { stride: 4, species: 0, item: 2 };
 const STATIC_ENCOUNTER = { stride: 4, species: 0, level: 2 };

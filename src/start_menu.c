@@ -19,6 +19,7 @@
 #include "gpu_regs.h"
 #include "international_string_util.h"
 #include "item_menu.h"
+#include "league_rules.h"
 #include "link.h"
 #include "load_save.h"
 #include "main.h"
@@ -350,7 +351,11 @@ static void BuildNormalStartMenu(void)
 
     AddStartMenuAction(MENU_ACTION_PLAYER);
     AddStartMenuAction(MENU_ACTION_SAVE);
-    AddStartMenuAction(MENU_ACTION_PC);
+    // T-258 — no box access inside the Elite Four gauntlet: the team the player walked in with is the team
+    // they finish with. The entry comes back on its own once they leave (a loss whites out to the league
+    // lobby, a Champion win warps to the Hall of Fame) — see include/league_rules.h.
+    if (!IsInEliteFourGauntlet())
+        AddStartMenuAction(MENU_ACTION_PC);
     AddStartMenuAction(MENU_ACTION_OPTION);
     AddStartMenuAction(MENU_ACTION_EXIT);
 }

@@ -653,6 +653,17 @@ function reviewRowsHtml(cfg) {
         const fmtMod = n => (n > 0 ? `+${n}` : String(n));
         rows.push(['Level modifier (boss / non-boss)', `${fmtMod(bossLevelModifier)} / ${fmtMod(nonBossLevelModifier)}`]);
     }
+    // T-257/T-258 — Pokémon League house rules. The heal row shows always (it changes how the whole run
+    // plays); the relearn row only when the League has been unlocked, since blocked is the default.
+    const healWorld = cfg.healFaintedAfterBattle === true;
+    const healLeague = cfg.healFaintedAfterBattleLeague === true;
+    rows.push(['Heal after combat', healWorld && healLeague ? 'Everywhere'
+        : healWorld ? 'Everywhere except the League'
+        : healLeague ? 'League only'
+        : 'Never']);
+    if (cfg.leagueMoveRelearnAllowed === true) {
+        rows.push(['Move relearning in the League', 'Allowed']);
+    }
     rows.push(['Rebalance stats', cfg.rebalance ? 'Yes' : 'No']);
     if (cfg.rebalance) {
         rows.push(['Balance chance', Math.round(cfg.balanceChance * 100) + '%']);

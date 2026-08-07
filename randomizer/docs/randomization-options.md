@@ -39,6 +39,30 @@ backend) → `runTrainersModule`. Round-trips via Save/Load + `lastConfig`; surf
 (`app.js`). Non-default values change the number/order of RNG draws (fewer team slots resolve, modified
 levels change move/evo legality), so a given seed's ROM differs from the default — expected.
 
+#### Pokémon League house rules (T-257 / T-258)
+
+Three toggles in the same Difficulty panel body, all default **off**. Unlike the six knobs above these are
+**ROM behaviours, not generation knobs**: they draw no RNG, change no docs and never reach either
+`toModuleConfig`. They ride to the ROM inside `bundle.config` and land in the runtime settings block
+`gRandomizerSettings` (T-234) — patched by `randomizer/leagueRulesWriter.js` on the compile path
+(`make.js`) and by the `dataDrivenAndToggles` injector module on the inject path. **They change C, so they
+need a base rebuild** (`deploy/build-base.sh`) before an inject-mode deploy can serve them.
+
+The engine reads them only through `include/league_rules.h`, which is also the **one home** of "the player
+is at the Pokémon League": `IsInEliteFourGauntlet()` = the five halls + the four Elite Four rooms + the
+Champion's room. The league **lobby** and the **Hall of Fame** are outside it on purpose — that is what
+makes the T-258 restrictions revert with no saved state, since a loss whites out to the lobby and the
+Champion win warps into the Hall of Fame.
+
+| Config key | Default | Effect |
+|---|---|---|
+| `healFaintedAfterBattle` | **off** | `HealPlayerParty()` after every battle the player did not lose, **outside** the gauntlet. Hooked at the battle-end callbacks in `battle_setup.c` (`TryHealPartyAfterBattle`), which skip the Pyramid / Trainer Hill / Pike challenges — those run on party attrition. |
+| `healFaintedAfterBattleLeague` | **off** | The same, for battles **inside** the gauntlet. Strictly independent of the key above: a league battle consults only this one, every other battle only that one, so "heal everywhere except the League" and "heal only between League fights" are both expressible. |
+| `leagueMoveRelearnAllowed` | **off** | When off, the summary-screen move relearner (T-167) is hidden inside the gauntlet — one extra clause in `ShouldShowMoveRelearner()`, which already gates the prompt, the input handler and the selector sprites. Teaching TMs is never affected. |
+
+T-258 also removes the start menu's **PC** entry inside the gauntlet (`BuildNormalStartMenu`); that one is
+unconditional, not a config option.
+
 ### Pokémon mutations
 Master toggle = `rebalance`; `balanceChance` (0.2) is the per-Pokémon gate. Four category toggles,
 all default **on** (SoT: `randomizer/rebalancer.js`, invoked `modules/pokedexModule.js`):

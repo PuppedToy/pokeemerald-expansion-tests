@@ -46,7 +46,8 @@ T-244's plan said to remove it. It stayed, by decision, because it is not only a
   foundation.
 - The injector **imports the writers** (see *Deriving writes from the compile path* below):
   `writer.applyWildPlanToEncounters`, `itemPriceWriter.patchPricesInContent`,
-  `pokemonWriter.editSpeciesFile`, `moneyWriter`, `runAndBunWriter`, `stevenTagWriter`, `megaHiddenWriter`,
+  `pokemonWriter.editSpeciesFile`, `moneyWriter`, `moveRelearnerPriceWriter`, `leagueRulesWriter`,
+  `runAndBunWriter`, `stevenTagWriter`, `megaHiddenWriter`,
   `tradeWriter`, `evoLevelWriter`, `starterNameWriter`, `locationNameWriter`, `tradeNameWriter`. Stripping
   the source-edit code out of them would delete the rule the injected bytes are derived *from*.
 

@@ -76,8 +76,48 @@ describe('gRandomizerSettings (T-234)', () => {
         expect(() => injectSettings(base.ctx, SOURCES)).toThrow(/gRandomizerSettings does not hold/);
     });
 
-    test('the committed source really holds the four fields', () => {
-        expect(parseSettings(SETTINGS_SOURCE)).toEqual([250, 3000, 5000, 250]);
+    // T-257 — the struct grew three bool8 house rules after the four u32s. parseSettings' array is in
+    // struct order, so the four money/price values keep indices 0..3.
+    test('the committed source really holds all seven fields', () => {
+        expect(parseSettings(SETTINGS_SOURCE)).toEqual([250, 3000, 5000, 250, 0, 0, 0]);
+    });
+
+    test('writes the three league house rules as bytes (T-257)', () => {
+        const base = setup({ config: { healFaintedAfterBattle: true, leagueMoveRelearnAllowed: true } });
+        injectSettings(base.ctx, SOURCES);
+
+        const settings = at(base, 'gRandomizerSettings');
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.healFaintedAfterBattle)).toBe(1);
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.healFaintedAfterBattleLeague)).toBe(0);
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.leagueMoveRelearnAllowed)).toBe(1);
+        // The money/price fields are untouched by the rule writer.
+        expect(base.rom.readU32(settings + RANDOMIZER_SETTINGS.moveRelearnerCost)).toBe(250);
+    });
+
+    test('heal-in-the-league is written independently of heal-in-the-world (T-257)', () => {
+        const base = setup({ config: { healFaintedAfterBattle: false, healFaintedAfterBattleLeague: true } });
+        injectSettings(base.ctx, SOURCES);
+
+        const settings = at(base, 'gRandomizerSettings');
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.healFaintedAfterBattle)).toBe(0);
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.healFaintedAfterBattleLeague)).toBe(1);
+    });
+
+    test('a config with no rules leaves all three off (T-257)', () => {
+        const base = setup({ config: {} });
+        injectSettings(base.ctx, SOURCES);
+
+        const settings = at(base, 'gRandomizerSettings');
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.healFaintedAfterBattle)).toBe(0);
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.healFaintedAfterBattleLeague)).toBe(0);
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.leagueMoveRelearnAllowed)).toBe(0);
+    });
+
+    test('a base whose league rules are already on is refused (T-257)', () => {
+        const base = setup({ config: {} });
+        base.rom.buffer.writeUInt8(1, at(base, 'gRandomizerSettings') + RANDOMIZER_SETTINGS.leagueMoveRelearnAllowed);
+
+        expect(() => injectSettings(base.ctx, SOURCES)).toThrow(/gRandomizerSettings does not hold/);
     });
 });
 

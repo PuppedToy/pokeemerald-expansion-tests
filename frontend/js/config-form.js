@@ -270,6 +270,12 @@ export const DEFAULTS = {
     nonBossTeamSize: 6,
     bossLevelModifier: 0,
     nonBossLevelModifier: 0,
+    // T-257/T-258 — Pokémon League house rules, applied at ROM-build time (gRandomizerSettings). All three
+    // default off = today's behaviour. The two heal toggles are independent: a league battle obeys only
+    // healFaintedAfterBattleLeague, every other battle only healFaintedAfterBattle.
+    healFaintedAfterBattle: false,
+    healFaintedAfterBattleLeague: false,
+    leagueMoveRelearnAllowed: false,
     rebalance: true,
     balanceChance: 0.2,
     // T-052 — Pokémon mutation category toggles (only apply when rebalance is on)
@@ -549,6 +555,10 @@ export class ConfigForm {
         const nonBossTeamSize = this._intField('#non-boss-team-size', 6, 1, 6);
         const bossLevelModifier = this._intField('#boss-level-modifier', 0, -30, 30);
         const nonBossLevelModifier = this._intField('#non-boss-level-modifier', 0, -30, 30);
+        // T-257/T-258 — Pokémon League house rules (ROM-build time, gRandomizerSettings).
+        const healFaintedAfterBattle = this._q('#heal-after-battle')?.checked === true;
+        const healFaintedAfterBattleLeague = this._q('#heal-after-battle-league')?.checked === true;
+        const leagueMoveRelearnAllowed = this._q('#league-move-relearn')?.checked === true;
         const rebalance = this._q('#rebalance').checked;
         const balanceChance = rebalance
             ? Math.round(parseInt(this._q('#balance-chance').value, 10)) / 100
@@ -603,7 +613,8 @@ export class ConfigForm {
         const nicknames = this._readNicknames();
         const prices = this._readPrices();
         const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, mixedSequentialSplit, wildEncounterType, pokemonPerZone, difficulty,
-            nonBossQuality, bossTeamSize, nonBossTeamSize, bossLevelModifier, nonBossLevelModifier, rebalance, balanceChance,
+            nonBossQuality, bossTeamSize, nonBossTeamSize, bossLevelModifier, nonBossLevelModifier,
+            healFaintedAfterBattle, healFaintedAfterBattleLeague, leagueMoveRelearnAllowed, rebalance, balanceChance,
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs,
             mutateMoves, moveMutationChance, mutatePower, mutateAccuracy, mutateType, mutateCategory,
             movePowerChance, moveAccuracyChance, moveTypeChance, moveCategoryChance, evoLevels,
@@ -671,6 +682,10 @@ export class ConfigForm {
         const nbts = this._q('#non-boss-team-size'); if (nbts) nbts.value = cfg.nonBossTeamSize ?? 6;
         const blm = this._q('#boss-level-modifier'); if (blm) blm.value = cfg.bossLevelModifier ?? 0;
         const nblm = this._q('#non-boss-level-modifier'); if (nblm) nblm.value = cfg.nonBossLevelModifier ?? 0;
+        // T-257/T-258 — Pokémon League house rules (all opt-in, so anything but true reads as off).
+        const hab = this._q('#heal-after-battle'); if (hab) hab.checked = cfg.healFaintedAfterBattle === true;
+        const habl = this._q('#heal-after-battle-league'); if (habl) habl.checked = cfg.healFaintedAfterBattleLeague === true;
+        const lmr = this._q('#league-move-relearn'); if (lmr) lmr.checked = cfg.leagueMoveRelearnAllowed === true;
 
         this._q('#rebalance').checked = cfg.rebalance !== false;
         this._q('#balance-chance').value = Math.round((cfg.balanceChance ?? 0.2) * 100);
@@ -1287,6 +1302,41 @@ export class ConfigForm {
       <span style="left:calc(100% - 9px)">0<br><small>Same as boss</small></span>
     </div>
     <p id="nonBossQualityDesc" class="difficulty-desc"></p>
+  </div>
+
+  <!-- 3. T-257/T-258 — Pokémon League house rules. Independent of each other on purpose: "heal everywhere
+       except the League" and "heal only between League fights" are both valid setups. -->
+  <div style="margin-top:22px;display:flex;flex-direction:column;gap:16px">
+    <div class="toggle-wrap">
+      <div>
+        <div class="toggle-label">Heal fainted Pokémon after combat</div>
+        <div class="toggle-desc">Your party is fully restored after every battle you win. Does not apply inside the Pokémon League — that has its own toggle below.</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="heal-after-battle">
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+    <div class="toggle-wrap">
+      <div>
+        <div class="toggle-label">Heal fainted Pokémon after combat in the Pokémon League</div>
+        <div class="toggle-desc">Your party is fully restored between Elite Four and Champion fights.</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="heal-after-battle-league">
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+    <div class="toggle-wrap">
+      <div>
+        <div class="toggle-label">Allow relearning moves in the Pokémon League</div>
+        <div class="toggle-desc">Off: once inside the Elite Four gauntlet you cannot relearn moves and the PC is unavailable, so the team you walk in with is the team you finish with. Teaching TMs always works.</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="league-move-relearn">
+        <span class="toggle-track"></span>
+      </label>
+    </div>
   </div>
 
   </div>
@@ -2164,6 +2214,10 @@ export class ConfigForm {
         this._q('#non-boss-team-size')?.addEventListener('input', onChange);
         this._q('#boss-level-modifier')?.addEventListener('input', onChange);
         this._q('#non-boss-level-modifier')?.addEventListener('input', onChange);
+        // T-257/T-258 — Pokémon League house rules.
+        for (const sel of ['#heal-after-battle', '#heal-after-battle-league', '#league-move-relearn']) {
+            this._q(sel)?.addEventListener('change', onChange);
+        }
         this._q('#rebalance').addEventListener('change', onChange);
         this._q('#balance-chance').addEventListener('input', onChange);
         this._q('#mutate-stats').addEventListener('change', onChange);

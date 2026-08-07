@@ -18,6 +18,7 @@
 #include "graphics.h"
 #include "international_string_util.h"
 #include "item.h"
+#include "league_rules.h"
 #include "link.h"
 #include "m4a.h"
 #include "malloc.h"
@@ -4668,7 +4669,11 @@ static inline bool32 ShouldShowMoveRelearner(void)
          && sMonSummaryScreen->mode != SUMMARY_MODE_BOX_CURSOR
          && sMonSummaryScreen->relearnableMovesNum > 0
          && !InBattleFactory()
-         && !InSlateportBattleTent());
+         && !InSlateportBattleTent()
+         // T-258 — no rebuilding movesets mid-gauntlet unless the run allowed it. This is the only seam
+         // needed: the START prompt, its input handler and the selector sprites all read this. TMs are a
+         // different path and stay available. See include/league_rules.h.
+         && !IsMoveRelearnBlockedByLeague());
 }
 
 static inline bool32 ShouldShowRename(void)

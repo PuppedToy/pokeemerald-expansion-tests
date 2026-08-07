@@ -199,6 +199,7 @@ async function compileOneRom({ rom, bundle, seed, universeSeed = seed, outDir, i
     const { writeMoney }                = require('./randomizer/moneyWriter');
     const { writeItemPrices }           = require('./randomizer/itemPriceWriter');
     const { writeMoveRelearnerPrice }   = require('./randomizer/moveRelearnerPriceWriter');
+    const { writeLeagueRules }          = require('./randomizer/leagueRulesWriter');
     const { writeRunAndBunVars }        = require('./randomizer/runAndBunWriter');
     const { writeStevenTagVar }         = require('./randomizer/stevenTagWriter');
     const { writeLocationNames }        = require('./randomizer/locationNameWriter');
@@ -232,6 +233,9 @@ async function compileOneRom({ rom, bundle, seed, universeSeed = seed, outDir, i
         await writeItemPrices(bundle.config?.prices);
         // T-167 — patch the configurable move-relearn price #define in src/move_relearner.c (restored by restore()).
         await writeMoveRelearnerPrice(bundle.config?.moveRelearnPrice);
+        // T-257/T-258 — the three Pokémon League house rules (post-battle healing in the world / in the
+        // gauntlet, relearner allowed in the gauntlet) into gRandomizerSettings (restored by restore()).
+        await writeLeagueRules(bundle.config);
         // T-091/ADR-014 — preset the League Run & Bun mode gate + E4 quotas from the run config
         // into Sidney's room init script (restored by restore() after build).
         await writeRunAndBunVars(bundle.config);

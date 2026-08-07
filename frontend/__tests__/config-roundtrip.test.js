@@ -17,6 +17,10 @@ const FULL_CONFIG = {
     nonBossTeamSize: 3,       // T-186
     bossLevelModifier: 4,     // T-186
     nonBossLevelModifier: -2, // T-186
+    // T-257/T-258 — the two heal rules set the opposite way round to prove they are independent.
+    healFaintedAfterBattle: false,
+    healFaintedAfterBattleLeague: true,
+    leagueMoveRelearnAllowed: true,
     rebalance: true,
     balanceChance: 0.35,
     mutateStats: true,
@@ -111,6 +115,10 @@ test('nested option objects round-trip deeply (no shallow loss)', () => {
     assert.equal(round.nonBossTeamSize, 3);              // T-186
     assert.equal(round.bossLevelModifier, 4);            // T-186
     assert.equal(round.nonBossLevelModifier, -2);        // T-186
+    // T-257/T-258 — "never heal in the world, but heal between League fights" survives the round trip.
+    assert.equal(round.healFaintedAfterBattle, false);
+    assert.equal(round.healFaintedAfterBattleLeague, true);
+    assert.equal(round.leagueMoveRelearnAllowed, true);
     assert.deepEqual(round.aquaTypes, ['GRASS', 'FIRE', 'RANDOM', 'WATER', 'ICE']);
     assert.equal(round.disableStevenTagBattle, true);   // T-165
     assert.deepEqual(round.money, { normal: 500, boss: 4000, gym: 7500 });
