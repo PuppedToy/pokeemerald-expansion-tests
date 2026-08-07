@@ -66,6 +66,11 @@
   transition: background var(--obs-ease), color var(--obs-ease);
 }
 
+/* An author `display` rule beats the UA's `[hidden] { display: none }`, and the mobile layer below sets
+   one on .topnav-tab — which listed the `hidden` Admin entry in the drawer for everyone (B-063). The
+   attribute selector outranks the plain class, so this holds at every viewport without !important. */
+.topnav-tab[hidden] { display: none; }
+
 .topnav-tab:hover {
   color: var(--obs-text);
   background: var(--obs-surface);

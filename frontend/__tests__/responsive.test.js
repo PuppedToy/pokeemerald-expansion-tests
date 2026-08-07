@@ -55,6 +55,14 @@ test('app nav stays desktop-identical: menu wrapper is display:contents, burger/
   assert.match(indexHtml, /id=["']nav-burger["']/, 'index.html must contain the hamburger button');
 });
 
+// B-063 — the mobile layer sets `display: flex` on .topnav-tab, and an author display rule beats the
+// UA's `[hidden] { display: none }`. Without an explicit guard, the Admin entry (hidden until
+// /api/me reports isAdmin) was listed in the drawer for every visitor, signed out included.
+test('a hidden nav entry stays hidden even where the mobile layer sets a display (B-063)', () => {
+  assert.match(layoutCss, /\.topnav-tab\[hidden\][^{]*\{[^}]*display\s*:\s*none/,
+    '.topnav-tab[hidden] must be display:none — the mobile .topnav-tab display rule overrides [hidden]');
+});
+
 test('mobile tap targets reach 44px', () => {
   assert.match(componentsCss, /min-height:\s*44px/, 'components.css mobile layer must enforce ≥44px tap targets');
 });
