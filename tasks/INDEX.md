@@ -258,5 +258,5 @@
 | [T-254](T-254-client-run-telemetry.md) | "Measure the device fleet, so client injection can be decided on data" | proposed | 0.9.0 | 2026-08-05 |
 | [T-255](T-255-beta-gating-with-client-injection.md) | Decide what invite-only building means once building is local | proposed | 0.9.0 | 2026-08-05 |
 | [T-256](T-256-queue-redesign-after-client-injection.md) | "Rework the build queue once most runs never reach it" | proposed | 1.0.0 | 2026-08-05 |
-| [T-257](T-257-league-rules-and-heal-toggles.md) | "Difficulty toggles: heal fainted Pokémon after combat (world / league) + allow relearn in the league" | in-progress | 0.7.0 | 2026-08-07 |
-| [T-258](T-258-league-lockdown-pc-and-relearn.md) | "Lock the Pokémon League: no PC, and no move relearning unless allowed" | in-progress | 0.7.0 | 2026-08-07 |
+| [T-257](T-257-league-rules-and-heal-toggles.md) | "Difficulty toggles: heal fainted Pokémon after combat (world / league) + allow relearn in the league" | done | 0.7.0 | 2026-08-07 |
+| [T-258](T-258-league-lockdown-pc-and-relearn.md) | "Lock the Pokémon League: no PC, and no move relearning unless allowed" | done | 0.7.0 | 2026-08-07 |

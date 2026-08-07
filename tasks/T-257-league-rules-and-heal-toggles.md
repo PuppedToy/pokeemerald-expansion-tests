@@ -1,7 +1,7 @@
 ---
 id: T-257
 title: "Difficulty toggles: heal fainted Pokémon after combat (world / league) + allow relearn in the league"
-status: in-progress
+status: done
 type: feature
 created: 2026-08-07
 updated: 2026-08-07
@@ -55,17 +55,17 @@ Save/Load + `lastConfig`, surfaced in the run summary. They ride to the ROM insi
 (no `toModuleConfig` change — they draw no RNG and change no docs).
 
 Acceptance criteria:
-- [ ] `healFaintedAfterBattle` / `healFaintedAfterBattleLeague` / `leagueMoveRelearnAllowed` exist in
+- [x] `healFaintedAfterBattle` / `healFaintedAfterBattleLeague` / `leagueMoveRelearnAllowed` exist in
       `struct RandomizerSettings`, default `FALSE`, read only through `GetRandomizerSettings()`.
-- [ ] After an ordinary battle the party is healed iff toggle 1 is on; after an Elite Four / Champion
+- [x] After an ordinary battle the party is healed iff toggle 1 is on; after an Elite Four / Champion
       battle iff toggle 2 is on. The two never interfere; facility challenges are never healed.
-- [ ] `leagueRulesWriter` patches the three fields, clamps junk to the committed default, and is called
+- [x] `leagueRulesWriter` patches the three fields, clamps junk to the committed default, and is called
       from `make.js`.
-- [ ] The injector writes all seven settings values and still refuses a base whose struct does not match
+- [x] The injector writes all seven settings values and still refuses a base whose struct does not match
       its sources.
-- [ ] Three toggles in the frontend Difficulty panel, default off, round-tripping Save/Load and
+- [x] Three toggles in the frontend Difficulty panel, default off, round-tripping Save/Load and
       `lastConfig`, shown in the run summary; browser bundle rebuilt.
-- [ ] `cd randomizer && npm test` green (+ backend suite), docs updated
+- [x] `cd randomizer && npm test` green (+ backend suite), docs updated
       (`randomizer/docs/randomization-options.md`), changelog line added.
 
 ## Progress log
@@ -112,6 +112,36 @@ Acceptance criteria:
     **base rebuild** (`deploy/build-base.sh`) before an inject-mode deploy can serve them — the injector
     will loudly refuse the current base, since 20 B at `gRandomizerSettings` no longer match.
 
+- **2026-08-07 — Closed.** Owner reviewed the change and confirmed it ("lo veo bien"); merged into `master`
+  with [[T-258]]. Suites green at close: randomizer 2232, backend 232, frontend 206.
+
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Three basic Difficulty options, all default off, threaded frontend → `bundle.config` → ROM:
+`healFaintedAfterBattle`, `healFaintedAfterBattleLeague`, `leagueMoveRelearnAllowed`. The two heal rules are
+mutually exclusive by construction — a battle inside the gauntlet consults only the league one, every other
+battle only the other — so all four combinations the owner asked for are expressible, including "never heal
+in the world but heal between League fights".
+
+Their home is `gRandomizerSettings` (T-234), which grew 16 B → 20 B: patched by the new
+`randomizer/leagueRulesWriter.js` on the compile path and re-derived by the `dataDrivenAndToggles` injector
+module on the inject path, so both paths agree by construction rather than by convention. The struct's tail
+padding byte is inside the base check, so a struct that grows behind our back is refused instead of
+half-written.
+
+**Deviation from the plan — no new save flag.** The plan and the first design carried a `FLAG_…` set and
+cleared on map transition, so [[T-258]]'s revert conditions could be written down literally. It was dropped
+once the league map graph was read properly: because the lobby is the whiteout respawn point and the
+Champion's post-battle sequence is one `lockall` cutscene into the Hall of Fame, a pure map predicate has no
+stuck state, no save-compat story and costs no flag. The two revert conditions became properties of *which
+maps are in the set* — which is why that reasoning is recorded in `include/league_rules.h`, next to the list
+it depends on, and not in a comment beside a flag.
+
+**Verification level, stated plainly.** Everything on the pipeline and frontend side is covered by tests
+(19 new; the writer's 8 written RED first) and by a screenshot of the panel. The engine side — the healing
+hooks themselves — was reviewed, not executed: there is no GBA toolchain here, so the ROM compiles on
+CI/the builder. Nothing about these toggles has run on hardware yet, and the base still needs
+`deploy/build-base.sh` before an inject-mode deploy can serve them.
+
+No follow-up tasks spawned. One existing test changed shape (the T-186 Difficulty guard's fixed-size slice);
+the assertions are unchanged.
