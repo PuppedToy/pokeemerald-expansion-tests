@@ -1,10 +1,10 @@
 ---
 id: T-259
 title: Give the frontend real URLs and indexable links
-status: in-progress
+status: done
 type: feature
 created: 2026-08-07
-updated: 2026-08-07
+updated: 2026-08-09
 target-version: 0.9.0
 links: [docs/adr/ADR-025-frontend-path-routing-single-route-table.md, docs/adr/ADR-009-frontend-test-harness-zero-dep.md, B-063]
 blocked-by: []
@@ -134,6 +134,48 @@ Acceptance criteria:
   tiers, so the test is stale) and "B-024 evolution mails below the first cap" (docs-viewer fixture).
   Both are outside this task's scope; flagged to the owner rather than silently adjusted.
 
+- **2026-08-09** — Closed on the owner's explicit instruction ("cierra tareas que haya que cerrar"),
+  without a manual pass on their side. All acceptance criteria are met and verified by the automated
+  browser specs; both suites re-run green at close (frontend 232, backend 240, randomizer 2232).
+
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Shipped. The frontend has real URLs and a nav made of links.
+
+**What shipped**
+- `frontend/js/router.js` — the site's URL map and its only home: the route table plus `parsePath` /
+  `pathFor` / `titleFor`, `SHELL_PATHS` (every path the server must answer) and `CANONICAL_PATHS` (one per
+  public destination). Pure, so `backend/server.js` imports the same table.
+- `backend/shell/routes.js` — serves the shell for those paths (dist-or-source per request, mirroring the
+  static mounts), plus generated `/robots.txt` and `/sitemap.xml`. A fixed list, not a catch-all.
+- `index.html` / `app.js` / `feedback.js` — anchors throughout, one delegated click handler, `popstate`,
+  per-route `document.title`, `aria-current`. `feedback.js`'s duplicate `.fb-tab` wiring deleted.
+- **ADR-025** records the decisions; `docs/INDEX.md` lists it.
+
+Destinations: `/`, `/features` (+ `/features/randomizer`, `/features/docs`), `/randomizer`, `/feedback`
+(+ `/feedback/bugs`), `/settings`, `/admin`.
+
+**Deviations from the plan**
+- Dropped the planned `/privacy` + `/terms` clean URLs (plan item 5). They were already ordinary crawlable
+  pages with a real address each, so the change was cosmetic and would have churned the T-222
+  legal-notices test. Recorded as out of scope instead.
+- Two design calls made while implementing, both in ADR-025: a tab's first list is canonically the bare
+  tab path (so `/features` and `/features/rom` are not two URLs for one list, with the alias normalised on
+  arrival), and URL-driven sub-navigation became a `<nav>` of links with `aria-current` rather than an
+  ARIA tablist.
+
+**Verification** — 43 new tests, TDD throughout: `router.test.js` (18), `nav-links.test.js` (7),
+`shell-routes.test.js` (8), `routing.spec.mjs` (10, real browser). Suites green: frontend 232, backend
+240, randomizer 2232. The browser specs pass against both the raw source and the minified `SERVE_DIST=1`
+dist shell; `shoot.mjs` reports no horizontal overflow at any viewport.
+
+**Follow-ups spawned**
+- **B-063** (fixed in this task) — a `hidden` nav entry was still listed in the mobile drawer, because the
+  mobile layer's `.topnav-tab { display: flex }` outranks the UA's `[hidden] { display: none }`. Found
+  while screenshotting the drawer; confirmed pre-existing on `master`.
+- **T-260** — the two `interaction.spec.mjs` failures found while running the harness here turned out to
+  be unrelated to this work (one stale feature test, one bug guard that had stopped guarding); fixed there
+  rather than folded into this task.
+
+Closed on the owner's explicit instruction; they did not manual-test the routing first, so the acceptance
+criteria were verified by the automated browser specs above rather than by hand.
