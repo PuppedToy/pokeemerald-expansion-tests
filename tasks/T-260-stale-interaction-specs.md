@@ -1,7 +1,7 @@
 ---
 id: T-260
 title: Repair the two failing interaction specs — retire one, make the other seed-independent
-status: in-progress
+status: done
 type: fix
 created: 2026-08-09
 updated: 2026-08-09
@@ -118,6 +118,46 @@ Acceptance criteria:
     deleted underneath it. Left the status alone — closing (even as `abandoned`) is the owner's call — and
     flagged it for them instead.
 
+- **2026-08-09** — Closed. Test-only work with nothing manually testable, and the owner explicitly
+  authorized closing; the B-024 guard was proven by reverting the fix and watching it fail.
+
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Both failures handled, with opposite treatments — the investigation is the substance of this task.
+
+**T-172 slow-queue spec — deleted.** It guarded a feature that no longer exists: T-245 removed the
+warning when ADR-024 retired the fast/slow build tiers, dropping the feature and its unit test but not
+this Playwright test, because `visual-tests/` sits outside `npm test` (ADR-010). Replaced by a comment
+naming T-245/ADR-024 so it does not get "restored". No `nz-slow-queue-warning` / `slowQueueWarning` /
+`FAST_QUEUE_MAX_ROMS` reference survives anywhere.
+
+**B-024 spec — rewritten, and now actually guards.** It was failing on its own precondition, not an
+assertion: it searched the generated fixture for a box mon whose evolution is gated at or below the first
+cap, which is luck (1 seed in 8). It passed in July because that fixture happened to hold the case, then
+went red once seed 42 rolled a box whose lowest gate was 18 against a first cap of 8 — so a `major` bug's
+regression guard had silently stopped guarding while the fix itself was intact. It now constructs the
+case: three distinct box mons get one known evolution each (gated exactly at the first cap, gated at 0,
+and gated above boss 0's window as a negative control that must not appear until boss 1 falls, then must).
+Seed-independent, so it holds on every fixture.
+
+**Deviations from the plan** — one, forced by the code: the plan said the spec should call the viewer's own
+`evoGateLevel` instead of keeping a copy. It cannot: the Mail engine is inside an IIFE, so
+`capturedEntries` / `pokeById` / `evoGateLevel` are unreachable from `page.evaluate` (the first attempt
+died on `ReferenceError`) — which is also why the original hand-rolled its own copy. Resolved better than
+planned: the case is built from the injected globals and the duplicated helper is gone entirely, because
+the gates are now chosen rather than discovered.
+
+**Verification** — the criterion that mattered: reverted the fix to `evoPrev = prev`, rebuilt the fixture
+(it embeds `template.html`), and the spec failed on *"an evolution gated exactly at the first cap must be
+surfaced"*; restored byte-identical, rebuilt, green. `interaction.spec.mjs`: 11 passed, 0 failed across
+the 5 viewports (34 skips are the pre-existing viewport gates). Suites green: frontend 206, backend 232,
+randomizer 2232. No changelog entry — test-only, nothing user-visible.
+
+**Follow-ups** — no new task files, two things handed to the owner instead:
+- **T-172** is still `in-progress` with its feature deleted underneath it. A dated note was appended; the
+  status was deliberately left alone because closing (even as `abandoned`) is the owner's call. It wants
+  `abandoned`, not `done`.
+- **`visual.spec.mjs` pixel baselines** fail locally (41, all `toHaveScreenshot`) on this machine's font
+  rendering — pre-existing and already recorded in T-172's own July log. Untouched here; the baselines
+  Playwright auto-wrote for `presets-modal` during a full run were deleted rather than committed, so this
+  machine's drift does not become the reference.

@@ -260,4 +260,4 @@
 | [T-256](T-256-queue-redesign-after-client-injection.md) | "Rework the build queue once most runs never reach it" | proposed | 1.0.0 | 2026-08-05 |
 | [T-257](T-257-league-rules-and-heal-toggles.md) | "Difficulty toggles: heal fainted Pokémon after combat (world / league) + allow relearn in the league" | done | 0.7.0 | 2026-08-07 |
 | [T-258](T-258-league-lockdown-pc-and-relearn.md) | "Lock the Pokémon League: no PC, and no move relearning unless allowed" | done | 0.7.0 | 2026-08-07 |
-| [T-260](T-260-stale-interaction-specs.md) | Repair the two failing interaction specs — retire one, make the other seed-independent | in-progress | 0.9.0 | 2026-08-09 |
+| [T-260](T-260-stale-interaction-specs.md) | Repair the two failing interaction specs — retire one, make the other seed-independent | done | 0.9.0 | 2026-08-09 |
