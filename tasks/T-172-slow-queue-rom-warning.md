@@ -1,10 +1,10 @@
 ---
 id: T-172
 title: Warn in the config UI when the ROM count would land the build in the slow queue
-status: in-progress     # proposed | in-progress | done | abandoned
+status: abandoned      # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-21
-updated: 2026-07-21
+updated: 2026-08-09
 target-version: 0.6.0
 links: [backend/queue/scheduler.js, frontend/js/config-form.js]
 blocked-by: []
@@ -82,6 +82,36 @@ Acceptance criteria:
   (global font-render drift) — reproduced with my changes stashed, so it is unrelated to T-172; baselines
   left untouched. Pending owner manual test before close.
 
+- **2026-08-09** (appended by T-260) — **This feature no longer exists.** T-245 removed it when ADR-024
+  retired the fast/slow build tiers: injection put a ROM at ~16.5 s, so there is no slow lane to warn
+  about. That commit (`296fa67cdc`) deleted `FAST_QUEUE_MAX_ROMS`, `slowQueueWarning`,
+  `slowQueueMessage`, both `.warning-banner`s and `frontend/__tests__/slow-queue-warning.test.js` — but
+  not the Playwright interaction test, because `visual-tests/` is a separate dev-only harness (ADR-010)
+  outside `npm test`. That leftover test had been failing ever since; T-260 retired it.
+  `totalRoms(cfg)`, the de-duplication this task extracted along the way, is still in use in `app.js`.
+  **This task is therefore superseded and never shipped** — it is left `in-progress` only because closing
+  a task (including as `abandoned`) is the owner's call; it wants `abandoned`, not `done`.
+
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+**Abandoned — superseded before it ever shipped.** Closed as `abandoned` on the owner's instruction
+(2026-08-09), which is exempt from the manual-test gate; the last acceptance criterion ("Owner
+manual-tests in the UI and confirms") was never met and now never can be, because there is nothing left
+to test.
+
+The work was implemented and green in July, but sat waiting for that manual pass. Before it came, **T-245
+deleted the feature**: ADR-024 retired the fast/slow build tiers because injection put a ROM at ~16.5 s,
+so ADR-005's premise — a ROM costs minutes, therefore a small request must preempt a big one — no longer
+held. With one FIFO lane there is no slow queue, so a warning about landing in it has nothing to say.
+
+Removed by T-245 (`296fa67cdc`): `FAST_QUEUE_MAX_ROMS`, `slowQueueWarning`, `slowQueueMessage`, both
+`#nz-`/`#sl-slow-queue-warning` banners and `frontend/__tests__/slow-queue-warning.test.js`. The
+`FAST_MAX_ROMS` export this task added to the backend went with the tiers.
+
+**What survives:** `totalRoms(cfg)` — the ROM-count computation this task extracted while removing app.js's
+inline duplicate. Still exported from `config-form.js` and still used by `app.js` for the Review "Total
+ROMs" row, so the de-duplication outlived the feature it was written for.
+
+**Loose end this left, closed by T-260:** the Playwright interaction test went unnoticed by T-245 because
+`visual-tests/` is a separate dev-only harness (ADR-010) outside `npm test`. It failed from that deploy
+until T-260 retired it — the reason this task file is being touched at all.

@@ -174,7 +174,7 @@
 | [T-168](T-168-shiny-iv-badge-in-docs.md) | Show a "Shiny" star badge in the docs for 150+ IV Pokémon | done | 0.6.0 | 2026-07-20 |
 | [T-169](T-169-tate-liza-dual-favourite-test-correction.md) | Correct the Tate & Liza dual-favourite test to the confirmed spec | done | 0.6.0 | 2026-07-20 |
 | [T-170](T-170-macro-frontpic-sprite-resolution.md) | Resolve macro-body .frontPic so cosmetic/macro forms render in the docs | in-progress | 0.6.0 | 2026-07-20 |
-| [T-172](T-172-slow-queue-rom-warning.md) | Warn in the config UI when the ROM count would land the build in the slow queue | in-progress | 0.6.0 | 2026-07-21 |
+| [T-172](T-172-slow-queue-rom-warning.md) | Warn in the config UI when the ROM count would land the build in the slow queue | abandoned | 0.6.0 | 2026-08-09 |
 | [T-173](T-173-remove-overworld-pickup.md) | Remove the overworld version of Pickup; rescope its description to the battle effect | in-progress | 0.6.0 | 2026-07-21 |
 | [T-174](T-174-honey-gather-battle-clone.md) | Make Honey Gather a battle-only clone of Pickup; drop its overworld item find | in-progress | 0.6.0 | 2026-07-21 |
 | [T-175](T-175-payday-flat-trainer-money.md) | Pay Day / Make It Rain / Gold Rush pay a flat trainer-only reward (no scaling) | in-progress | 0.6.0 | 2026-07-21 |
@@ -261,3 +261,4 @@
 | [T-257](T-257-league-rules-and-heal-toggles.md) | "Difficulty toggles: heal fainted Pokémon after combat (world / league) + allow relearn in the league" | done | 0.7.0 | 2026-08-07 |
 | [T-258](T-258-league-lockdown-pc-and-relearn.md) | "Lock the Pokémon League: no PC, and no move relearning unless allowed" | done | 0.7.0 | 2026-08-07 |
 | [T-259](T-259-frontend-url-routing.md) | Give the frontend real URLs and indexable links | done | 0.9.0 | 2026-08-09 |
+| [T-260](T-260-stale-interaction-specs.md) | Repair the two failing interaction specs — retire one, make the other seed-independent | done | 0.9.0 | 2026-08-09 |
