@@ -33,6 +33,7 @@ const THRESHOLDS = {
     SUPPORT_MAX_OFFENSE: 95,    // screens/cleric are a UTILITY job, not an attacker's (corpus cleric off 73)
     CLERIC_MIN_BULK: 285,       // corpus clerics: bulky (avg 304), slow, low-offense, recovery
     BULKY_TOTAL: 260,           // HP+Def+SpD that marks a bulky pivot
+    SLOW_PIVOT_MAX_SPEED: 60,   // T-261 — above this, Teleport's "eat the hit for the team" job is not yours
     FAST_MIN_SPEED: 95,         // suicide-lead / fast threshold
     FRAIL_MAX_TOTAL: 230,       // HP+Def+SpD that marks a frail mon
 };
@@ -57,7 +58,15 @@ const SETUP_MOVES = new Set([
     'MOVE_NO_RETREAT', 'MOVE_TAKE_HEART',
 ]);
 const CLERIC_MOVES = new Set(['MOVE_WISH', 'MOVE_AROMATHERAPY', 'MOVE_HEAL_BELL', 'MOVE_LIFE_DEW', 'MOVE_JUNGLE_HEALING']);
-const PIVOT_MOVES = new Set(['MOVE_U_TURN', 'MOVE_VOLT_SWITCH', 'MOVE_FLIP_TURN', 'MOVE_TELEPORT', 'MOVE_PARTING_SHOT', 'MOVE_CHILLY_RECEPTION', 'MOVE_BATON_PASS']);
+// Pivots that build momentum for ANY user: they either damage on the way out (U-turn / Volt Switch /
+// Flip Turn), leave the foe worse off (Parting Shot / Chilly Reception) or hand over a boost — Baton
+// Pass passes setup, which is a strong job in its own right and nothing like the escape below.
+const PIVOT_MOVES = new Set(['MOVE_U_TURN', 'MOVE_VOLT_SWITCH', 'MOVE_FLIP_TURN', 'MOVE_PARTING_SHOT', 'MOVE_CHILLY_RECEPTION', 'MOVE_BATON_PASS']);
+// T-261 / B-064 — Teleport pivots only for the profile it was made for: a slow, bulky mon that eats the
+// hit so the frail teammate coming in does not have to (-6 priority: it leaves AFTER being hit). On a
+// fast or frail mon it is not a pivot at all, so it must not tag one as a pivotUser — that is how a
+// 80-speed / 135-SpA Gardevoir ended up carrying it. Rated to match in rating.js (TELEPORT_*).
+const SLOW_PIVOT_MOVES = new Set(['MOVE_TELEPORT']);
 const RECOVERY_MOVES = new Set([
     'MOVE_RECOVER', 'MOVE_ROOST', 'MOVE_SLACK_OFF', 'MOVE_SOFT_BOILED', 'MOVE_MILK_DRINK', 'MOVE_MOONLIGHT',
     'MOVE_MORNING_SUN', 'MOVE_SYNTHESIS', 'MOVE_SHORE_UP', 'MOVE_WISH', 'MOVE_REST', 'MOVE_STRENGTH_SAP',
@@ -97,6 +106,27 @@ function hasMoveWhere(mon, ctx, pred) {
     });
 }
 const isDamaging = mv => mv.category && mv.category !== 'DAMAGE_CATEGORY_STATUS';
+const isSlowAndBulky = (mon) => (mon.baseSpeed || 0) <= THRESHOLDS.SLOW_PIVOT_MAX_SPEED
+    && bulkTotal(mon) >= THRESHOLDS.BULKY_TOTAL;
+
+// T-261 / B-064 — role moves that only do the role's job for a SUB-PROFILE of it. One home for the
+// rule, used at both ends: the detector below decides whether the move may tag the mon with the role,
+// and the role-move injector (archetypeRefine) filters its candidate deliverers through the same
+// predicate. Without the second half a species still qualifies for the role through a move it CAN'T
+// reach (a TM the trainer doesn't hold yet) and then gets handed the conditional one as the only
+// remaining option — which is exactly how Wally's fast Gardevoir ended up with Teleport.
+const ROLE_MOVE_PROFILE_GATES = {
+    MOVE_TELEPORT: isSlowAndBulky,
+};
+function moveFitsProfile(mon, moveId) {
+    const gate = ROLE_MOVE_PROFILE_GATES[moveId];
+    return !gate || gate(mon);
+}
+
+// A mon pivots if it has a real pivot move, OR a slow-pivot move (Teleport) AND the slow, bulky profile
+// that move exists to serve. Shared by pivotUser and regeneratorPivot.
+const canPivot = (mon) => canLearnAny(mon, PIVOT_MOVES)
+    || (canLearnAny(mon, SLOW_PIVOT_MOVES) && isSlowAndBulky(mon));
 
 // ── Detectors ────────────────────────────────────────────────────────────────
 const DETECTORS = {
@@ -126,7 +156,7 @@ const DETECTORS = {
     cleric: (mon) => canLearnAny(mon, CLERIC_MOVES)
         && bulkTotal(mon) >= THRESHOLDS.CLERIC_MIN_BULK
         && offense(mon) <= THRESHOLDS.SUPPORT_MAX_OFFENSE,
-    pivotUser: (mon) => canLearnAny(mon, PIVOT_MOVES),
+    pivotUser: (mon) => canPivot(mon),
     wideGuardUser: (mon) => canLearnAny(mon, WIDE_GUARD_MOVES),
     // T-141 — a DEDICATED support (NOT an attacker that merely carries a support tool). Delegates to the
     // SAME predicate the doubles rater uses for the quality lift (rating.js isDedicatedSupport), so the
@@ -160,7 +190,7 @@ const DETECTORS = {
         // T-123 — a non-Regenerator "regen-style" pivot must be genuinely DEFENSIVE (not an attacker
         // that merely happens to be bulky and learn Rest + U-turn), else balance's backbone over-fires.
         return offense(mon) <= THRESHOLDS.WALL_MAX_OFFENSE
-            && canLearnAny(mon, RECOVERY_MOVES) && canLearnAny(mon, PIVOT_MOVES);
+            && canLearnAny(mon, RECOVERY_MOVES) && canPivot(mon);
     },
     focusSashLead: (mon) => (mon.baseSpeed || 0) >= THRESHOLDS.FAST_MIN_SPEED
         && bulkTotal(mon) <= THRESHOLDS.FRAIL_MAX_TOTAL
@@ -184,7 +214,7 @@ function detectFeatures(mon, ctx = {}) {
 // deliver it (e.g. hazardSetter → HAZARD_MOVES). Sets iterate in insertion order (deterministic).
 const MOVE_SETS = {
     WEATHER_MOVES, HAZARD_MOVES, HAZARD_REMOVAL_MOVES, SETUP_MOVES, CLERIC_MOVES, PIVOT_MOVES,
-    SCREEN_MOVES, TRICK_ROOM_MOVES, TAILWIND_MOVES, REDIRECT_MOVES, WIDE_GUARD_MOVES,
+    SLOW_PIVOT_MOVES, SCREEN_MOVES, TRICK_ROOM_MOVES, TAILWIND_MOVES, REDIRECT_MOVES, WIDE_GUARD_MOVES,
 };
 
-module.exports = { DETECTORS, detectFeatures, THRESHOLDS, MOVE_SETS };
+module.exports = { DETECTORS, detectFeatures, THRESHOLDS, MOVE_SETS, moveFitsProfile };

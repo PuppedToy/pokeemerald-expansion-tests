@@ -112,6 +112,9 @@ const moves = {
     MOVE_VOLT_SWITCH:  { ...base, id: 'MOVE_VOLT_SWITCH', name: 'Volt Switch', category: 'DAMAGE_CATEGORY_SPECIAL',  type: 'ELECTRIC', power: 70, accuracy: 100, effect: 'EFFECT_HIT_ESCAPE' },
     // Strong same-type (Water) physical attacker — used to prove the forced pivot survives A3 dedup.
     MOVE_WAVE_CRASH:   { ...base, id: 'MOVE_WAVE_CRASH',  name: 'Wave Crash',  category: 'DAMAGE_CATEGORY_PHYSICAL', type: 'WATER',    power: 120, accuracy: 100, effect: 'EFFECT_RECOIL' },
+    // T-261 — Teleport: the SLOW pivot (-6 priority, no damage). Its value depends on the user's profile.
+    MOVE_TELEPORT:     { ...base, id: 'MOVE_TELEPORT',    name: 'Teleport',    category: 'DAMAGE_CATEGORY_STATUS',   type: 'PSYCHIC',  power: 0,  accuracy: 0,   effect: 'EFFECT_TELEPORT', priority: -6, target: 'MOVE_TARGET_USER' },
+    MOVE_RECOVER:      { ...base, id: 'MOVE_RECOVER',     name: 'Recover',     category: 'DAMAGE_CATEGORY_STATUS',   type: 'NORMAL',   power: 0,  accuracy: 0,   effect: 'EFFECT_RESTORE_HP', target: 'MOVE_TARGET_USER' },
 };
 
 module.exports = moves;

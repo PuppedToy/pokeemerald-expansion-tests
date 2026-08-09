@@ -67,3 +67,4 @@
 | [B-061](B-061-reward-message-names-the-givemon-result.md) | "Boss reward message names the wrong species — it buffers VAR_RESULT after `givemon` has overwritten it" | fixed | major | 0.5.0 | 0.7.0 | randomizer/__tests__/unit/injectableAccessors.test.js |
 | [B-062](B-062-mega-stones-disagree-with-the-docs.md) | The mega stone on the ground is not the one the documentation promised | fixed | critical | 0.8.0 | 0.8.0 | randomizer/__tests__/unit/megaAssignment.test.js |
 | [B-063](B-063-hidden-nav-tab-visible-on-mobile.md) | A hidden top-nav entry is still shown in the mobile drawer | fixed | minor | 0.8.0 | 0.9.0 | frontend/__tests__/responsive.test.js |
+| [B-064](B-064-teleport-forced-onto-fast-attackers.md) | Teleport is forced onto fast attackers by the archetype role-move injector | fixing | major | 0.5.0 |  | randomizer/__tests__/unit/teleportSlowPivot.test.js |
