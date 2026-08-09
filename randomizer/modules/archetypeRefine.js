@@ -12,9 +12,10 @@
 // Pure + deterministic. Gated by sophistication (shares the picker's thresholds), so early-game teams
 // get no refinement and stay byte-identical.
 
-const { detectFeatures, MOVE_SETS } = require('./featureDetectors');
+const { detectFeatures, MOVE_SETS, moveFitsProfile } = require('./featureDetectors');
 const { teamFeatureCounts, combinedStructure } = require('./archetypeFit');
 const { BIAS_MIN_SOPH, resolveIdentity } = require('./archetypePicker');
+const { rankMovesForPokemon } = require('../rating');
 
 // Move-deliverable roles → the moves that deliver them. Ability/stat-only roles (intimidateUser,
 // wallbreaker, walls, regeneratorPivot, weatherSetter/abuser) are absent — they can't be fixed by a
@@ -26,7 +27,9 @@ const ROLE_MOVE_SETS = {
     trickRoomSetter: MOVE_SETS.TRICK_ROOM_MOVES,
     tailwindSetter: MOVE_SETS.TAILWIND_MOVES,
     cleric: MOVE_SETS.CLERIC_MOVES,
-    pivotUser: MOVE_SETS.PIVOT_MOVES,
+    // T-261 — the slow pivot (Teleport) comes LAST: it only reaches a mon that the pivotUser detector
+    // already accepted on the slow+bulky profile, and even there a real pivot outranks it.
+    pivotUser: new Set([...MOVE_SETS.PIVOT_MOVES, ...MOVE_SETS.SLOW_PIVOT_MOVES]),
     wideGuardUser: MOVE_SETS.WIDE_GUARD_MOVES,
     redirector: MOVE_SETS.REDIRECT_MOVES,
     setupSweeper: MOVE_SETS.SETUP_MOVES,
@@ -77,13 +80,18 @@ function planMemberRoleMove({ species, team, model, ctx = {}, sophistication, se
         .filter(s => ROLE_MOVE_SETS[s.role] && speciesFeats.has(s.role) && (delivered[s.role] || 0) < s.min)
         .sort((a, b) => b.weight - a.weight);
 
-    // Return the first role move the species can ACTUALLY have here — trying alternatives (U-turn before
-    // Volt Switch, etc.) so an inaccessible TM doesn't block the role and doesn't leak in (B-030).
+    // Return the BEST role move the species can ACTUALLY have here — every alternative is considered
+    // (so an inaccessible TM doesn't block the role and doesn't leak in, B-030), then ranked by what the
+    // move is worth ON this mon. T-261/B-064: taking the first one in set-declaration order is what put
+    // Teleport on a fast Gardevoir once the TM-gated pivots dropped out. Ranking needs the move database
+    // (ctx.moves); without it the order is the declaration order, exactly as before.
     const gate = { tms: ctx.tms || null, level: ctx.level ?? null };
     for (const s of candidates) {
-        for (const move of ROLE_MOVE_SETS[s.role]) {
-            if (speciesCanLearn(species, move, gate)) return move;
-        }
+        const deliverers = [...ROLE_MOVE_SETS[s.role]]
+            .filter(move => moveFitsProfile(species, move) && speciesCanLearn(species, move, gate));
+        if (deliverers.length === 0) continue;
+        if (deliverers.length === 1 || !ctx.moves) return deliverers[0];
+        return rankMovesForPokemon(deliverers, species, ctx.moves, { level: ctx.level ?? 100 })[0].id;
     }
     return null;
 }

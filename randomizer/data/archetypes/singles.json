@@ -14,7 +14,7 @@
     "unawareWall": "Unaware (or Magic Bounce) wall that denies setup / hazards",
     "cleric": "Wish / Aromatherapy / Heal Bell support on a bulky, low-offense mon",
     "choiceScarfRevengeKiller": "Choice Scarf mon used to revenge-kill / provide speed control",
-    "pivotUser": "U-turn / Volt Switch / Flip Turn / Teleport pivot",
+    "pivotUser": "U-turn / Volt Switch / Flip Turn / Parting Shot / Baton Pass pivot (Teleport only on a slow, bulky mon — T-261)",
     "focusSashLead": "frail Focus Sash suicide lead (retired from recipes; the hyper-offense lead is the hazard setter)",
     "weatherSetter": "sets weather via ability (Drizzle / Drought / Sand Stream / Snow Warning)",
     "weatherAbuser": "Swift Swim / Chlorophyll / Sand Rush / Slush Rush, or a weather-boosted attacker",

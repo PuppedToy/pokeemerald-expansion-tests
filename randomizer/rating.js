@@ -568,6 +568,32 @@ const pivotingMoves = new Set([
     'MOVE_TELEPORT',
 ]);
 
+// Reliable recovery: excludes Rest (2-turn sleep makes it unreliable for combo synergy unless paired
+// with Sleep Talk / Natural Cure), and excludes passive moves like Leech Seed / Aqua Ring (no action
+// cost but minimal per-turn healing, not a true recovery move). Used by the SETUP+RECOVERY and
+// PIVOT+RECOVERY combos and by the Teleport rule below. Rest still counts for SUB+STATUS+RECOVERY
+// (Snorlax-style stall) — see computeComboBonus.
+const RELIABLE_RECOVERY_MOVES = new Set([
+    'MOVE_RECOVER', 'MOVE_ROOST', 'MOVE_SOFT_BOILED', 'MOVE_SLACK_OFF',
+    'MOVE_MILK_DRINK', 'MOVE_HEAL_ORDER', 'MOVE_SYNTHESIS', 'MOVE_MORNING_SUN',
+    'MOVE_MOONLIGHT', 'MOVE_SHORE_UP', 'MOVE_WISH',
+    // Draining moves heal proportionally on hit — reliable enough to count for combo synergy
+    'MOVE_DRAIN_PUNCH', 'MOVE_GIGA_DRAIN', 'MOVE_LEECH_LIFE', 'MOVE_HORN_LEECH',
+    'MOVE_DRAINING_KISS', 'MOVE_BITTER_BLADE', 'MOVE_OBLIVION_WING',
+]);
+
+// T-261 / B-064 — Teleport is the SLOW pivot. Its -6 priority means the user takes the hit and only
+// THEN leaves, so its single job is letting a slow, bulky mon absorb that hit in place of the frail
+// teammate coming in. That is worth a slot on a slow bulky pivot — and more when the cycle heals back
+// (Regenerator or reliable recovery) — and worth nothing on anything else, where U-turn / Volt Switch /
+// Flip Turn do the same job while dealing damage. Owner-agreed thresholds and magnitudes.
+// Baton Pass is deliberately NOT covered by this rule: it passes setup, a different (and strong) job.
+const TELEPORT_MAX_SPEED = 60;          // above this the mon is not the one that should be eating the hit
+const TELEPORT_MIN_BULK = 260;          // HP + Def + SpD — same bar as featureDetectors' BULKY_TOTAL
+const TELEPORT_ATTACKER_RATING = 1;     // dead weight: never beats a real move
+const TELEPORT_SLOW_PIVOT_RATING = 5;   // a real, if modest, tool for the profile it is made for
+const TELEPORT_HEALED_CYCLE_RATING = 6; // Regenerator / reliable recovery makes the pivot cycle HP-positive
+
 const statusList = {
     MOVE_SPLASH: 0,
     MOVE_CELEBRATE: 0,
@@ -1615,6 +1641,21 @@ function rateMoveForAPokemon(move, poke, ability, item, otherMoves, currentMoves
     // T-013: Aurora Veil — finalised here (after any downstream bonuses) so it's exactly 0 without
     // snow on the team and 10 with it.
     if (move.id === 'MOVE_AURORA_VEIL') rating = inSnow ? 10 : 0;
+
+    // T-261 / B-064 — Teleport: the slow pivot's escape (see TELEPORT_* above). Finalised here, like
+    // Aurora Veil, so the value is exactly the agreed 1 / 5 / 6 and no earlier status-move nudge (the
+    // bulk bonus in particular) drifts it — the bulk requirement is already in the gate below.
+    if (move.id === 'MOVE_TELEPORT') {
+        const teleportBulk = (poke.baseHP || 0) + (poke.baseDefense || 0) + (poke.baseSpDefense || 0);
+        const isSlowPivot = (poke.baseSpeed || 0) <= TELEPORT_MAX_SPEED && teleportBulk >= TELEPORT_MIN_BULK;
+        if (!isSlowPivot) {
+            rating = TELEPORT_ATTACKER_RATING;
+        } else {
+            const healsTheCycle = hasAbility('REGENERATOR')
+                || [...currentMoves, ...otherMoves].some(m => RELIABLE_RECOVERY_MOVES.has(m.id));
+            rating = healsTheCycle ? TELEPORT_HEALED_CYCLE_RATING : TELEPORT_SLOW_PIVOT_RATING;
+        }
+    }
 
     // T-013 / T-159: Belch can only fire after the holder eats a Berry. On a berryless mon it never
     // works, so it is a hard 0 — never taught to a mon without a berry. The consolidation pass
@@ -3198,20 +3239,10 @@ function computeComboBonus(poke, moveset, moves, tmPool, role = null, defensePow
     const hasPivot    = hasAnyMove(pivotingMoves);
     const hasSub      = hasMove('MOVE_SUBSTITUTE');
     const hasToxic    = hasMove('MOVE_TOXIC') || hasMove('MOVE_WILL_O_WISP');
-    // Reliable recovery: excludes Rest (2-turn sleep makes it unreliable for combo synergy
-    // unless paried with Sleep Talk/Natural Cure), and excludes passive moves like Leech Seed /
-    // Aqua Ring (no action cost but minimal per-turn healing, not a true recovery move).
-    // Used for SETUP+RECOVERY and PIVOT+RECOVERY checks to prevent every Rest-user from
-    // qualifying. Rest still counts for SUB+STATUS+RECOVERY (Snorlax-style stall).
-    const reliableRecoveryMoves = new Set([
-        'MOVE_RECOVER', 'MOVE_ROOST', 'MOVE_SOFT_BOILED', 'MOVE_SLACK_OFF',
-        'MOVE_MILK_DRINK', 'MOVE_HEAL_ORDER', 'MOVE_SYNTHESIS', 'MOVE_MORNING_SUN',
-        'MOVE_MOONLIGHT', 'MOVE_SHORE_UP', 'MOVE_WISH',
-        // Draining moves heal proportionally on hit — reliable enough to count for combo synergy
-        'MOVE_DRAIN_PUNCH', 'MOVE_GIGA_DRAIN', 'MOVE_LEECH_LIFE', 'MOVE_HORN_LEECH',
-        'MOVE_DRAINING_KISS', 'MOVE_BITTER_BLADE', 'MOVE_OBLIVION_WING',
-    ]);
-    const hasReliableRecovery = [...reliableRecoveryMoves].some(id => allLearnableMoves.has(id));
+    // Reliable recovery (module-level RELIABLE_RECOVERY_MOVES — see its definition for what it
+    // deliberately excludes). Used for SETUP+RECOVERY and PIVOT+RECOVERY checks to prevent every
+    // Rest-user from qualifying. Rest still counts for SUB+STATUS+RECOVERY (Snorlax-style stall).
+    const hasReliableRecovery = [...RELIABLE_RECOVERY_MOVES].some(id => allLearnableMoves.has(id));
 
     // Setup + Priority: after any boost, can't be revenge-killed by faster mons.
     // This is the single most reliable competitive pattern (Scizor SD+BP, Lucario SD+ESpeed,
@@ -3621,6 +3652,34 @@ function movepoolObjects(poke, moves, level = 100) {
         ...(poke.teachables || []),
     ]);
     return [...ids].map(id => moves[id]).filter(Boolean);
+}
+
+// T-261 — rank moves by their value ON a mon, independent of the set being built. Utility moves are
+// gated in rateMoveForAPokemon until the set holds two attacks, so the mon's own two best attacks stand
+// in for that set. Returns `[{ id, value }]` best-first; ties keep the caller's input order (stable sort),
+// so a caller that ranks a fixed list stays deterministic. Used by the archetype role-move injector,
+// which runs BEFORE chooseMoveset and would otherwise pick its role deliverer blind — B-064: it took the
+// first move in set-declaration order and so handed a fast Gardevoir Teleport once the TM-gated pivots
+// dropped out.
+function rankMovesForPokemon(moveIds, poke, moves, { level = 100, ability = null, item = null, ctx = {} } = {}) {
+    const ids = [...(moveIds || [])];
+    if (!poke || !moves || ids.length === 0) return ids.map(id => ({ id, value: 0 }));
+    const pool = movepoolObjects(poke, moves, level).map(m => ({ ...m, rating: rateMove(m) }));
+    const standIn = pool
+        .filter(m => m.category !== 'DAMAGE_CATEGORY_STATUS')
+        .map(m => ({ m, value: rateMoveForAPokemon(m, poke, ability, item, pool, [], ctx) }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 2)
+        .map(o => o.m);
+    return ids
+        .map(id => {
+            const move = moves[id];
+            const value = move
+                ? rateMoveForAPokemon({ ...move, rating: rateMove(move) }, poke, ability, item, pool, standIn, ctx)
+                : 0;
+            return { id, value };
+        })
+        .sort((a, b) => b.value - a.value);
 }
 
 // A mon is a PURE STALLER when its offence is far below its tier baseline (defensive role, low absolute
@@ -4575,6 +4634,7 @@ module.exports = {
     greninjaEffectivePoke,
     chooseMoveset,
     adjustMoveset,
+    rankMovesForPokemon,          // T-261 — set-independent move ranking for the role-move injector
     chooseNature,
     rateMove,
     rateMoveForAPokemon,

@@ -58,6 +58,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Fast attackers no longer waste a slot on Teleport.** Trainer Pokémon like Wally's Gardevoir were being
+  handed Teleport ahead of real moves such as Mystical Fire or Calm Mind. Teleport is the slow pivot — it
+  leaves *after* taking the hit, so its whole point is letting a slow, bulky Pokémon eat that hit for the
+  frail teammate coming in. It is now valued that way: worthless on a fast attacker, worth a slot on a slow
+  bulky pivot, and better still on one that heals the cycle back (Regenerator or reliable recovery). It also
+  stops counting as a pivot move on Pokémon whose stats can't use it. Baton Pass is untouched — passing setup
+  is a different, and strong, job. (T-261, B-064)
+
 - **The phone menu no longer shows an "Admin" entry.** On phones the drawer listed a link to the internal
   beta-admin panel to everyone, signed out included — a dead page for anyone who is not an admin. It is
   hidden again, as it always was on desktop. (T-259, B-063)
