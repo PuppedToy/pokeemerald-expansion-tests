@@ -19,7 +19,6 @@ let selectedCategory = 'feature';
 export function initFeedback(d) {
   deps = d || {};
   renderForm();
-  wireListTabs();
   deps.onAuthChange?.(renderForm);
 }
 
@@ -116,13 +115,5 @@ async function onSubmit(e) {
   }
 }
 
-// ── curated lists (empty placeholders for now) ──────────────────────────────────
-function wireListTabs() {
-  const tabs = document.querySelectorAll('.fb-tab');
-  tabs.forEach?.((t) => t.addEventListener('click', () => setListTab(t.dataset.fbTab)));
-}
-
-function setListTab(id) {
-  document.querySelectorAll('.fb-tab').forEach?.((el) => el.classList.toggle('active', el.dataset.fbTab === id));
-  document.querySelectorAll('.fb-panel').forEach?.((el) => el.classList.toggle('active', el.dataset.fbPanel === id));
-}
+// The curated lists (Most requested / Known bugs) are each their own URL since T-259, so which one
+// shows is decided by the route in app.js — not here. Nothing to wire.

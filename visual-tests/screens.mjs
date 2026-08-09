@@ -18,17 +18,16 @@ export const VIEWPORTS = [
 ];
 
 // App screens: served by the backend at BASE_URL. `setup(page)` runs after navigation.
-// NB: nav clicks use dispatchEvent, not click(), so they fire the SPA's JS handler even when the
-// (pre-fix) mobile top-nav overflows and the target sits outside the viewport — Playwright's
+// NB: where a screen still needs a nav click (the modals below), it uses dispatchEvent and not
+// click(), so it fires the handler even when the target sits outside the viewport — Playwright's
 // click() refuses to act on an off-viewport element. The overflow itself is caught by the spec's
 // expectNoOverflow assertion; here we just need to reach each screen to screenshot it.
-const tab = (name) => (p) => p.dispatchEvent(`[data-tab="${name}"]`, 'click');
-
 export const APP_SCREENS = [
+  // Each destination is a real URL (T-259), so a screen is just its path — no scripted nav needed.
   { name: 'home',       path: '/' },
-  { name: 'features',   path: '/', setup: tab('features') },
-  { name: 'randomizer', path: '/', setup: tab('randomizer') },
-  { name: 'settings',   path: '/', setup: tab('settings') },
+  { name: 'features',   path: '/features' },
+  { name: 'randomizer', path: '/randomizer' },
+  { name: 'settings',   path: '/settings' },
   {
     name: 'auth-modal', path: '/',
     setup: async (p) => { await p.dispatchEvent('#nav-login', 'click'); await p.waitForSelector('#auth-modal:not([hidden])'); },

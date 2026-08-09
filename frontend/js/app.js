@@ -5,34 +5,100 @@ import { initAccount, onBundleReady, getStoredBundle, getAuthState, onAuthChange
 import { initFeedback } from './feedback.js';
 import { initPresets } from './presets.js';
 import { initAdmin } from './admin.js';
+import { parsePath, pathFor, titleFor } from './router.js';
 
-// ── Tab routing ───────────────────────────────────────────────────────────────
+// ── Routing (T-259) ───────────────────────────────────────────────────────────
+// Every destination has its own path; router.js owns the map from path to { tab, subtab }. The nav is
+// made of ordinary <a href> links, so the browser's own behaviour (Back/Forward, ctrl/cmd-click,
+// middle-click, copy link address, reload-in-place) works without us reimplementing it. All we do is
+// intercept the plain left-click on a link the router recognises and swap sections instead of
+// reloading — and update the URL so it always names what is on screen.
 
-function setActiveTab(tabId) {
-    document.querySelectorAll('.topnav-tab').forEach(el => {
-        el.classList.toggle('active', el.dataset.tab === tabId);
-    });
-    document.querySelectorAll('.tab-section').forEach(el => {
-        el.classList.toggle('active', el.id === `tab-${tabId}`);
+// Where a tab's lists live in the DOM. router.js knows the URLs; this knows the markup.
+const LIST_UI = {
+    features: { link: '.subtab', linkKey: 'subtab', panel: '.subtab-panel', panelKey: 'subtabPanel' },
+    feedback: { link: '.fb-tab', linkKey: 'fbTab', panel: '.fb-panel', panelKey: 'fbPanel' },
+};
+
+let currentRoute = { tab: 'home', subtab: null };
+
+// Mark the link for the destination we're on: `.active` paints it, aria-current tells a screen reader.
+function markCurrent(selector, key, value) {
+    document.querySelectorAll(selector).forEach(el => {
+        const on = el.dataset[key] === value;
+        el.classList.toggle('active', on);
+        if (on) el.setAttribute('aria-current', 'page');
+        else el.removeAttribute('aria-current');
     });
 }
 
-document.querySelectorAll('.topnav-tab').forEach(btn => {
-    btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
-});
+// Show a destination. Pure DOM — the URL is the caller's business (navigate/popstate).
+function applyRoute({ tab, subtab }) {
+    currentRoute = { tab, subtab };
+    markCurrent('.topnav-tab', 'tab', tab);
+    document.querySelectorAll('.tab-section').forEach(el => {
+        el.classList.toggle('active', el.id === `tab-${tab}`);
+    });
+    const ui = LIST_UI[tab];
+    if (ui && subtab) {
+        markCurrent(ui.link, ui.linkKey, subtab);
+        document.querySelectorAll(ui.panel).forEach(el => {
+            el.classList.toggle('active', el.dataset[ui.panelKey] === subtab);
+        });
+    }
+    document.title = titleFor(tab, subtab);
+}
 
-// T-034: clicking the brand returns to Home.
-document.getElementById('brand-home').addEventListener('click', (e) => {
+// Go to a destination and put it in the URL. `replace` rewrites the current history entry instead of
+// adding one — for arriving on an alias (/home, /features/rom) and for boot-time recovery, so Back
+// never bounces the user through a URL they did not choose.
+function navigate(tab, subtab = null, { replace = false } = {}) {
+    const path = pathFor(tab, subtab);
+    if (!path) return;
+    applyRoute(parsePath(path));
+    if (replace) {
+        history.replaceState({}, '', path);
+    } else if (path !== location.pathname) {
+        history.pushState({}, '', path);
+        window.scrollTo(0, 0);   // a fresh destination starts at the top, like any page load
+    }
+}
+
+// One delegated handler covers the nav, the list links, in-page CTAs and anything account.js/presets.js
+// inject later. Everything the router does not resolve — an asset, /privacy.html, a "#" action link, an
+// external link — is left to the browser untouched.
+document.addEventListener('click', (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target?.closest?.('a[href]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href.startsWith('#') || a.target || a.hasAttribute('download')) return;
+    if (a.origin !== location.origin) return;
+    const r = parsePath(a.pathname);
+    if (!r) return;
     e.preventDefault();
-    setActiveTab('home');
+    navigate(r.tab, r.subtab);
 });
 
-// In-page links that jump to a top-nav tab (e.g. the landing "See the full feature list" CTA).
-document.querySelectorAll('[data-goto-tab]').forEach(el => {
-    el.addEventListener('click', () => setActiveTab(el.dataset.gotoTab));
+// Back/Forward: the URL is already what the user asked for, so only the view has to catch up.
+window.addEventListener('popstate', () => {
+    applyRoute(parsePath(location.pathname) || { tab: 'home', subtab: null });
 });
 
-setActiveTab('home');
+// The destination comes from the URL we were loaded on, normalised to its canonical form. An
+// unresolvable path can't normally get here (the server 404s those) — falling back to Home just keeps
+// a stale bookmark from landing on a blank page.
+{
+    const initial = parsePath(location.pathname) || { tab: 'home', subtab: null };
+    navigate(initial.tab, initial.subtab, { replace: true });
+}
+
+// /admin is admin-only. This fires with a RESOLVED auth state (account.js emits after /api/me), so a
+// real admin deep-linking /admin is never bounced by a not-yet-loaded state — but anyone else, and
+// anyone who logs out while there, lands back home instead of on an empty panel.
+onAuthChange((s) => {
+    if (currentRoute.tab === 'admin' && !s?.isAdmin) navigate('home', null, { replace: true });
+});
 
 // ── Mobile nav drawer (T-040) ─────────────────────────────────────────────────────
 // Desktop is unaffected: the drawer/scrim CSS is scoped to ≤600px; this only toggles a body class.
@@ -48,20 +114,6 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setNavOpen
 // Choosing a destination (tab or an account action) closes the drawer.
 document.querySelectorAll('.topnav-tab, .topnav-account').forEach((el) => {
     el.addEventListener('click', () => setNavOpen(false));
-});
-
-// ── Features sub-tabs ───────────────────────────────────────────────────────────
-function setActiveSubtab(subtabId) {
-    document.querySelectorAll('.subtab').forEach(el => {
-        el.classList.toggle('active', el.dataset.subtab === subtabId);
-    });
-    document.querySelectorAll('.subtab-panel').forEach(el => {
-        el.classList.toggle('active', el.dataset.subtabPanel === subtabId);
-    });
-}
-
-document.querySelectorAll('.subtab').forEach(btn => {
-    btn.addEventListener('click', () => setActiveSubtab(btn.dataset.subtab));
 });
 
 // ── Randomizer wizard ─────────────────────────────────────────────────────────
@@ -145,7 +197,7 @@ function doStartOver() {
     terminateWorker();
     currentBundle = null;
     showStep(1);
-    setActiveTab('randomizer');
+    navigate('randomizer');
 }
 document.getElementById('btn-start-over-err').addEventListener('click', doStartOver);
 
@@ -373,7 +425,9 @@ initAccount({
             const b = await getStoredBundle();
             if (b) { currentBundle = b; currentConfig = b.config || currentConfig; }
         } catch { /* ignore */ }
-        if (switchTab) setActiveTab('randomizer');
+        // boot-time recovery, so replace: the user never navigated here and Back must not return
+        // to the URL they were loaded on only to be recovered onto this one again.
+        if (switchTab) navigate('randomizer', null, { replace: true });
         showStep(3);
         document.getElementById('gen-running').style.display = 'none';
         document.getElementById('gen-error').style.display = 'none';

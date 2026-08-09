@@ -20,6 +20,17 @@ test.describe('mobile drawer navigation', () => {
     await expect(page.locator('body')).not.toHaveClass(/\bnav-open\b/);
   });
 
+  // B-063: #admin-tab carries `hidden` until /api/me reports isAdmin, but the mobile layer's
+  // `.topnav-tab { display: flex }` overrode it — so the drawer advertised the beta admin panel to
+  // every phone visitor, signed out included. Computed-visibility bug: only a browser can catch it.
+  test('app: a nav entry hidden by attribute is not listed in the drawer (B-063)', async ({ page }) => {
+    mobileOnly({ page });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.click('#nav-burger');
+    await expect(page.locator('#topnav-menu')).toBeVisible();
+    await expect(page.locator('#admin-tab')).toBeHidden();
+  });
+
   test('docs viewer: opening the drawer and tapping a section navigates', async ({ page }) => {
     mobileOnly({ page });
     await page.goto(DOCS_FIXTURE_URL, { waitUntil: 'domcontentloaded' });

@@ -9,6 +9,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **The site has real addresses now.** Every part of the page lives at its own URL — `/features`,
+  `/randomizer`, `/feedback`, `/settings` — and so does each list inside Features
+  (`/features/randomizer`, `/features/docs`) and Feedback (`/feedback/bugs`). That means the browser
+  works the way you expect it to: **Back and Forward** move between the places you visited, **reloading**
+  keeps you where you were, and you can **bookmark or send someone a link** to exactly the list you were
+  reading. The menu is made of ordinary links, so ctrl/cmd-click or middle-click opens one in a new tab
+  and right-click → copy link address gives you something that actually works. Search engines can finally
+  see more than one page. (T-259)
+
 - **Three new Difficulty options, and a Pokémon League that means it.** Under *Difficulty* you can now switch
   on **Heal fainted Pokémon after combat** (your party is fully restored after every battle you win) and,
   separately, **Heal fainted Pokémon after combat in the Pokémon League** (restored between Elite Four and
@@ -48,6 +57,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   finishes building). (T-217)
 
 ### Fixed
+
+- **The phone menu no longer shows an "Admin" entry.** On phones the drawer listed a link to the internal
+  beta-admin panel to everyone, signed out included — a dead page for anyone who is not an admin. It is
+  hidden again, as it always was on desktop. (T-259, B-063)
 
 - **The mega stone you pick up is the one your documentation promised.** In some runs every mega-stone ball
   on the ground handed over the wrong stone — Jagged Pass documented a Pidgeotite and gave a Scizorite —

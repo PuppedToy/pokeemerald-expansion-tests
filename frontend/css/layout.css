@@ -66,6 +66,11 @@
   transition: background var(--obs-ease), color var(--obs-ease);
 }
 
+/* An author `display` rule beats the UA's `[hidden] { display: none }`, and the mobile layer below sets
+   one on .topnav-tab — which listed the `hidden` Admin entry in the drawer for everyone (B-063). The
+   attribute selector outranks the plain class, so this holds at every viewport without !important. */
+.topnav-tab[hidden] { display: none; }
+
 .topnav-tab:hover {
   color: var(--obs-text);
   background: var(--obs-surface);
@@ -322,12 +327,15 @@
   margin-bottom: 24px;
 }
 
+/* An <a> since T-259 (each list is a URL): kill the link underline — .subtabs is a flex container, so
+   the anchor is blockified into a flex item and the padding/metrics are unchanged. */
 .subtab {
   padding: 12px 18px;
   font-family: var(--obs-font-display);
   font-size: 10px;
   letter-spacing: var(--obs-tracking);
   color: var(--obs-text-dim);
+  text-decoration: none;
   cursor: pointer;
   border: var(--obs-border);
   background: var(--obs-surface);
@@ -366,13 +374,14 @@
 
 .feedback-lists { margin-top: 36px; }
 
-/* Curated-list tabs — same treatment as the Features sub-tabs. */
+/* Curated-list tabs — same treatment as the Features sub-tabs (also an <a> since T-259). */
 .fb-tab {
   padding: 12px 18px;
   font-family: var(--obs-font-display);
   font-size: 10px;
   letter-spacing: var(--obs-tracking);
   color: var(--obs-text-dim);
+  text-decoration: none;
   cursor: pointer;
   border: var(--obs-border);
   background: var(--obs-surface);
