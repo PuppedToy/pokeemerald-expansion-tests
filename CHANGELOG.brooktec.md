@@ -70,9 +70,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   for every request, we now write your randomized data straight into a game we built once — the same
   result, produced in a few seconds. (T-244)
 
-- **No more "slow queue".** Big runs used to be sorted into a slower lane behind small ones, and the
-  randomizer warned you about it. Now that a patch takes seconds, everyone is simply served in the order
-  they arrive — the warning is gone, and the countdown you see is accurate instead of pessimistic. (T-245)
+- **No more "slow queue".** Big runs used to be sorted into a slower lane behind small ones. Now that a
+  patch takes seconds, everyone is simply served in the order they arrive, and the countdown you see is
+  accurate instead of pessimistic. (T-245)
 
 - **Item-ball choice menus now use the game's own item names.** When you open an item ball that lets you
   pick, the options are spelled exactly as the item is in your bag (e.g. "Heavy-Duty Boots"). Same items,
@@ -228,11 +228,6 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   transforms into (a 70% Ash / 30% Battle Bond blend), and a trainer that fields it builds its moves,
   item and nature around Ash's stats. Ash-Greninja itself is never handed out directly — it only
   exists as the form Battle Bond becomes in battle. (T-185)
-
-- **The config screen warns before a big run goes to the slow build queue.** When your chosen number of
-  ROMs (Nuzlocke count, or Soul-Link players × ROMs-per-player) exceeds the fast-queue limit of 2, an
-  inline warning appears next to the ROM-count field telling you the build will be de-prioritised into
-  the slow queue and may take longer. It updates live and hides again at or below the limit. (T-172)
 
 - **The docs flag shiny Pokémon.** When "Show IVs" is on, any trainer Pokémon whose IV total is 150 or
   more now has its IVs tinted gold with a small ★ at the end — mirroring the game rule that a 150+ IV
