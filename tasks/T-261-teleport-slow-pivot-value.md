@@ -70,13 +70,17 @@ Acceptance criteria:
 - **2026-08-09** — Pieces A/B/C implemented; 18 tests in
   `randomizer/__tests__/unit/teleportSlowPivot.test.js` (8 of them red before the fix), full suite green
   (2250 passed). First implementation of B gated only the DETECTOR, and re-running the real run's data
-  showed the bug still reproduced: Gardevoir learns U-turn / Volt Switch / Flip Turn as TMs, so it stays a
-  legitimate `pivotUser` species, and with Wally's empty pivot-TM bag the injector still fell to Teleport
-  as the last reachable candidate. Fixed by giving a conditional role move ONE gate
+  showed the bug still reproduced: Gardevoir learns Volt Switch as a TM, so it stays a legitimate
+  `pivotUser` species, and since that TM is not in Wally's bag the injector still fell to Teleport as the
+  last reachable candidate. Fixed by giving a conditional role move ONE gate
   (`ROLE_MOVE_PROFILE_GATES` / `moveFitsProfile`) applied at BOTH ends — tagging and delivery — with a
   second regression case covering exactly that shape.
-- **2026-08-09** — Verified against the run bundle: Teleport 1.93 → 1.00 on that Gardevoir, role move
-  offered `MOVE_TELEPORT` → none, Cosmoem (slow + bulky) keeps it at 5.00. Awaiting the owner's manual test.
+- **2026-08-09** — Verified against the run bundle with Wally Lilycove's REAL bag (87 entries / ~80 TM
+  moves — an earlier note here called it empty, which was wrong): Teleport 1.93 → 1.00 on that Gardevoir,
+  role move offered `MOVE_TELEPORT` → none, Cosmoem (slow + bulky) keeps it at 5.00. The bag does hold Flip
+  Turn, but Gardevoir cannot learn it; the only real pivot it learns is Volt Switch, which the bag lacks.
+  Mystical Fire and Calm Mind needed no TM at all (level-up at 49), so Teleport really did displace
+  available moves. Awaiting the owner's manual test.
 
 ## Outcome
 

@@ -163,7 +163,8 @@ describe('T-261 C — the role injector picks the BEST deliverer, not the first 
     });
 
     test('B-064 — the run Gardevoir is never handed Teleport as its pivot role move', () => {
-        // Wally Lilycove holds no pivot TM, exactly as in the run: only Teleport is reachable.
+        // As in the run: no pivot TM this mon can use is in the trainer's bag, so only Teleport is
+        // reachable (Gardevoir's one real pivot, Volt Switch, is a teachable Wally does not carry).
         const move = planMemberRoleMove({
             species: GARDEVOIR, ctx: { moves, tms: [], level: 49 }, ...opts(),
         });
@@ -171,10 +172,10 @@ describe('T-261 C — the role injector picks the BEST deliverer, not the first 
     });
 
     test('B-064 — ...not even when the real pivots are only unreachable TMs', () => {
-        // The shipped case exactly: Gardevoir DOES learn U-turn / Volt Switch / Flip Turn as TMs, so it is
-        // a legitimate pivotUser species — but Wally holds none of those TMs yet, leaving Teleport as the
-        // last reachable candidate. Its profile must veto it there too, or the role role-fills with a move
-        // the mon cannot use.
+        // The shipped case exactly: Gardevoir DOES learn a real pivot as a TM (Volt Switch), so it is a
+        // legitimate pivotUser species — but that TM is not in Wally's bag, leaving Teleport as the last
+        // reachable candidate. Its profile must veto it there too, or the role fills with a move the mon
+        // cannot use.
         const gardevoirWithPivotTms = { ...GARDEVOIR, teachables: ['MOVE_U_TURN', 'MOVE_VOLT_SWITCH', 'MOVE_FLIP_TURN'] };
         expect(DETECTORS.pivotUser(gardevoirWithPivotTms, { moves })).toBe(true);   // capable species
         const move = planMemberRoleMove({
