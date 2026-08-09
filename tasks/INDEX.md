@@ -262,4 +262,4 @@
 | [T-258](T-258-league-lockdown-pc-and-relearn.md) | "Lock the Pokémon League: no PC, and no move relearning unless allowed" | done | 0.7.0 | 2026-08-07 |
 | [T-259](T-259-frontend-url-routing.md) | Give the frontend real URLs and indexable links | done | 0.9.0 | 2026-08-09 |
 | [T-260](T-260-stale-interaction-specs.md) | Repair the two failing interaction specs — retire one, make the other seed-independent | done | 0.9.0 | 2026-08-09 |
-| [T-261](T-261-teleport-slow-pivot-value.md) | Value Teleport as a slow pivot and stop the role injector forcing dead-weight moves | in-progress | 0.9.0 | 2026-08-09 |
+| [T-261](T-261-teleport-slow-pivot-value.md) | Value Teleport as a slow pivot and stop the role injector forcing dead-weight moves | done | 0.9.0 | 2026-08-09 |

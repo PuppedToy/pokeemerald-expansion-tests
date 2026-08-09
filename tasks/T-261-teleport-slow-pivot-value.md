@@ -1,7 +1,7 @@
 ---
 id: T-261
 title: Value Teleport as a slow pivot and stop the role injector forcing dead-weight moves
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-08-09
 updated: 2026-08-09
@@ -81,7 +81,29 @@ Acceptance criteria:
   Turn, but Gardevoir cannot learn it; the only real pivot it learns is Volt Switch, which the bag lacks.
   Mystical Fire and Calm Mind needed no TM at all (level-up at 49), so Teleport really did displace
   available moves. Awaiting the owner's manual test.
+- **2026-08-09** — Closed on the owner's explicit instruction. All acceptance criteria met, suite green
+  (2250 passed), browser bundle rebuilt so a local run picks the change up.
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Shipped all three pieces, plus a fourth that the plan did not foresee.
+
+- **A** — `MOVE_TELEPORT` is finalised in `rateMoveForAPokemon` on the user's profile (`TELEPORT_*`):
+  1 outside it, 5 for a slow bulky pivot, 6 when Regenerator or reliable recovery heals the cycle back.
+  `RELIABLE_RECOVERY_MOVES` was hoisted to module scope so the combo bonus and this rule share one home.
+- **B** — Teleport moved to `SLOW_PIVOT_MOVES`; Baton Pass stayed a first-class pivot.
+- **C** — `planMemberRoleMove` ranks reachable deliverers by their value on the mon (new
+  `rankMovesForPokemon` in `rating.js`) instead of taking the first in set-declaration order.
+- **Not in the plan:** gating only the DETECTOR left the shipped case alive, because Gardevoir is a
+  legitimate pivot species (Volt Switch is one of its teachables) — the injector still fell to Teleport
+  when that TM was absent from the trainer's bag. Fixed with `ROLE_MOVE_PROFILE_GATES` / `moveFitsProfile`
+  in `featureDetectors.js`: one gate for a conditional role move, applied at BOTH ends (tagging and
+  delivery). That is the reusable mechanism for the next Teleport-like.
+
+Deviations: piece C was planned as a rating FLOOR and shipped as RANKING — the floor was measured
+dex-wide and rejected legitimate injections wholesale (Follow Me 14/14, Quick Guard 43/43, Nasty Plot
+74/74, Aurora Veil 225/233, Rapid Spin 27/45), because the injector runs before the set exists and any
+value computed there is context-blind. Ranking cannot leave a role undelivered.
+
+18 tests in `randomizer/__tests__/unit/teleportSlowPivot.test.js` (8 red before the fix). No follow-up
+tasks spawned. Bug closed: B-064.

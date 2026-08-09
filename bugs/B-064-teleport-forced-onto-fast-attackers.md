@@ -1,12 +1,12 @@
 ---
 id: B-064
 title: Teleport is forced onto fast attackers by the archetype role-move injector
-status: fixing          # open | fixing | fixed | wont-fix
+status: fixed           # open | fixing | fixed | wont-fix
 severity: major         # critical | major | minor
 created: 2026-08-09
 updated: 2026-08-09
 found-in: 0.5.0         # version where the bug was observed
-fixed-in:               # version that ships the fix (set when fixed)
+fixed-in: 0.9.0         # version that ships the fix
 regression-test: randomizer/__tests__/unit/teleportSlowPivot.test.js
 links: [T-261]
 ---
