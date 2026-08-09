@@ -4,7 +4,7 @@ title: Warn in the config UI when the ROM count would land the build in the slow
 status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-07-21
-updated: 2026-07-21
+updated: 2026-08-09
 target-version: 0.6.0
 links: [backend/queue/scheduler.js, frontend/js/config-form.js]
 blocked-by: []
@@ -81,6 +81,16 @@ Acceptance criteria:
   Note: the pre-existing `randomizer` desktop **visual-regression** baseline mismatches on this machine
   (global font-render drift) — reproduced with my changes stashed, so it is unrelated to T-172; baselines
   left untouched. Pending owner manual test before close.
+
+- **2026-08-09** (appended by T-260) — **This feature no longer exists.** T-245 removed it when ADR-024
+  retired the fast/slow build tiers: injection put a ROM at ~16.5 s, so there is no slow lane to warn
+  about. That commit (`296fa67cdc`) deleted `FAST_QUEUE_MAX_ROMS`, `slowQueueWarning`,
+  `slowQueueMessage`, both `.warning-banner`s and `frontend/__tests__/slow-queue-warning.test.js` — but
+  not the Playwright interaction test, because `visual-tests/` is a separate dev-only harness (ADR-010)
+  outside `npm test`. That leftover test had been failing ever since; T-260 retired it.
+  `totalRoms(cfg)`, the de-duplication this task extracted along the way, is still in use in `app.js`.
+  **This task is therefore superseded and never shipped** — it is left `in-progress` only because closing
+  a task (including as `abandoned`) is the owner's call; it wants `abandoned`, not `done`.
 
 ## Outcome
 

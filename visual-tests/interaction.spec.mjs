@@ -177,53 +177,104 @@ test.describe('T-082: Next boss shortcut', () => {
   });
 });
 
-// B-024 regression: evolution mails must fire for evolutions available at or below the first cap.
-// The Mail engine's per-boss windows are (bossCaps[i].level, bossCaps[i+1].level], whose union starts
-// at the first cap — so a low/immediate (level ≤ first cap, incl. 0) evolution never got a mail. We
-// defeat the first boss and assert the evolution mail for a box mon with such an evo now exists.
-test.describe('B-024: evolution mails below the first cap', () => {
-  test('docs viewer: defeating the first boss surfaces low-evolution mails', async ({ page }) => {
+// B-024 regression: an evolution already available at or below the FIRST boss cap must still produce a
+// mail. The Mail engine generates per defeated boss over the window (prev, next], and the union of those
+// windows starts at bossCaps[0].level — so a start-available evolution (gate ≤ first cap, including the
+// level-0 stone/immediate case) had no boss to unlock it and was silently dropped. The fix drops boss 0's
+// evolution lower bound to -Infinity; higher bosses keep (prev, next] so each evo is announced once.
+//
+// T-260 — the scenario is CONSTRUCTED, not searched for in the fixture. Whether a seed's starting box
+// happens to contain a low evolver is luck (measured: 1 seed in 8), so the original fixture-hunting
+// version guarded this bug only by accident — and stopped guarding it at all once seed 42 rolled a box
+// whose lowest evolution gate was 18 against a first cap of 8, failing on its own precondition. Giving
+// real box mons known gates makes the guard hold on every fixture, whatever the randomizer rolls.
+test.describe('B-024: evolution mails at or below the first cap', () => {
+  test('docs viewer: a start-available evolution is surfaced by the first boss', async ({ page }) => {
     test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
+    page.on('dialog', (d) => d.accept());   // marking a boss can confirm() (the defeat cascade)
     await page.goto(DOCS_FIXTURE_URL, { waitUntil: 'domcontentloaded' });
 
-    // A STARTER_EXTRA box mon whose evolution level is ≤ the first cap (the case that never notified).
-    const expected = await page.evaluate(() => {
-      const evoGate = (e) => {
-        if ((e.method === 'LEVEL' || e.method === 'LEVEL_BATTLE_ONLY') && /^\d+$/.test(String(e.param))) return +e.param;
-        if (e.method === 'ITEM' && e.minLevel != null && /^\d+$/.test(String(e.minLevel))) return +e.minLevel;
-        return null;
-      };
-      const byId = {}; pokes.forEach((p) => { byId[p.id] = p; });
-      const firstCap = bossCaps[0].level;
+    // Give three distinct box mons one known evolution each, straddling boss 0's window. The Mail engine
+    // lives in an IIFE, so only the injected data (`pokes`, `bossCaps`, `wildPokes`) is reachable from
+    // here — which is enough: `pokeById` is built from `pokes` by reference at load, so mutating a
+    // species' `evolutions` is exactly what levelEvos() will read. The two evolution shapes below are the
+    // ones evoGateLevel() recognises: LEVEL+numeric `param`, and ITEM+numeric `minLevel`.
+    const plan = await page.evaluate(() => {
+      const caps = bossCaps.map((b) => b.level);
       const se = wildPokes.find((r) => r.id === 'STARTER_EXTRA');
-      for (const k of Object.keys(se).filter((x) => x.startsWith('special'))) {
-        const p = byId[se[k]]; if (!p || !p.evolutions) continue;
-        for (const e of p.evolutions) { const lv = evoGate(e); if (lv != null && lv <= firstCap) return { to: e.pokemon, encounterKey: 'STARTER_EXTRA|' + k, level: lv }; }
-      }
-      return null;
-    });
-    expect(expected, 'seed-42 fixture has a box mon evolving at ≤ first cap').toBeTruthy();
+      if (!se) return { error: 'no STARTER_EXTRA box in this fixture' };
 
-    // Defeat the first boss (any of its trainer variants) → the mail engine regenerates.
-    const defeated = await page.evaluate((ids) => {
-      for (const id of ids) {
+      const seen = new Set(), picks = [];
+      for (const slot of Object.keys(se).filter((k) => /^special\d+$/.test(k))) {
+        const species = se[slot];
+        if (!species || seen.has(species)) continue;   // distinct species: pokeById shares object refs,
+        if (!pokes.some((p) => p.id === species)) continue;  // so a repeat would overwrite another case
+        seen.add(species);
+        picks.push({ slot, species, encounterKey: `STARTER_EXTRA|${slot}` });
+        if (picks.length === 3) break;
+      }
+      if (picks.length < 3) return { error: `need 3 distinct box species, got ${picks.length}` };
+      const to = (pokes.find((p) => !seen.has(p.id)) || {}).id;   // a real species, so the mail renders
+      if (!to) return { error: 'no unused species to evolve into' };
+
+      const cases = [
+        // the exact boundary the bug dropped: the old lower bound was `lvl > bossCaps[0].level`
+        { name: 'atFirstCap', pick: picks[0], evo: { pokemon: to, method: 'LEVEL', param: String(caps[0]) } },
+        // the immediate / stone case, gate 0
+        { name: 'immediate',  pick: picks[1], evo: { pokemon: to, method: 'ITEM', param: 'ITEM_THUNDER_STONE', minLevel: '0' } },
+        // above boss 0's upper bound — the negative control
+        { name: 'afterBoss1', pick: picks[2], evo: { pokemon: to, method: 'LEVEL', param: String(caps[1] + 1) } },
+      ];
+      for (const c of cases) pokes.find((p) => p.id === c.pick.species).evolutions = [c.evo];
+      return {
+        caps: caps.slice(0, 3),
+        cases: cases.map((c) => ({
+          name: c.name, key: c.pick.encounterKey, to,
+          gate: c.evo.method === 'ITEM' ? Number(c.evo.minLevel) : Number(c.evo.param),
+        })),
+      };
+    });
+    expect(plan.error, 'fixture must expose a starting box').toBeUndefined();
+
+    // The three gates must actually straddle boss 0's window (-inf, caps[1]], or the assertions below
+    // would be vacuous. caps come from the static bosscaps.json, so this is stable.
+    const c = (n) => plan.cases.find((x) => x.name === n);
+    expect(c('atFirstCap').gate).toBe(plan.caps[0]);
+    expect(c('immediate').gate).toBe(0);
+    expect(c('afterBoss1').gate).toBeGreaterThan(plan.caps[1]);
+    expect(plan.caps[2], 'the control gate must fall inside boss 1\'s window').toBeGreaterThanOrEqual(c('afterBoss1').gate);
+
+    const defeatBoss = (i) => page.evaluate((idx) => {
+      for (const id of bossCaps[idx].trainers) {
         const cb = document.querySelector('.trainer-card[data-trainer-id="' + id + '"] .nz-defeat-cb');
         if (cb) { cb.checked = true; cb.dispatchEvent(new Event('change', { bubbles: true })); return id; }
       }
       return null;
-    }, await page.evaluate(() => bossCaps[0].trainers));
-    expect(defeated).toBeTruthy();
+    }, i);
+    // Every evolution mail currently rendered, as its `evo|<flag>|<encounterKey>|<toSpecies>` id.
+    const evoMails = () => page.evaluate(() =>
+      [...document.querySelectorAll('[data-evolve]')].map((b) => b.getAttribute('data-evolve') || ''));
+    const has = (mails, cs) => mails.some((v) => v.includes(cs.key) && v.endsWith(cs.to));
 
-    // Open Mail so the list renders, then assert the evolution mail for that low-evo mon is present.
+    expect(await defeatBoss(0), 'the first boss must be markable').toBeTruthy();
     await page.dispatchEvent('.nav a[data-target="mail"]', 'click');
     await page.waitForSelector('section#mail.active');
-    const found = await page.evaluate((exp) => {
-      return [...document.querySelectorAll('[data-evolve]')].some((b) => {
-        const v = b.getAttribute('data-evolve') || '';
-        return v.includes(exp.encounterKey) && v.endsWith(exp.to);
-      });
-    }, expected);
-    expect(found).toBe(true);
+
+    await expect.poll(async () => has(await evoMails(), c('atFirstCap')),
+      { message: 'an evolution gated exactly at the first cap must be surfaced' }).toBe(true);
+    await expect.poll(async () => has(await evoMails(), c('immediate')),
+      { message: 'a level-0 (stone/immediate) evolution must be surfaced' }).toBe(true);
+
+    // Negative control — the window still has an upper bound, so this test cannot pass by a change that
+    // simply surfaces every evolution unconditionally. Read once: the list has already rendered above.
+    expect(has(await evoMails(), c('afterBoss1')),
+      'an evolution above boss 0\'s window must NOT be surfaced yet').toBe(false);
+
+    // ...and it does appear once its own boss falls, proving that absence was the window and not a
+    // filter, an unrendered list or a bad key.
+    expect(await defeatBoss(1), 'the second boss must be markable').toBeTruthy();
+    await expect.poll(async () => has(await evoMails(), c('afterBoss1')),
+      { message: 'it must appear once the boss whose window contains it is beaten' }).toBe(true);
   });
 });
 
@@ -365,49 +416,7 @@ test.describe('B-053: rival gender toggle filters without a starter', () => {
   });
 });
 
-test.describe('T-172: slow-queue ROM-count warning', () => {
-  test('app: ROM counts over the fast-queue limit warn inline (Nuzlocke + Soul-Link)', async ({ page }) => {
-    test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await page.dispatchEvent('[data-tab="randomizer"]', 'click');
-    await page.waitForSelector('#config-form-mount .config-accordion');
-
-    // Select a run type by driving the (visually-hidden) radio directly and firing its change handler.
-    const pickRunType = (id) => page.evaluate((rid) => {
-      const r = document.getElementById(rid);
-      r.checked = true;
-      r.dispatchEvent(new Event('change', { bubbles: true }));
-    }, id);
-    const setNum = (id, val) => page.evaluate(({ i, v }) => {
-      const el = document.getElementById(i);
-      el.value = String(v);
-      el.dispatchEvent(new Event('input', { bubbles: true }));
-    }, { i: id, v: val });
-
-    // Nuzlocke: the default 3 ROMs is over the limit → warning shows and names the fast-queue limit.
-    await pickRunType('run-nuzlocke');
-    const nz = page.locator('#nz-slow-queue-warning');
-    await expect(nz).toBeVisible();
-    await expect(nz).toContainText('fast-queue limit of 2');
-    await expect(nz).toContainText(/slow queue/i);
-
-    // Exactly at the limit (2 ROMs) → warning hides.
-    await setNum('nz-numroms', 2);
-    await expect(nz).toBeHidden();
-
-    // Back above the limit → shows again, naming the new total.
-    await setNum('nz-numroms', 5);
-    await expect(nz).toBeVisible();
-    await expect(nz).toContainText('5 ROMs');
-
-    // Soul-Link: default 2 players × 2 ROMs-per-player = 4 → over the limit.
-    await pickRunType('run-soullink');
-    const sl = page.locator('#sl-slow-queue-warning');
-    await expect(sl).toBeVisible();
-    await expect(sl).toContainText('fast-queue limit of 2');
-
-    // Drop to 2 players × 1 ROM = 2 (the limit) → hides.
-    await setNum('sl-roms-per-player', 1);
-    await expect(sl).toBeHidden();
-  });
-});
+// The T-172 slow-queue ROM-count warning spec lived here. Retired in T-260: T-245 removed the warning
+// itself when ADR-024 retired the fast/slow build tiers (injection put a ROM at ~16.5 s, so there is no
+// slow lane to warn about any more). That commit dropped the feature and its unit test but not this one,
+// because visual-tests/ is a separate dev-only harness (ADR-010) outside `npm test`.
