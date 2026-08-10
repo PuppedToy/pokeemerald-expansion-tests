@@ -20,7 +20,7 @@ jest.mock('../../itemRandomizer', () => ({
             'route111HpUpGoodItem', 'route111Items', 'route114WyattGoodItem', 'route116Ball',
             'route116Berries', 'route116Gems', 'route116XSpecial', 'route117Berries', 'route117Gems',
             'route117GoodItem', 'route117Plates', 'route118BarnyGoodItem', 'route118Items',
-            'route120AngelicaGoodItem', 'route121Berries',
+            'route120AngelicaGoodItem', 'route121Items',
         ]) out[k] = ['ITEM_STUB_A', 'ITEM_STUB_B', 'ITEM_STUB_C'];
         return out;
     }),

@@ -832,7 +832,7 @@ function getTrainersData(itemAssignments, tmList, config = {}, capLevels = null)
     const route118BarnyGoodItem  = itemAssignments.route118BarnyGoodItem;
     const route118ItemItems      = itemAssignments.route118Items;
     const route120AngelicaGoodItem = itemAssignments.route120AngelicaGoodItem;
-    const route121BerryItems     = itemAssignments.route121Berries;
+    const route121ItemItems      = itemAssignments.route121Items;
 
     // TM helper: tmItem(n) → 'TM_MOVENAME' for TM slot n (1-based)
     const tmItem = (n) => `TM_${tmList[n - 1]}`;
@@ -871,7 +871,7 @@ function getTrainersData(itemAssignments, tmList, config = {}, capLevels = null)
     const choiceRoseTMs        = [tmItem(39), tmItem(40), tmItem(41)];
     const choiceClarissaTMs    = [tmItem(42), tmItem(43), tmItem(44)];
     const choiceWalterTMs      = [tmItem(45), tmItem(46), tmItem(47)];
-    const choiceCristinBerries = route121BerryItems;
+    const choiceCristinItems   = route121ItemItems;
     const choicePresleyTMs     = [tmItem(48), tmItem(49), tmItem(50)];
     const choiceJosephSeeds    = ['Electric Seed', 'Grassy Seed', 'Psychic Seed', 'Misty Seed'];
     const jessicaTM            = tmItem(52);
@@ -1047,7 +1047,7 @@ const wallyBag2 = () => [
     ...winonaBag(),
     'Focus Sash',
     linkedChoiceSample([...choiceTammyTMs]),
-    linkedChoiceSample([...choiceCristinBerries]),
+    linkedChoiceSample([...choiceCristinItems]),
     linkedChoiceSample([...choiceWalterTMs]),
     jessicaTM,
 ];
@@ -2785,9 +2785,9 @@ const trainersData = [
         id: 'TRAINER_CRISTIN_1',
         location: 'Route 121',
         class: 'Cooltrainer F',
-        reward: [...choiceCristinBerries],
+        reward: [...choiceCristinItems],
         level: CAP.WALLY_LILYCOVE,
-        bag: [...choiceCristinBerries, ...getSampleItemsFromArray(winonaBag(), 17)],
+        bag: [...choiceCristinItems, ...getSampleItemsFromArray(winonaBag(), 17)],
         team: genericTrainerTeamPostWinona(),
     },
     // Lillycove Wally Rival

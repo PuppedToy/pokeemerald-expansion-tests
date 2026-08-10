@@ -46,6 +46,7 @@ Shuffled once per run. Each "good item" location in the world gets one item draw
 | Route 111 item ball (near Travis) | `FLAG_ITEM_ROUTE_111_HP_UP` | Travis (`TRAINER_TRAVIS`) bag/reward |
 | Route 118 item ball (near Barny) | `FLAG_ITEM_ROUTE_118_COBA` | Barny (`TRAINER_BARNY`) bag/reward |
 | Route 120 item ball (near Angelica) | `FLAG_ITEM_ROUTE_119_ZINC` | Angelica (`TRAINER_ANGELICA`) bag/reward |
+| Route 114 item ball (near Wyatt) | `FLAG_ITEM_ROUTE_114_ENERGY_POWDER` | Wyatt (`TRAINER_WYATT`) bag/reward |
 
 > **Adding a new goodItemPool location:** see `pick-list-howto.md` (section B) — add a `PICK_*`
 > index, a row in `gItemPicks[]`, a `PICK_TABLE` entry in `itemRandomizer.js`, and a static
@@ -59,7 +60,8 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 
 **Pool contents (53 unique items):** Eject Pack, stat-boosting berries (Apicot/Salac/Petaya/Liechi/Ganlon/Kee/Maranga/Jaboca/Rowap/Custap/Leppa/Lansat/Starf/Enigma/Figy), Throat Spray, Mirror Herb, Adrenaline Orb, Red Card, Expert Belt, Terrain Extender, Shed Shell, Power Herb, Safety Goggles, White Herb, Wide/Zoom Lens, Punching Glove, Big Root, Room Service, Iron Ball, Heavy-Duty Boots, Absorb Bulb, Cell Battery, Luminous Moss, Snowball, Sticky Barb, Bright Powder, Quick Claw, Muscle Band, Wise Glasses, Metronome, Grip Claw, Float Stone, Binding Band, Protective Pads, Utility Umbrella, Clear Amulet, Covert Cloak, Focus Band, Mental Herb, Blunder Policy
 
-**Consumed: 40 draws from 53 items** — 13 items go unused per run.
+**Consumed: 31 draws from 53 items** — 22 items go unused per run. The pool cycles (`pool()` wraps),
+so adding a location never starves one; it just draws further into the shuffle.
 
 **Pick-3 ball locations** (player chooses 1 of 3 from this pool):
 
@@ -69,14 +71,16 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 | Route 102 | `FLAG_ITEM_ROUTE_102_POTION` | Early game bags |
 | Route 110 (EXTENDER) | `FLAG_ITEM_ROUTE_110_EXTENDER` | `route110ExtenderBallItems` → Kaleb (`TRAINER_KALEB`) bag/reward |
 | Route 111 A | `FLAG_ITEM_ROUTE_111_ELIXIR` | Route 111 area bags |
-| Route 111 B | `FLAG_ITEM_ROUTE_111_POWERHERB` | Route 111 area bags |
 | Route 111 C | `FLAG_ITEM_ROUTE_111_ADRENALINE` | `route111BallCItems` → Dusty (`TRAINER_DUSTY_1`) bag/reward; `normanBag` and above |
 | Route 111 items (Heidi) | `FLAG_ITEM_ROUTE_111_TM_SANDSTORM` | `choiceHeidiItems` → Heidi (`TRAINER_HEIDI`) bag/reward; `normanBag` and above |
-| Route 114 A | `FLAG_ITEM_ROUTE_114_WIDE` | Route 114 area bags |
-| Route 114 B | `FLAG_ITEM_ROUTE_114_ZOOM` | Route 114 area bags |
-| Route 114 C | `FLAG_ITEM_ROUTE_114_ENERGY_POWDER` | Route 114 area bags |
 | Route 115 | `FLAG_ITEM_ROUTE_115_GREAT_BALL` | Route 115 area bags |
 | Route 116 | `FLAG_ITEM_ROUTE_TM_BRICK_BREAK` | `route116Ball` |
+| **Route 121** | `FLAG_ITEM_ROUTE_121_PICK_BERRY` | `choiceCristinItems` → Cristin (`TRAINER_CRISTIN_1`) bag/reward; bags from Tate & Liza onward |
+
+> **T-262 / B-065:** Route 121 used to be the 5th resist-berry location and always got the 2 leftover
+> berries (18 berries ÷ 4 per location does not reach 5 locations). It draws from this pool instead.
+> The flag keeps its legacy `..._PICK_BERRY` name, like every other `FLAG_ITEM_*` in this repo whose
+> upstream name no longer describes its content (`..._ZINC` is a TM pick, `..._CAPSULE` is TM52).
 
 **Mixed pick-3 locations** (some slots random from this pool, others fixed):
 
@@ -113,7 +117,9 @@ Shuffled once per run. Used for the "item ball pick-3" locations where the playe
 ---
 
 ### Pool: `protectionBerries` — Type-resist berries
-18 resist berries (one per type) shuffled per run. Drawn 4 at a time for berry pick locations.
+18 resist berries (one per type) shuffled per run. Drawn 4 at a time for berry pick locations — **4
+locations × 4 = 16 drawn, 2 berries unused per run** (the slices do not wrap, so a 5th location would
+be starved; that is what B-065 was).
 
 **Berry assignment** (the 18 berries mapped to types):
 Chilan (Normal), Occa (Fire), Passho (Water), Wacan (Electric), Rindo (Grass), Yache (Ice), Chople (Fighting), Kebia (Poison), Shuca (Ground), Coba (Flying), Payapa (Psychic), Tanga (Bug), Charti (Rock), Kasib (Ghost), Haban (Dragon), Colbur (Dark), Babiri (Steel), Roseli (Fairy)
@@ -126,11 +132,10 @@ Chilan (Normal), Occa (Fire), Passho (Water), Wacan (Electric), Rindo (Grass), Y
 | Route 116 | `FLAG_ITEM_ROUTE_116_POTION` | `choice116Berry` → Karen (`TRAINER_KAREN_1`) bag/reward |
 | Route 111 | `FLAG_ITEM_ROUTE_111_CHILAN` | `route111BerryItems` → Drew (`TRAINER_DREW`) bag/reward; `normanBag` and above |
 | Route 117 | `FLAG_ITEM_ROUTE_117_WACAN` | bags from Norman onward |
-| Route 121 | `FLAG_ITEM_ROUTE_121_PICK_BERRY` | `choiceCristinBerries` → bags from Tate & Liza onward |
 
-> **Route 121 is a pick-2, not a pick-4:** the 18-berry pool is drawn 4-at-a-time in the fixed order
-> above (104 → 116 → 111 → 117 → 121), so the last location only gets the 2 remaining berries. The
-> in-game menu shows exactly the real options (the shared pick script skips empty `gItemPicks[]` slots).
+> The pool is drawn in this fixed order (104 → 116 → 111 → 117), so which 2 berries go unused is the
+> tail of the shuffle. The in-game menu is built from the non-empty `gItemPicks[]` slots, so a pick
+> with fewer items would show exactly its real options — see B-065 for why none does any more.
 
 ---
 
@@ -166,7 +171,7 @@ Bag functions in `trainers.js` are cumulative — each gym adds its items on top
 | `flanneryBag` | + Nob/Claude TMs, TM78, Strength HM, White/Power Herb, Shell Bell |
 | `normanBag` | + Drew berries, Heidi items, Dusty ball, Becky good item, Bryan TM pick, TM31, Surf HM |
 | `winonaBag` | + Clarissa strongDmg TM pick, TM32 |
-| `tateAndLizaBag` | + TM52 (Jessica), Tammy TMs, Cristin berries, Walter strongDmg TM pick, Isabella choice items, Grace strongDmg TM pick, TM92 (Spencer), TM53 (Roland), TM91 |
+| `tateAndLizaBag` | + TM52 (Jessica), Tammy TMs, Cristin items, Walter strongDmg TM pick, Isabella choice items, Grace strongDmg TM pick, TM92 (Spencer), TM53 (Roland), TM91 |
 | `spaceCenterBag` | + Presley strongDmg TM pick, TM54 (Auron) |
 | `juanBag` | + TM55 (Aidan), TM93 (Athena), Eject Button (route 127), TM51, Waterfall HM |
 | `victoryRoadBag` | + TM56 (Quincy VR), TM94 (Katelynn VR), TM95 (EverGrande rival) |

@@ -263,3 +263,4 @@
 | [T-259](T-259-frontend-url-routing.md) | Give the frontend real URLs and indexable links | done | 0.9.0 | 2026-08-09 |
 | [T-260](T-260-stale-interaction-specs.md) | Repair the two failing interaction specs — retire one, make the other seed-independent | done | 0.9.0 | 2026-08-09 |
 | [T-261](T-261-teleport-slow-pivot-value.md) | Value Teleport as a slow pivot and stop the role injector forcing dead-weight moves | done | 0.9.0 | 2026-08-09 |
+| [T-262](T-262-route121-item-rebalance.md) | Give Route 121 a real item ball and stop starving the berry picks | in-progress | 0.9.0 | 2026-08-10 |
