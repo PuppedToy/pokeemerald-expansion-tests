@@ -58,6 +58,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **The status TMs are sorted by what they actually do.** The high-utility TM tier had inherited a
+  classification nobody had ever reviewed, so it handed out **terrain moves** next to Calm Mind and
+  Stealth Rock — and in one run all three of Psychic, Grassy and Electric Terrain landed in the *same*
+  "choose 1 of 3", which is not a choice at all. Grassy, Psychic and Misty Terrain are now
+  average-utility TMs; **Electric Terrain stays** in the high tier, since it is the terrain the game
+  builds teams around. Moving up to the high tier: **Amnesia, Iron Defense** (+2 to a defensive stat),
+  **Charm, Eerie Impulse** (the two debuffs that cut an attack stat outright), **Haze** and **Endure**.
+  **Feather Dance** and **Rock Polish** are gone — they did nothing that Charm and Agility did not
+  already do. (T-263, B-066)
+
 - **Fast attackers no longer waste a slot on Teleport.** Trainer Pokémon like Wally's Gardevoir were being
   handed Teleport ahead of real moves such as Mystical Fire or Calm Mind. Teleport is the slow pivot — it
   leaves *after* taking the hit, so its whole point is letting a slow, bulky Pokémon eat that hit for the
