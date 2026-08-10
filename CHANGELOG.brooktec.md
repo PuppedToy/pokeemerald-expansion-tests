@@ -68,6 +68,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   **Feather Dance** and **Rock Polish** are gone — they did nothing that Charm and Agility did not
   already do. (T-263, B-066)
 
+- **The Route 121 item ball is a real choice again.** It used to be the last of five resist-berry
+  locations, and there are only 18 resist berries to go around four at a time — so that ball always
+  offered just **two** berries, in every run, no matter the seed. It now offers a **choice of three
+  utility items** instead, and the four remaining berry locations each keep a full pick of four
+  different berries. Cristin, who mirrors that ball, hands out the new items too. (T-262, B-065)
+
 - **Fast attackers no longer waste a slot on Teleport.** Trainer Pokémon like Wally's Gardevoir were being
   handed Teleport ahead of real moves such as Mystical Fire or Calm Mind. Teleport is the slow pivot — it
   leaves *after* taking the hit, so its whole point is letting a slow, bulky Pokémon eat that hit for the

@@ -213,13 +213,13 @@ Route121_EventScript_PickRest::
 	setflag FLAG_ITEM_ROUTE_121_PICK_TM
 	end
 
-@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE121_BERRIES]); static, no longer regenerated
-Route121_EventScript_PickBerry::
-	setvar VAR_0x8004, PICK_ROUTE121_BERRIES
+@ T-236 — data-driven pick (gItemPicks[PICK_ROUTE121_ITEMS]); static, no longer regenerated
+Route121_EventScript_PickItem::
+	setvar VAR_0x8004, PICK_ROUTE121_ITEMS
 	call Common_EventScript_DoPick
-	goto_if_eq VAR_RESULT, 0, Route121_EventScript_PickBerryEnd
+	goto_if_eq VAR_RESULT, 0, Route121_EventScript_PickItemEnd
 	setflag FLAG_ITEM_ROUTE_121_PICK_BERRY
-Route121_EventScript_PickBerryEnd::
+Route121_EventScript_PickItemEnd::
 	end
 
 Route121_Text_OkayMoveOutToMtPyre:

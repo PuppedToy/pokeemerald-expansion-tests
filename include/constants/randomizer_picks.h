@@ -16,7 +16,7 @@
 #define PICK_ROUTE117_BERRIES        3
 #define PICK_ROUTE117_GEMS           4
 #define PICK_ROUTE111_BERRIES        5
-#define PICK_ROUTE121_BERRIES        6
+#define PICK_ROUTE121_ITEMS          6
 #define PICK_ROUTE111_ITEMS          7
 #define PICK_ROUTE116_GEM            8
 #define PICK_ROUTE116_BERRY          9

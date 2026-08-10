@@ -62,9 +62,12 @@ function buildAssignments() {
         route116Berries:  berry(4),
         route111Berries:  berry(4),
         route117Berries:  berry(4),
-        route121Berries:  berry(4),
+        // T-262 / B-065 — 18 resist berries, 4 per location: exactly 4 locations get a full pick
+        // (2 berries go unused per run). Route 121 draws from averageItemPool instead — it used to be
+        // the 5th berry location and always got the 2 leftovers.
         // averageItemPool locations
         route111Items:    pool(3),
+        route121Items:    pool(3),
         // goodItemPool single-item locations
         route106GoodItem:  good(1)[0],
         route109GoodItem:  good(1)[0],
@@ -106,7 +109,7 @@ const PICK_TABLE = [
     ['PICK_ROUTE117_BERRIES',       'route117Berries'],
     ['PICK_ROUTE117_GEMS',          'route117Gems'],
     ['PICK_ROUTE111_BERRIES',       'route111Berries'],
-    ['PICK_ROUTE121_BERRIES',       'route121Berries'],
+    ['PICK_ROUTE121_ITEMS',         'route121Items'],
     ['PICK_ROUTE111_ITEMS',         'route111Items'],
     ['PICK_ROUTE116_GEM',           'route116Gems'],
     ['PICK_ROUTE116_BERRY',         'route116Berries'],
@@ -204,23 +207,34 @@ function randomizeItems() {
         route118BarnyGoodItem: itemDisplayName(a.route118BarnyGoodItem),
         route118Items:     dn('route118Items'),
         route120AngelicaGoodItem: itemDisplayName(a.route120AngelicaGoodItem),
-        route121Berries:   dn('route121Berries'),
+        route121Items:     dn('route121Items'),
         route115Ball:      dn('route115Ball'),
     };
 }
+
+// T-262 — assignment keys renamed after bundles were already in the wild. A bundle is immutable
+// input, so its old key still has to reach the same pick: `route121Berries` was the Route 121 ball
+// before it moved from the berry pool to averageItemPool. Keep old bundles buildable.
+const LEGACY_ASSIGNMENT_KEYS = {
+    route121Berries: 'route121Items',
+};
 
 // Takes itemAssignments with display names (as stored in bundles) and writes the gItemPicks[] table.
 function writeItemFilesFromBundle(itemAssignments) {
     const toConst = name => displayNameToItemConst(name);
     const raw = {};
     for (const [k, v] of Object.entries(itemAssignments)) {
-        raw[k] = Array.isArray(v) ? v.map(toConst) : toConst(v);
+        const key = LEGACY_ASSIGNMENT_KEYS[k] || k;
+        // A bundle carrying the current key wins over a legacy alias for the same pick.
+        if (key !== k && Object.prototype.hasOwnProperty.call(itemAssignments, key)) continue;
+        raw[key] = Array.isArray(v) ? v.map(toConst) : toConst(v);
     }
     updateItemPicksTable(raw);
 }
 
 module.exports = {
     randomizeItems,
+    buildAssignments,
     writeItemFilesFromBundle,
     displayNameToItemConst,
     genItemPicksSection,
