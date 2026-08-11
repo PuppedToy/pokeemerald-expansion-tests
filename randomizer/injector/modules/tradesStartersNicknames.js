@@ -20,8 +20,8 @@
  * The trade table is not re-derived here: this module runs `tradeWriter.renderTradeData()` — the
  * writer's own emitter — and parses the C back into bytes. The same parser + encoder is first run over
  * the **committed** `gIngameTrades[]` block and byte-matched against the base ROM, which in one pass
- * proves the 128 B stride, every field offset in `struct InGameTrade`, and the charmap encoder (the
- * base's own entries carry text: `_("DOTS")`, `_("KOBE")`).
+ * proves the entry stride, every field offset in `struct InGameTrade`, and the charmap encoder (the
+ * committed entries carry text: `_("TRADER")`).
  */
 
 const { LOCATION_NICKNAME, TRADE_NICKNAME, INGAME_TRADE } = require('../structLayout');
@@ -34,6 +34,7 @@ const { namedTrades } = require('../../tradeNameWriter');
 const tradeWriter = require('../../tradeWriter');
 const {
     LOCATION_NICKNAME_CAPACITY, TRADE_NICKNAME_CAPACITY, STARTER_EXTRA_CAPACITY, TRADE_SPECIES_LIST_CAPACITY,
+    TRADE_MOVE_LIST_CAPACITY,
 } = require('../../layout');
 
 const TAG = 'tradesStartersNicknames';
@@ -63,7 +64,7 @@ function charmapFor(ctx) {
  * The stride of a fixed-capacity table — DERIVED from its own symbol, never the sum of its fields.
  *
  * GATE-3 (2026-08-02) caught the difference: `struct TradeNickname` is 1 + 13 bytes of data, but the
- * base's `gTradeNicknames[8]` is 128 B, i.e. 16 per row — ARM rounds a struct's size up to a multiple
+ * base's `gTradeNicknames[TRADE_NICKNAME_CAPACITY]` is 16 B per row — ARM rounds a struct's size up to a multiple
  * of 4, so the row carries two padding bytes. `struct LocationNickname` (3 + 13) needs none, which is
  * exactly why adding up the fields looked right for one table and not the other.
  *
@@ -233,7 +234,7 @@ function parseTradeBlock(text) {
     return trades;
 }
 
-/** One `struct InGameTrade` (128 B) from the parsed initializer; an absent field is zero, as in C. */
+/** One `struct InGameTrade` from the parsed initializer; an absent field is zero, as in C. */
 function encodeTrade(ctx, fields, id) {
     const { constants } = ctx;
     const charmap = charmapFor(ctx);
@@ -273,16 +274,23 @@ function encodeTrade(ctx, fields, id) {
         conditions: (raw) => list(raw).forEach((v, i) => buffer.writeUInt8(number(v) & 0xff, INGAME_TRADE.conditions + i)),
         requestedSpeciesList: (raw) => writeSpeciesList(raw, INGAME_TRADE.requestedSpeciesList),
         requestedBaseForms: (raw) => writeSpeciesList(raw, INGAME_TRADE.requestedBaseForms),
+        // T-269 — the TMs the gift arrives knowing.
+        moves: (raw) => writeU16List(raw, INGAME_TRADE.moves, TRADE_MOVE_LIST_CAPACITY, 'moves', 'TRADE_MOVE_LIST_CAPACITY'),
+        moveCount: (raw) => buffer.writeUInt8(number(raw) & 0xff, INGAME_TRADE.moveCount),
     };
 
-    function writeSpeciesList(raw, at) {
-        const species = list(raw);
-        if (species.length > TRADE_SPECIES_LIST_CAPACITY) {
+    function writeU16List(raw, at, capacity, what, constant) {
+        const values = list(raw);
+        if (values.length > capacity) {
             throw new Error(
-                `injector/${TAG}: ${id} lists ${species.length} species; TRADE_SPECIES_LIST_CAPACITY is ` +
-                `${TRADE_SPECIES_LIST_CAPACITY}. Raise it in include/constants/randomizer_layout.h.`);
+                `injector/${TAG}: ${id} lists ${values.length} ${what}; ${constant} is ` +
+                `${capacity}. Raise it in include/constants/randomizer_layout.h.`);
         }
-        species.forEach((name, i) => buffer.writeUInt16LE(number(name), at + i * 2));
+        values.forEach((name, i) => buffer.writeUInt16LE(number(name), at + i * 2));
+    }
+
+    function writeSpeciesList(raw, at) {
+        writeU16List(raw, at, TRADE_SPECIES_LIST_CAPACITY, 'species', 'TRADE_SPECIES_LIST_CAPACITY');
     }
 
     for (const [field, raw] of Object.entries(fields)) {
@@ -312,8 +320,8 @@ function encodeTradeTable(ctx, blockText) {
 
 /**
  * Prove the struct against the base before writing: the committed `gIngameTrades[]` block, re-encoded,
- * must be exactly what the base ROM holds. This is what pins the 128 B stride, every field offset and
- * the charmap encoder — the base's own entries carry text and hand-written IVs, otIds and personalities.
+ * must be exactly what the base ROM holds. This is what pins the entry stride, every field offset and
+ * the charmap encoder — the entries carry text, IVs, otIds and personalities.
  */
 function verifyTradeTable(ctx, sourceText) {
     const expected = encodeTradeTable(ctx, sourceText);

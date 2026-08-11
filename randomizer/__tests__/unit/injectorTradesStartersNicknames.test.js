@@ -14,7 +14,9 @@ const {
 } = require('../../injector/modules/tradesStartersNicknames');
 const { LOCATION_NICKNAME, TRADE_NICKNAME, INGAME_TRADE } = require('../../injector/structLayout');
 const { loadCharmap, encodeString } = require('../../injector/charmap');
-const { STARTER_EXTRA_CAPACITY, LOCATION_NICKNAME_CAPACITY, TRADE_NICKNAME_CAPACITY } = require('../../layout');
+const {
+    STARTER_EXTRA_CAPACITY, LOCATION_NICKNAME_CAPACITY, TRADE_NICKNAME_CAPACITY, TRADE_MOVE_LIST_CAPACITY,
+} = require('../../layout');
 
 const ROOT = path.resolve(__dirname, '..', '..', '..');
 const charmap = loadCharmap({ root: ROOT });
@@ -23,7 +25,7 @@ const charmap = loadCharmap({ root: ROOT });
 const BASE_TRADES = [
     'const struct InGameTrade gIngameTrades[INGAME_TRADES_COUNT] =',
     '{',
-    '    [INGAME_TRADE_SEEDOT] =',
+    '    [INGAME_TRADE_RUSTBORO] =',
     '    {',
     '        .nickname = _("DOTS"),',
     '        .species = SPECIES_SEEDOT,',
@@ -37,7 +39,9 @@ const BASE_TRADES = [
     '        .otName = _("KOBE"),',
     '        .otGender = MALE,',
     '        .sheen = 10,',
-    '        .requestedSpecies = SPECIES_RALTS',
+    '        .requestedSpecies = SPECIES_RALTS,',
+    '        .moves = { MOVE_TACKLE, MOVE_GROWL },',
+    '        .moveCount = 2,',
     '    },',
     '};',
 ].join('\n');
@@ -184,8 +188,8 @@ describe('the trade nickname table', () => {
             data: {
                 artifacts: {
                     tradeNaming: {
-                        INGAME_TRADE_SEEDOT: { nickname: 'Dotty' },
-                        INGAME_TRADE_PLUSLE: { nickname: '   ' },
+                        INGAME_TRADE_RUSTBORO: { nickname: 'Dotty' },
+                        INGAME_TRADE_DEWFORD: { nickname: '   ' },
                     },
                 },
             },
@@ -194,7 +198,7 @@ describe('the trade nickname table', () => {
 
         expect(u8(base, 'gTradeNicknameCount')).toBe(1);
         const table = bytesAt(base, 'gTradeNicknames');
-        expect(table[TRADE_NICKNAME.tradeId]).toBe(constants.require('INGAME_TRADE_SEEDOT'));
+        expect(table[TRADE_NICKNAME.tradeId]).toBe(constants.require('INGAME_TRADE_RUSTBORO'));
         expect(table.subarray(TRADE_NICKNAME.nickname, TRADE_NICKNAME.nickname + TRADE_NICKNAME.nicknameWidth))
             .toEqual(encodeString(charmap, 'Dotty', TRADE_NICKNAME.nicknameWidth));
         expect(table.subarray(TRADE_NICKNAME.stride).every(byte => byte === 0)).toBe(true);
@@ -205,16 +209,16 @@ describe('the trade nickname table', () => {
         // the base's 8-row table is 128 B. Writing rows 14 apart would have put every row but the first
         // in the wrong place — silently, since the table is zero in the base.
         const base = setup({ data: { artifacts: { tradeNaming: {
-            INGAME_TRADE_SEEDOT: { nickname: 'Aa' },
-            INGAME_TRADE_PLUSLE: { nickname: 'Bb' },   // sorts FIRST by key
+            INGAME_TRADE_RUSTBORO: { nickname: 'Aa' },
+            INGAME_TRADE_DEWFORD: { nickname: 'Bb' },   // sorts FIRST by key
         } } } });
         const stride = base.offsetMap.require('gTradeNicknames').size / TRADE_NICKNAME_CAPACITY;
         injectTradeNicknames(base.ctx);
 
         // Rows are sorted by KEY, so PLUSLE comes before SEEDOT — the writer's order, not the id's.
         const table = bytesAt(base, 'gTradeNicknames');
-        expect(table[0]).toBe(constants.require('INGAME_TRADE_PLUSLE'));
-        expect(table[stride]).toBe(constants.require('INGAME_TRADE_SEEDOT'));
+        expect(table[0]).toBe(constants.require('INGAME_TRADE_DEWFORD'));
+        expect(table[stride]).toBe(constants.require('INGAME_TRADE_RUSTBORO'));
         expect(table.subarray(stride + TRADE_NICKNAME.nickname, stride + TRADE_NICKNAME.nickname + 3))
             .toEqual(encodeString(charmap, 'Aa', 3));
     });
@@ -228,7 +232,7 @@ describe('the trade nickname table', () => {
 
 describe('in-game trades', () => {
     const TRADES = [{
-        ingameTradeId: 'INGAME_TRADE_SEEDOT',
+        ingameTradeId: 'INGAME_TRADE_RUSTBORO',
         offeredSpecies: 'SPECIES_KARTANA',
         level: 33,
         acceptedSpecies: ['SPECIES_RALTS', 'SPECIES_KIRLIA'],
@@ -240,7 +244,7 @@ describe('in-game trades', () => {
         injectIngameTrades(base.ctx, { tradeSource: base.tradesBlock });
 
         const at = base.offsetMap.offsetOf('gIngameTrades')
-            + constants.require('INGAME_TRADE_SEEDOT') * INGAME_TRADE.stride;
+            + constants.require('INGAME_TRADE_RUSTBORO') * INGAME_TRADE.stride;
         expect(base.rom.readU16(at + INGAME_TRADE.species)).toBe(constants.require('SPECIES_KARTANA'));
         expect(base.rom.readU8(at + INGAME_TRADE.level)).toBe(33);
         expect(base.rom.readU16(at + INGAME_TRADE.requestedSpeciesList)).toBe(constants.require('SPECIES_RALTS'));
@@ -287,70 +291,75 @@ describe('in-game trades', () => {
 });
 
 describe('parsing the committed trade.h', () => {
-    test('reads the real block — four trades with their fields', () => {
-        const source = fs.readFileSync(path.resolve(ROOT, 'src', 'data', 'trade.h'), 'utf8');
-        const trades = parseTradeBlock(source);
+    const committed = () => fs.readFileSync(path.resolve(ROOT, 'src', 'data', 'trade.h'), 'utf8');
+
+    // T-269 — the committed block is fifteen writer-shaped entries (one per town trader), zeroed: the
+    // randomizer fills them per run. It is the injector's byte-match reference, so its SHAPE is what
+    // matters here, not any vanilla content (the SEEDOT/KOBE entries are gone with the vanilla trades).
+    test('reads the real block — one entry per trader, in the writer\'s shape', () => {
+        const trades = parseTradeBlock(committed());
 
         expect(trades.size).toBe(constants.require('INGAME_TRADES_COUNT'));
-        expect(trades.get('INGAME_TRADE_SEEDOT')).toMatchObject({
-            nickname: '_("DOTS")', species: 'SPECIES_SEEDOT', otName: '_("KOBE")', sheen: '10',
+        expect(trades.get('INGAME_TRADE_RUSTBORO')).toMatchObject({
+            nickname: '_("")', species: 'SPECIES_NONE', otName: '_("TRADER")',
+            level: '0', moveCount: '0',
         });
+        expect(trades.get('INGAME_TRADE_LEAGUE')).toBeDefined();
     });
 
-    test('every committed trade encodes to a full 128 B entry', () => {
-        const source = fs.readFileSync(path.resolve(ROOT, 'src', 'data', 'trade.h'), 'utf8');
-        const table = encodeTradeTable({ constants, root: ROOT, charmap: null }, source);
+    test('every committed trade encodes to a full entry', () => {
+        const table = encodeTradeTable({ constants, root: ROOT, charmap: null }, committed());
 
         expect(table).toHaveLength(constants.require('INGAME_TRADES_COUNT') * INGAME_TRADE.stride);
-        // The first entry's nickname is text, which is the encoder's real test.
-        expect(table.subarray(0, INGAME_TRADE.nicknameWidth))
-            .toEqual(encodeString(charmap, 'DOTS', INGAME_TRADE.nicknameWidth));
+        // The OT name is text, which is the encoder's real test (the nicknames are deliberately empty).
+        expect(table.subarray(INGAME_TRADE.otName, INGAME_TRADE.otName + INGAME_TRADE.otNameWidth))
+            .toEqual(encodeString(charmap, 'TRADER', INGAME_TRADE.otNameWidth));
     });
-});
 
-describe('the module as the registry calls it', () => {
-    test('runs all four sub-writers in one pass', () => {
-        const base = buildSyntheticBase({ naming: BASE_TRADES });
-        const result = applyTradesStartersNicknames({
-            rom: base.rom,
-            offsetMap: base.offsetMap,
+    test('the TMs a gift arrives knowing round-trip through the encoder (T-269)', () => {
+        const base = setup({
             data: {
-                starters: { starters: ['SPECIES_KARTANA', 'SPECIES_ZIGZAGOON', 'SPECIES_LINOONE'] },
-                wild: { extraStarters: ['SPECIES_BAGON'] },
                 artifacts: {
-                    starterNaming: { starter: { nickname: 'Milos', gender: 'F' }, extras: [] },
-                    locationNaming: { MAP_ROUTE101: { nickname: 'Alpha', gender: 'M' } },
-                    tradeNaming: { INGAME_TRADE_SEEDOT: { nickname: 'Dotty' } },
                     trades: [{
-                        ingameTradeId: 'INGAME_TRADE_SEEDOT', offeredSpecies: 'SPECIES_KARTANA', level: 20,
-                        acceptedSpecies: ['SPECIES_RALTS'], acceptedBaseForms: ['SPECIES_RALTS'],
+                        ingameTradeId: 'INGAME_TRADE_DEWFORD',
+                        offeredSpecies: 'SPECIES_KARTANA',
+                        level: 20,
+                        offeredMoves: ['MOVE_TACKLE', 'MOVE_GROWL'],
+                        ivs: [31, 15, 15, 31, 15, 15],
+                        acceptedSpecies: ['SPECIES_RALTS'],
+                        acceptedBaseForms: ['SPECIES_RALTS'],
                     }],
                 },
             },
-            sources: { tradeSource: BASE_TRADES },
         });
+        injectIngameTrades(base.ctx, { tradeSource: base.tradesBlock });
 
-        expect(result.starters.writes).toBe(4);
-        expect(result.locationNicknames.rows).toBe(1);
-        expect(result.tradeNicknames.rows).toBe(1);
-        expect(result.ingameTrades.trades).toBe(1);
-        expect(base.rom.journal.every(entry => entry.tag.startsWith(TAG))).toBe(true);
+        const at = base.offsetMap.offsetOf('gIngameTrades')
+            + constants.require('INGAME_TRADE_DEWFORD') * INGAME_TRADE.stride;
+        expect(base.rom.readU16(at + INGAME_TRADE.moves)).toBe(constants.require('MOVE_TACKLE'));
+        expect(base.rom.readU16(at + INGAME_TRADE.moves + 2)).toBe(constants.require('MOVE_GROWL'));
+        expect(base.rom.readU8(at + INGAME_TRADE.moveCount)).toBe(2);
+        // The per-trade IVs land in the same entry, in struct order (HP, Atk, Def, Speed, SpAtk, SpDef).
+        expect([...base.rom.readBytes(at + INGAME_TRADE.ivs, INGAME_TRADE.ivCount)])
+            .toEqual([31, 15, 15, 31, 15, 15]);
     });
 
-    test('a base without these tables and a bundle with nothing to write is a no-op', () => {
-        const base = buildSyntheticBase({});
-        const result = applyTradesStartersNicknames({ rom: base.rom, offsetMap: base.offsetMap, data: {} });
-
-        expect(result.starters.writes).toBe(0);
-        expect(base.rom.journal).toHaveLength(0);
-    });
-
-    test('but a bundle WITH starters and no tables is refused, naming the missing symbol', () => {
-        const base = buildSyntheticBase({});
-        expect(() => applyTradesStartersNicknames({
-            rom: base.rom,
-            offsetMap: base.offsetMap,
-            data: { starters: { starters: ['SPECIES_KARTANA'] } },
-        })).toThrow(/gStarterMon/);
+    test('more TMs than TRADE_MOVE_LIST_CAPACITY is refused, not truncated', () => {
+        const base = setup({
+            data: {
+                artifacts: {
+                    trades: [{
+                        ingameTradeId: 'INGAME_TRADE_DEWFORD',
+                        offeredSpecies: 'SPECIES_KARTANA',
+                        level: 20,
+                        offeredMoves: Array(TRADE_MOVE_LIST_CAPACITY + 1).fill('MOVE_TACKLE'),
+                        acceptedSpecies: ['SPECIES_RALTS'],
+                        acceptedBaseForms: ['SPECIES_RALTS'],
+                    }],
+                },
+            },
+        });
+        expect(() => injectIngameTrades(base.ctx, { tradeSource: base.tradesBlock }))
+            .toThrow(/TRADE_MOVE_LIST_CAPACITY/);
     });
 });

@@ -29,6 +29,8 @@ module.exports = {
     TRADE_NICKNAME_CAPACITY: readCapacity('TRADE_NICKNAME_CAPACITY'),
     STARTER_EXTRA_CAPACITY: readCapacity('STARTER_EXTRA_CAPACITY'),
     TRADE_SPECIES_LIST_CAPACITY: readCapacity('TRADE_SPECIES_LIST_CAPACITY'),
+    // T-269 — the TM moves a traded mon arrives knowing.
+    TRADE_MOVE_LIST_CAPACITY: readCapacity('TRADE_MOVE_LIST_CAPACITY'),
     LAYOUT_HEADER,
     readCapacity,
 };

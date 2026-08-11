@@ -51,4 +51,8 @@
 // accepted set observed is 3 (an evolution line); 16 covers even an Eevee-sized family.
 #define TRADE_SPECIES_LIST_CAPACITY  16
 
+// T-269 — the TM moves a traded mon arrives already knowing. The most generous trader teaches 3; a mon
+// only has 4 move slots, so 4 is both the headroom and the ceiling that makes sense.
+#define TRADE_MOVE_LIST_CAPACITY     4
+
 #endif // GUARD_CONSTANTS_RANDOMIZER_LAYOUT_H

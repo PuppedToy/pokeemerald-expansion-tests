@@ -590,6 +590,7 @@ gStdScripts_End::
 	.include "data/scripts/config.inc"
 	.include "data/scripts/debug.inc"
 	.include "data/scripts/randomizer_picks.inc"
+	.include "data/scripts/town_traders.inc"
 
 EventScript_WhiteOut::
 	call EverGrandeCity_HallOfFame_EventScript_ResetEliteFour

@@ -276,6 +276,9 @@ gSpecials::
 	def_special GetTradeSpecies
 	def_special BufferInGameTradeOffer
 	def_special IsRequestedTradeMon
+	@ T-269 — the shared town-trader script: the "already traded" flag is derived from the trade id.
+	def_special IsTownTradeDone
+	def_special SetTownTradeDone
 	def_special GetWeekCount
 	def_special RetrieveLotteryNumber
 	def_special PickLotteryCornerTicket

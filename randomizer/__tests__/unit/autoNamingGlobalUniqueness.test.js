@@ -16,7 +16,7 @@ const nick = (over = {}) => ({
     sameNamesAcrossRuns: false, shareAcrossSoullink: true, pools: POOL, ...over,
 });
 const LOCS = ['MAP_ROUTE101', 'MAP_ROUTE102', 'MAP_ANCIENT_TOMB', 'MAP_DEWFORD_TOWN_GYM'];
-const TRADES = ['INGAME_TRADE_SEEDOT', 'INGAME_TRADE_HORSEA'];
+const TRADES = ['INGAME_TRADE_RUSTBORO', 'INGAME_TRADE_SLATEPORT'];
 
 function allNames(rom, sn, ln, tn) {
     const out = [];
