@@ -67,9 +67,17 @@ pins the roll to families that peak at **UU**, and the **League's** to **OU**. B
 the tier, so pinning what is asked for pins the gift too. The first nine traders stay unpinned: early
 pools are thin and forcing a tier there would only produce fallbacks.
 
-When the demanded tier runs out the trade bends before it breaks, loudly
-(`TRADE_WANTED_POOL_EMPTY`): first it repeats a family **at that tier**, and only if the run's reachable
-pool holds no such family at all does it ask for another tier.
+When the demanded tier runs out the trade bends before it breaks, and says so
+(`TRADE_WANTED_POOL_EMPTY`). The ladder, in the owner's order of preference — **a fresh family outranks
+the tier**:
+
+1. that tier, family nobody has asked for — the normal case;
+2. **any reachable wild Pokémon**, family nobody has asked for — the tier ran short or the run has none
+   of it at all;
+3. repeat a family (its tier first, then any) — only when the whole reachable pool is spent.
+
+So a run that simply has few UU-quality encounters gets *different* late trades rather than the same
+family twice: uniqueness was the original rule, and the tier floor yields to it.
 
 ## What a trader gives
 

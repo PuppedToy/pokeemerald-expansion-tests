@@ -29,13 +29,16 @@ Both sides of a trade already share the family's final quality, so pinning the r
 this is a filter on the pool, not a second pairing rule.
 
 Fallback ladder, so a thin run bends instead of losing a trade (all `TRADE_WANTED_POOL_EMPTY`):
-that tier + an unused family → that tier, repeating a family → any tier.
+that tier + an unused family → **any wild mon + an unused family** → repeat a family (its tier first).
+A fresh family outranks the tier (owner, 2026-08-11).
 
 Acceptance criteria:
 - [x] Lilycove, Mossdeep, Pacifidlog, Sootopolis and Ever Grande ask for and give **UU**; the League
       **OU**; the other nine are untouched.
 - [x] Offered and wanted still share their tier for all 15 trades.
 - [x] A run whose reachable pool holds no UU/OU still produces every trade, with a diagnostic.
+- [x] A run whose UU pool runs SHORT asks for another tier rather than repeating a family; only a pool
+      with nothing fresh left repeats one.
 - [x] `randomizer/docs/trades.md` carries the rule; `cd randomizer && npm test` green.
 
 ## Progress log
@@ -48,6 +51,11 @@ Acceptance criteria:
   against three reachable UU families, so the fallback fired and hid the rule). Widened it — every
   synthetic map now carries `land`+`old` and the mid-game ones `good`+`surf` — rather than relaxing the
   assertion.
+
+- **2026-08-11** — Owner asked what happens when there is not enough UU, and settled the order: it must
+  fall back to **any wild Pokémon**. The first version preferred repeating a UU family over changing
+  tier; inverted, so the ladder is now tier+fresh → any+fresh → repeat. Two tests cover it (a short UU
+  pool changes tier and keeps every late family distinct; only an exhausted pool repeats).
 
 ## Outcome
 

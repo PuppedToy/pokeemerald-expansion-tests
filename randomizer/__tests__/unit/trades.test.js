@@ -439,24 +439,47 @@ describe('T-272 — from Lilycove on the swap is UU for UU, and the League\'s is
         expect(trades.every(t => t.offeredSpecies && t.wantedSpecies)).toBe(true);
         expect(trades.find(t => t.town === 'LILYCOVE').tier).toBe('RU');
         const dropped = warn.mock.calls.filter(c => c[0] === 'TRADE_WANTED_POOL_EMPTY'
-            && /No UU encounter is reachable/.test(c[1]));
+            && /No unused UU encounter is reachable/.test(c[1]));
         expect(dropped.length).toBeGreaterThan(0);
     });
 
-    test('when the tier is present but every one of its families is taken, it repeats rather than drop the tier', () => {
+    // Owner's order of preference (2026-08-11): when the demanded tier runs short the trader asks for
+    // ANY wild mon whose family is still fresh, rather than repeating one just to keep the tier.
+    test('a short tier yields to a fresh family, not the other way round', () => {
         const warn = jest.fn();
-        // Two UU families for five UU traders: three of them must repeat a family, all still UU.
+        // Two UU families for five UU traders: two get UU, the rest get fresh families of another tier.
         const pokes = [];
         for (let i = 0; i < 2; i++) pokes.push(...family(`UU_${i}`, 'UU', { teachables: ALL_TMS }));
-        for (let i = 0; i < 8; i++) pokes.push(...family(`OU_${i}`, 'OU', { teachables: ALL_TMS }));
+        for (let i = 0; i < FAMILIES_PER_TIER; i++) pokes.push(...family(`OU_${i}`, 'OU', { teachables: ALL_TMS }));
+        for (let i = 0; i < FAMILIES_PER_TIER; i++) pokes.push(...family(`RU_${i}`, 'RU', { teachables: ALL_TMS }));
+        const byId = new Map(pokes.map(p => [p.id, p]));
         const trades = run({
             pokemonList: pokes,
-            wildArtifact: mkWildArtifact({ tiers: ['UU', 'OU'] }),
+            wildArtifact: mkWildArtifact({ tiers: ['UU', 'OU', 'RU'] }),
             diagnostics: { warn },
         });
+
         const late = trades.filter(t => expected[t.town] === 'UU');
         expect(late).toHaveLength(5);
-        for (const t of late) expect(t.tier).toBe('UU');
-        expect(warn.mock.calls.some(c => c[0] === 'TRADE_WANTED_POOL_EMPTY' && /keep the UU swap/.test(c[1]))).toBe(true);
+        expect(late.filter(t => t.tier === 'UU')).toHaveLength(2);          // only as many as the pool holds
+        expect(late.filter(t => t.tier !== 'UU')).toHaveLength(3);          // the rest changed tier…
+        const families = late.map(t => getFamilyGroup(byId.get(t.wantedSpecies).family));
+        expect(new Set(families).size).toBe(5);                             // …and each asked for a fresh one
+        expect(warn.mock.calls.some(c => c[0] === 'TRADE_WANTED_POOL_EMPTY'
+            && /asked for another tier rather than repeat a family/.test(c[1]))).toBe(true);
+    });
+
+    test('only a pool with nothing fresh left repeats a family — and warns', () => {
+        const warn = jest.fn();
+        // One family per tier: after the first traders there is nothing unused anywhere.
+        const pokes = TIERS.flatMap(tier => family(`${tier}_ONLY`, tier, { teachables: ALL_TMS }));
+        const artifact = mkWildArtifact();
+        Object.keys(artifact.replacementLog).forEach((tpl, i) => {
+            artifact.replacementLog[tpl] = `SPECIES_${TIERS[i % TIERS.length]}_ONLY_BASE`;
+        });
+        const trades = run({ pokemonList: pokes, wildArtifact: artifact, diagnostics: { warn } });
+        expect(trades.every(t => t.wantedSpecies && t.offeredSpecies)).toBe(true);
+        expect(warn.mock.calls.some(c => c[0] === 'TRADE_WANTED_POOL_EMPTY'
+            && /was already asked for; repeating a family/.test(c[1]))).toBe(true);
     });
 });
