@@ -129,6 +129,12 @@ const constants = {
     EVO_TYPE_MEGA: 'EVO_TYPE_MEGA',
     EVO_TYPE_FINAL: 'EVO_TYPE_FINAL',
 
+    // B-062/B-067 — the level an evolution is assumed reachable at when it carries no level of its
+    // own: neither an EVO_LEVEL param nor an IF_MIN_LEVEL condition. In practice every EVO_ITEM in
+    // this game's source has an IF_MIN_LEVEL clause (evoLevelWriter re-rolls it every run), so this
+    // only covers an evolution added without one — a stone you could use as soon as you can buy it.
+    DEFAULT_EVOLUTION_LEVEL: 25,
+
     ENCOUNTER_TYPE_LAND: 'ENCOUNTER_TYPE_LAND',
     ENCOUNTER_TYPE_FISH_OLD: 'ENCOUNTER_TYPE_FISH_OLD',
     ENCOUNTER_TYPE_FISH_GOOD: 'ENCOUNTER_TYPE_FISH_GOOD',

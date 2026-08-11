@@ -23,6 +23,9 @@ const DIAGNOSTIC_CODES = {
     VILLAIN_MEGA_DROPPED: 'VILLAIN_MEGA_DROPPED',   // T-144 — no mega satisfied the villain favourite ladder; slot dropped
     // Starters (startersModule.js).
     STARTER_FALLBACK: 'STARTER_FALLBACK',           // no valid starter type-triangle; unconstrained fallback used
+    // Gym / static rewards (modules/wildModule.js) — B-070.
+    REWARD_FAMILY_REUSED: 'REWARD_FAMILY_REUSED',   // no unused-family candidate left; a family repeat was accepted
+    REWARD_POOL_EMPTY: 'REWARD_POOL_EMPTY',         // an optional reward had no candidate at all; left unrandomized
     // Evolution / mega resolution (modules/utils.js).
     MEGA_NO_BASE_FORM: 'MEGA_NO_BASE_FORM',         // could not find a mega's base form when checking evolutions
     MULTIPLE_PRE_EVOLUTIONS: 'MULTIPLE_PRE_EVOLUTIONS', // ambiguous pre-evolution during devolution

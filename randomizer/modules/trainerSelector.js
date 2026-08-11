@@ -12,7 +12,8 @@ const {
 } = require('../constants');
 const { TIER_SEQ } = require('../constants');
 const { plates } = require('../items');
-const { sample, checkValidEvo, getFamilyGroup, hasValidMega, devolveToLevel } = require('./utils');
+// B-067 — isValidEvolution used to be duplicated verbatim here; utils.js is its only home.
+const { sample, checkValidEvo, getFamilyGroup, hasValidMega, devolveToLevel, isValidEvolution } = require('./utils');
 
 // T-156 — the Plate types a trainer can grant, read from Plates in its (normalized) bag of item display
 // names (e.g. "Dread Plate" → DARK). A Multitype mon (Arceus) equipping one becomes that type.
@@ -54,11 +55,6 @@ function nearestCap(level) {
         else break;
     }
     return best;
-}
-
-function isValidEvolution(level, { param, method }) {
-    return (!isNaN(parseInt(param)) && parseInt(param) <= level && parseInt(param) > 4)
-        || ((method === 'ITEM' || param === '0') && level > 28);
 }
 
 /**

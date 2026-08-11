@@ -3069,9 +3069,14 @@ const trainersData = [
         // T-106 — the Mossdeep partner now ECHOES the Champion's authoritative roster, devolved to lvl 59.
         team: [
             {
-                // echoes the Champion's legend (no devolve — legends are solo-evo)
+                // B-068 — this used to skip the devolve on the assumption that "legends are solo-evo".
+                // They are not: Cosmoem→Solgaleo/Lunala, Poipole→Naganadel, Kubfu→Urshifu and half a
+                // dozen more high-tier mons carry a pre-evolution, so the partner fielded a Solgaleo at
+                // level 59 whose evolution was level 65. devolveToLevel returns a mon unchanged when it
+                // has no pre-evolution, so this is a no-op for the legends that really are solo.
                 special: TRAINER_REPEAT_ID,
                 id: 'STEVEN_LEGEND',
+                devolveToLevel: true,
             },
             {
                 special: TRAINER_REPEAT_ID,

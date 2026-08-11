@@ -58,6 +58,36 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Trainers no longer carry stone evolutions years before you could have one.** A Pokémon that evolves
+  with a stone was treated as fair game for any trainer above level 28, whatever level the run had
+  actually set for that evolution — so Wally on Route 110, at level 29, showed up with a **Basculegion**
+  that your own Basculin could not become until **level 49**, and Norman fielded a Kleavor gated at 55.
+  Every trainer now respects the run's own evolution level, in both directions: a stone evolution the run
+  puts at 20 is available to a level-20 trainer instead of being blocked until 29. The same check now
+  applies to the **gym 2 Pokémon reward**, which could be a mon whose evolution was out of reach for the
+  whole early game. And no stone evolution is ever scheduled before the Rustboro rival hands you the ten
+  stones — previously a run could put one at level 9, when no stone exists yet. (T-264, B-067)
+
+- **A boss's signature Pokémon shows up as the right stage of its line.** Norman at level 39 fielded a
+  **Slaking** that could not exist until level 50, because a trainer's signature Pokémon skipped the
+  evolution check entirely. Now an early appearance shows the signature *line* — Norman brings a
+  **Vigoroth** and gets the real Slaking once it is reachable — and Steven as your Mossdeep partner no
+  longer echoes a Pokémon from the Champion fight that is too evolved for his level. Also fixed: regional
+  forms reached by a branch evolution (Weezing-Galar and friends) were exempt from every level check
+  because the game files file them under their own family. (T-264, B-068)
+
+- **A narrow Pokémon pool no longer aborts the run.** If the pool ran out of candidates for a gym or
+  static reward — because every remaining match belonged to a family already used elsewhere — generation
+  died outright with an internal error. Rewards now accept a repeated family rather than being lost, the
+  optional ones (the Regis, Mew, the Sky Pillar legendaries) quietly keep their original Pokémon, and if a
+  gym reward really cannot be filled the error names it instead of pointing at nothing. Runs that were
+  already working are unaffected, down to the byte. (T-264, B-070)
+
+- **The same seed builds the same world, every time.** Generating twice without reloading the page could
+  produce a different world from the identical seed, because one piece of the rebalancer's bookkeeping
+  survived from the previous run. Seeds are reproducible again. In practice the site already started each
+  generation fresh, so this affected tooling and repeat runs rather than your ROMs. (T-264, B-069)
+
 - **The status TMs are sorted by what they actually do.** The high-utility TM tier had inherited a
   classification nobody had ever reviewed, so it handed out **terrain moves** next to Calm Mind and
   Stealth Rock — and in one run all three of Psychic, Grassy and Electric Terrain landed in the *same*
