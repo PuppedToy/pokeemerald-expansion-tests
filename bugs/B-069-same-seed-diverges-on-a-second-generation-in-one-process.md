@@ -1,13 +1,13 @@
 ---
 id: B-069
 title: A second generation in the same process ignores the seed and builds a different world
-status: open            # open | fixing | fixed | wont-fix
+status: fixing          # open | fixing | fixed | wont-fix
 severity: minor         # critical | major | minor
 created: 2026-08-11
 updated: 2026-08-11
 found-in: 0.5.0         # version where the bug was observed
 fixed-in:               # version that ships the fix (set when fixed)
-regression-test:        # REQUIRED to mark as fixed: path/to/test (named or annotated with this id)
+regression-test: randomizer/__tests__/unit/generationRepeatability.test.js
 links: [T-264, B-017]
 ---
 
@@ -37,29 +37,38 @@ bundles are not reproducible from their seeds individually.
 
 ## Root cause
 
-<!-- Filled during the fix. The real cause, not the patch. -->
+`familyTracking` in `randomizer/rebalancer.js` — the log of what mutations each family received, so a
+family's later members inherit its earlier ones. Within one run that is the whole point; it was declared
+at module scope and never cleared, so it lived for the **process**. On a second generation the first
+member of every family arrived with the previous run's mutations already logged, took different branches
+and drew a different number of RNG values, which shifted the entire stream from that point on.
 
-Not identified. What the evidence rules in and out:
+Localised by counting RNG draws at each progress boundary across two runs in one process: identical
+through "Generating Pokédex", then 171,001 extra draws by "Generating trainer teams". Bisecting inside the
+pokédex build gave identical counts for `buildTMList` (286) and `expandAllTeachables` (147,533) but
+`balancePokemon` diverging (10,156 vs 9,711), and the rest of the delta followed from *which* mons got
+rebalanced changing how many re-rate passes ran.
 
-- **Not the pokédex build.** All three runs report identical teachable expansion
-  (`1230 pokemon processed, 21228 total new moves added`), so the parse/expand stage is stable.
-- **Not `allPokes` or `moves` mutation.** `runPokedexModule` deep-clones both
-  (`randomizer/modules/pokedexModule.js:172` and `:178`).
-- **The RNG is reseeded** at the top of `runGeneration` (`rng.seed(universeSeed)`), so the drift is not
-  a missing reset — it is that a *different number of draws* is consumed before the evolution levels are
-  rolled, which shifts the whole stream. The gates diverge on run 2, and `applyEvoLevels` runs at the
-  very start of `makePokedex`, so the extra/missing consumption happens in or before the pokédex build.
-- **Remaining candidates:** the baseData fields that are passed by reference and never cloned —
-  `abilities`, `items`, `evoTree`, `megaEvoTree`, `tmLocations` — plus any module-level accumulator in
-  `tms.js` / `teachableExpander.js` / `itemRandomizer.js`.
-
-Same family as [B-017](B-017-per-rom-evo-level-reroll-breaks-shared-trainers.md): shared state that survives
-across a boundary it was assumed not to cross.
+Two hypotheses were checked and ruled out first: `baseData` is not mutated (fingerprinting every field
+across runs shows no change — `allPokes` and `moves` are deep-cloned at
+`randomizer/modules/pokedexModule.js:172` and `:178`), and the RNG *is* reseeded at the top of
+`runGeneration`. The tell was already in the suite: the rebalancer's own tests reach for
+`jest.isolateModules` to get an empty `familyTracking`, which was this state being worked around.
 
 ## Fix
 
-<!-- What was changed and where (link commits/PR/task). The regression test reproduces the
-     symptom: verified to FAIL before the fix and PASS after. No test, no `fixed` status. -->
+`resetFamilyTracking()` is exported from `rebalancer.js` and called by `runPokedexModule` before its
+rebalance pass, so the state is explicitly per-run. `familyTracking` went from `const` to `let` to allow
+the reassignment.
 
-Not fixed. The regression test writes itself — generate twice with one seed in one process, assert the
-two bundles are identical — and should be the starting point.
+Regression test: `randomizer/__tests__/unit/generationRepeatability.test.js`, verified RED before the fix
+and GREEN after. It also pins the two things the fix must not break — different seeds must still diverge,
+and within a run a family must still inherit its earlier members' mutations — and includes a guard that
+replaying the same seeded sequence WITHOUT the reset still diverges, so the other assertions cannot pass
+vacuously. Note a single mon is not enough to show the leak (its inherited entries reproduce the same
+deltas from the same base stats, so the result looks identical); the divergence needs a later family
+member, which is the pipeline's shape.
+
+Verified end-to-end: three generations of seed `2231547897` in one process now produce identical worlds
+(before: three different ones), and a seven-seed sweep gives the same per-seed results whether the seeds
+run in one process or one process each.

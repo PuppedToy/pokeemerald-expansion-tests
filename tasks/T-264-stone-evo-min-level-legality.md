@@ -50,6 +50,14 @@ Acceptance criteria:
 - [x] `cd randomizer && npm test` green.
 - [x] Decide and record whether `wildModule.js:552` (`method === 'ITEM'` with no level check) and the
       hardcoded `checkValidEvo(..., 29 / 41)` calls at lines 568/594 are in scope or spun out.
+- [x] A stone evolution requires `max(stone-unlock cap, rolled gate)`, with the level derived from the
+      caps SSOT rather than hardcoded.
+- [x] [B-068](../bugs/B-068-evolution-check-skipped-on-some-team-paths.md) fixed: all three
+      forced-species / misclassified paths, with a structural guard over the whole template file.
+- [x] [B-069](../bugs/B-069-same-seed-diverges-on-a-second-generation-in-one-process.md) fixed: the same
+      seed reproduces on repeat generations in one process.
+- [x] A seven-seed sweep reports 0 mons below their evolution level and 0 stone gates below the unlock
+      level.
 - [ ] Owner manual-tests a ROM built from a fixed run and confirms it is OK.
 
 ## Progress log
@@ -118,6 +126,58 @@ Acceptance criteria:
   `runGeneration` in one process ignores the seed). B-069 bit this task directly: the first multi-seed
   sweep ran all seeds in one process and its numbers were worthless. Re-ran one process per seed —
   that is the only trustworthy way to compare seeds until B-069 is fixed.
+
+- **2026-08-11** — Owner pulled B-068, B-069 and the deferred stone-availability floor into this task.
+  Scope is now four fixes; all TDD, all verified RED→GREEN, suite green (196 suites, 2325 tests).
+
+  **The floor: `max`, not `min`.** The owner's note read `min(18, stone evolve level)`; taken literally
+  that yields `min(18, 49) = 18` and would let Wally field the Basculegion at 18 — reintroducing B-067.
+  The requirement is the **maximum**: satisfy the rolled gate AND hold a stone. Implemented as max, said
+  so up front.
+
+  Applied at the point the gate is DECIDED (`applyEvoLevels`), not where it is checked — so the ROM
+  clause, the docs and the check all carry one number and nothing ambient has to be threaded into
+  `isValidEvolution`. Runs after the T-066 stage-gap safeguard (which could otherwise push a gate back
+  under the floor) and consumes no RNG. The level stays in `src/caps.c` and arrives through `capLevels`;
+  only the relation lives in `bossCaps.js` (`EVOLUTION_STONES_UNLOCK_FLAG`, `stoneUnlockLevel()`),
+  alongside the existing `STATIC_UNLOCKS` map that records the same kind of script relation. Wired into
+  both the bundle path (`generate.js`) and the recompute path (`writer.js`) — the latter was silently
+  skipping the run's `evoConfig` too, worth a follow-up.
+
+  **B-069 root cause: `familyTracking`.** Found by counting RNG draws at each progress boundary across
+  two runs in one process (identical through the pokédex step, then +171,001 draws), then bisecting
+  inside the pokédex build to `balancePokemon` (10,156 vs 9,711 draws). Two hypotheses ruled out first:
+  `baseData` is not mutated (fingerprinted every field; `allPokes`/`moves` are deep-cloned) and the RNG
+  *is* reseeded. The state is module-scoped and was never cleared, so it lived for the process. Now reset
+  per pokédex build. Three same-seed runs in one process are byte-identical, and a seven-seed sweep gives
+  the same results whether run one-per-process or all in one.
+
+  **B-068 root cause corrected — my first diagnosis was wrong.** I had attributed the `PARTNER_STEVEN`
+  case by matching the mon's index in the RESULT team against the template array; those two orders
+  differ. Re-attributed by `pokeId`, there are three entry points, not two: the `EVO_TYPE_SOLO` shortcut
+  in `checkValidEvo` (the Weezing-Galar case), a **named favourite** (Norman's `favourite:
+  ['SPECIES_SLAKING']` resolves to a `specific` slot → the STRICT list, which `checkValidEvo` never
+  filtered), and `PARTNER_STEVEN`'s legend slot being the only `TRAINER_REPEAT_ID` slot in the whole
+  template file without `devolveToLevel`, on the stated assumption "legends are solo-evo" — false for 9
+  high-tier mons in the audited run (Cosmoem→Solgaleo/Lunala, Poipole→Naganadel, Kubfu→Urshifu…).
+
+  A favourite is now projected with `devolveToLevel` rather than dropped, so an early boss shows its
+  signature LINE (Norman at 39 → Vigoroth) and still gets the real ace once reachable; the claim keeps
+  the NAMED species' tier slot, because that is the budget the trainer means to spend on its signature.
+  Megas are exempt. The `REPEAT_ID` omission is now guarded by a structural test over the entire template
+  file, not just that slot.
+
+  **A dead end worth recording:** the first cut of the `checkValidEvo` rewrite decided "is this a base
+  form?" from `EVO_TYPE_SOLO` and `isLC` alone, which broke `wildModule.test.js` — its fixture has a base
+  form with `isLC: false` but `type: EVO_TYPE_LC_OF_3`, and the gym-3 candidate pool emptied, then crashed
+  on `sampleAndRemove` returning null. The signals can disagree, so the predicate now reads both. That
+  crash is a latent robustness hole in the gym-reward picks (an empty pool TypeErrors instead of
+  degrading) — untouched here, worth its own task.
+
+  **Verification.** Original world (seed `2231547897` replayed at `2193b400ab`, with only my edits ported
+  — `trainers.js` had to be patched slot-only, since T-262 changed it): Wally's slot is
+  `SPECIES_BASCULIN_WHITE_STRIPED`, the other five byte-identical, 0 mons below their evolution level.
+  Seven-seed sweep: 0 below evolution level, 0 stone gates below the unlock level, in every seed.
 
 ## Outcome
 

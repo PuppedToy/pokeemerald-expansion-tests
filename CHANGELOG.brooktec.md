@@ -65,7 +65,21 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   Every trainer now respects the run's own evolution level, in both directions: a stone evolution the run
   puts at 20 is available to a level-20 trainer instead of being blocked until 29. The same check now
   applies to the **gym 2 Pokémon reward**, which could be a mon whose evolution was out of reach for the
-  whole early game. (T-264, B-067)
+  whole early game. And no stone evolution is ever scheduled before the Rustboro rival hands you the ten
+  stones — previously a run could put one at level 9, when no stone exists yet. (T-264, B-067)
+
+- **A boss's signature Pokémon shows up as the right stage of its line.** Norman at level 39 fielded a
+  **Slaking** that could not exist until level 50, because a trainer's signature Pokémon skipped the
+  evolution check entirely. Now an early appearance shows the signature *line* — Norman brings a
+  **Vigoroth** and gets the real Slaking once it is reachable — and Steven as your Mossdeep partner no
+  longer echoes a Pokémon from the Champion fight that is too evolved for his level. Also fixed: regional
+  forms reached by a branch evolution (Weezing-Galar and friends) were exempt from every level check
+  because the game files file them under their own family. (T-264, B-068)
+
+- **The same seed builds the same world, every time.** Generating twice without reloading the page could
+  produce a different world from the identical seed, because one piece of the rebalancer's bookkeeping
+  survived from the previous run. Seeds are reproducible again. In practice the site already started each
+  generation fresh, so this affected tooling and repeat runs rather than your ROMs. (T-264, B-069)
 
 - **The status TMs are sorted by what they actually do.** The high-utility TM tier had inherited a
   classification nobody had ever reviewed, so it handed out **terrain moves** next to Calm Mind and

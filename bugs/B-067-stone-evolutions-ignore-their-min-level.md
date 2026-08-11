@@ -7,7 +7,7 @@ created: 2026-08-11
 updated: 2026-08-11
 found-in: 0.5.0         # version where the bug was observed
 fixed-in:               # version that ships the fix (set when fixed)
-regression-test: randomizer/__tests__/unit/stoneEvoMinLevel.test.js
+regression-test: randomizer/__tests__/unit/stoneEvoMinLevel.test.js, randomizer/__tests__/unit/stoneUnlockFloor.test.js
 links: [T-264, B-068]
 ---
 
@@ -100,9 +100,33 @@ Regression test: `randomizer/__tests__/unit/stoneEvoMinLevel.test.js`, built fro
 numbers (Basculin White-Striped / Dawn Stone / 49 / level 29 and Scyther / Leaf Stone / 55). Verified
 RED before the fix (12 of 14 failing) and GREEN after; the full suite is green (2298 tests).
 
+**Second half — the availability floor.** The old `> 28` was also, badly, standing in for "you cannot
+have a stone yet", and dropping it left the rolled gate as the only constraint — with `evoLevels.min` at
+5, a run could gate a stone evolution at level 9. In this game all ten stones arrive at once from the
+Rustboro rival (`RustboroCity_EventScript_GiveEvolutionStones`, which sets
+`FLAG_DEFEATED_RIVAL_RUSTBORO`), so the real requirement is `max(that cap's level, rolled gate)`.
+
+Applied where the gate is **decided** — `applyEvoLevels` in `randomizer/evoLevelWriter.js` — not where it
+is checked. That way the ROM's `IF_MIN_LEVEL` clause, the viewer docs and the trainer check all read one
+number, and no ambient run state has to be threaded into `isValidEvolution`. It runs after the T-066
+stage-gap safeguard so that pass cannot push a gate back under the floor, and it consumes no RNG (the roll
+already happened; only its result is clamped), so the rest of the run's stream is untouched. Level
+evolutions are deliberately not floored — they need no item.
+
+The level itself stays in `src/caps.c` and arrives via `capLevels`; only the *relation* ("this boss also
+hands over the stones") lives in `randomizer/bossCaps.js` as `EVOLUTION_STONES_UNLOCK_FLAG` +
+`stoneUnlockLevel()`, next to the `BOSS_CAP_TRAINERS` and `STATIC_UNLOCKS` maps that already record the
+same kind of script relation. Wired in at `generate.js` (`makePokedex`, the bundle path) and at
+`writer.js` (the analyze/randomize path, which recomputes).
+
 End-to-end proof on the reported run: replaying seed `2231547897` with its stored config at
 `2193b400ab` (the build that produced the bundle) reproduces the original world exactly — same Wally
 team, same level-49 Dawn Stone gate, same 3 violations. With the fix, the same seed gives Wally
 `SPECIES_BASCULIN_WHITE_STRIPED` in that slot, the other five slots byte-identical, and 0 mons fielded
-below their evolution level. Across four seeds (one process each): 2→0, 5→0, 2→2, 1→1 — the two
-residuals are [B-068](B-068-evolution-check-skipped-on-some-team-paths.md), a different defect.
+below their evolution level. Across four seeds (one process each): 2→0, 5→0, 2→2, 1→1 — the two residuals
+were [B-068](B-068-evolution-check-skipped-on-some-team-paths.md), a different defect, since fixed. With
+B-068 and the availability floor in, a seven-seed sweep gives 0 mons below their evolution level and 0
+stone gates below the unlock level.
+
+Regression tests: `randomizer/__tests__/unit/stoneEvoMinLevel.test.js` (the check) and
+`randomizer/__tests__/unit/stoneUnlockFloor.test.js` (the floor), both RED before and GREEN after.
