@@ -159,7 +159,7 @@ Bag functions in `trainers.js` are cumulative — each gym adds its items on top
 | Bag function | Adds |
 |---|---|
 | `rival103Bag` | Oran Berry, Route102 ball pick, TM71 (avgStatus scripted) |
-| `petalwoodGruntBag` | + Eviolite, Petalburg plate pick |
+| `petalwoodGruntBag` | + Eviolite, TM08-10 pick (Route 104 south), Petalburg plate pick |
 | `roxanneBag` | + Route104 gem pick, berry pick, TM05-07 pick, TM01 |
 | `rusturfGruntBag` | + Route116 ball pick, **goodItemPool (route116XSpecial)** |
 | `rivalRustboroBag` | + orb pick, Route116 item pick |

@@ -892,6 +892,10 @@ const rival103Bag = () => [
 const petalwoodGruntBag = () => [
     ...rival103Bag(),
     'Eviolite',
+    // B-072 — the TM08-10 pick and Koichi both sit on Route 104 SOUTH (hidden only once
+    // FLAG_DEFEATED_RIVAL_RUSTBORO is set, in Rustboro), so they are pre-woods content and enter here,
+    // beside Cindy's Eviolite. The Route 104 NORTH pick (choice104TMs) enters one step later, at Roxanne.
+    linkedChoiceSample([...choice104TMs2]),
     linkedChoiceSample([...petalburgPlateItems]),
 ];
 

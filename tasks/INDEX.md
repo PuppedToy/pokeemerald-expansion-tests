@@ -267,3 +267,4 @@
 | [T-263](T-263-status-tm-reclassification.md) | Reclassify the status TM pools by real effect strength | done | 0.9.0 | 2026-08-11 |
 | [T-264](T-264-stone-evo-min-level-legality.md) | Honour a stone evolution's min level in the trainer legality check | done | 0.9.0 | 2026-08-11 |
 | [T-265](T-265-analyze-path-ignores-run-evo-config.md) | Make the analyze/randomize path honour the run's evolution config | proposed | 0.9.0 | 2026-08-11 |
+| [T-266](T-266-tm-charging-and-koichi-tm-cascade.md) | Charge TM teaches correctly and cascade the Route 104 south TM pick | done | 0.9.0 | 2026-08-11 |
