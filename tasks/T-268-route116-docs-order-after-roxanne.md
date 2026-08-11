@@ -54,6 +54,15 @@ Acceptance criteria:
   order untouched — reordering it would move the wild plan's template keys. Suite green (199 suites,
   2344 tests); `node build.js` rebuilt the browser bundle so the client-side docs match.
 
+- **2026-08-11** — Owner: this did not need the extra machinery. Correct — Route 116 already follows
+  Route 115 in `wild.js`, so splicing the reward after Route 115 lands it between the two on its own.
+  Dropped the `extractMap('MAP_ROUTE116')` + `afterMap: 'BOSS_ROXANNE_REWARD'` pair; the whole fix is
+  one anchor (`MAP_ROUTE116` → `MAP_ROUTE115`). Same output, tests unchanged and still green.
+  Also checked the alternative of reordering `wild.js` itself: it would not have fixed anything (a
+  reward is spliced right after its anchor, so it would have travelled with the route) and it is not
+  docs-only — `buildWildPlan` sweeps `maps` in array order and draws from the RNG as it goes, so
+  moving an entry there changes which species land on which route.
+
 ## Outcome
 
 <!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->

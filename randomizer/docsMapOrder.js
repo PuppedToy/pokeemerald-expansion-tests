@@ -28,16 +28,15 @@ function applyDocMapOrder(maps, pokeRewardReplacements) {
     const newMauvilleEntry = extractMap('MAP_NEW_MAUVILLE',   { label: 'New Mauville',   staticEncounter: true });
     const ancientTombEntry = extractMap('MAP_ANCIENT_TOMB',   { label: 'Ancient Tomb',   staticEncounter: true });
     const skyPillarEntry   = extractMap('MAP_SKY_PILLAR_TOP', { label: 'Sky Pillar Top', legendaryEncounter: true });
-    const route116Entry    = extractMap('MAP_ROUTE116');
     const route123Entry    = extractMap('MAP_ROUTE123');
 
     // Insertions: groups sharing the same afterMap are listed in REVERSE desired order so
     // repeated splices at idx+1 yield the correct final sequence.
     const insertions = [
-        // Route 115 → Roxanne → Route 116 (T-268 — the route only opens once Roxanne is beaten,
-        // so it is listed after her reward instead of before it, where wild.js's data order put it)
+        // Route 115 → Roxanne → Route 116: the route only opens once Roxanne is beaten, and it
+        // already follows Route 115 in wild.js's order, so anchoring her here puts her between
+        // the two (T-268 — this used to anchor on MAP_ROUTE116, listing the route too early).
         { afterMap: 'MAP_ROUTE115', entry: { id: 'BOSS_ROXANNE_REWARD',          label: 'Roxanne Reward',          boss: true, special1: pokeRewardReplacements[0].id } },
-        { afterMap: 'BOSS_ROXANNE_REWARD', entry: route116Entry },
         // Route 106 → Brawly (before Granite Cave)
         { afterMap: 'MAP_ROUTE106', entry: { id: 'BOSS_BRAWLY_REWARD',           label: 'Brawly Reward',           boss: true, special1: pokeRewardReplacements[1].id } },
         // Route 109 → Slateport Grunts
