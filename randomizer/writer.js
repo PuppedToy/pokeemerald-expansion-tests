@@ -33,6 +33,7 @@ const { TRAINER_PARTY_CAPACITY } = require('./layout.js');   // T-237 — fixed-
 const { savePokemonData } = require('./pokemonWriter.js');
 const { saveMoveData } = require('./moveWriter.js');   // T-187 — persists move mutation to moves_info.h
 const { writeEvoLevels } = require('./evoLevelWriter.js');
+const { stoneUnlockLevel } = require('./bossCaps');   // B-067 — stone availability, from the caps SSOT
 const { writeTrades } = require('./tradeWriter.js');   // T-194 — per-ROM town-trade data → src/data/trade.h
 const { applyStarterChoose } = require('./starterNameWriter.js');
 
@@ -253,7 +254,12 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     // are stored on pokemonList[].evolutions[].param — write those verbatim (no RNG).
     // In randomize/analyze mode (no docs) roll them fresh.
     console.log(docs ? 'Writing evolution levels from bundle...' : 'Randomizing evolution levels...');
-    await writeEvoLevels(pokemonList, { recompute: !docs });
+    // B-067 — when rolling fresh (analyze/randomize mode) the stone gates need the same
+    // stone-availability floor the bundle path already baked in; derived from the caps SSOT.
+    await writeEvoLevels(pokemonList, {
+        recompute: !docs,
+        stoneUnlockLevel: stoneUnlockLevel(pokedexArtifact && pokedexArtifact.capLevels),
+    });
 
     // T-194 — write the per-ROM town-trade data into src/data/trade.h (offered species, gym-cap level,
     // accepted set, message base forms). Restored with the rest of src/ after the run.

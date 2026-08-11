@@ -22,6 +22,7 @@ const wildData = require('./wild');
 const { selectTrades, TOWN_TRADES } = require('./trades');
 const { writerDocs } = require('./writerDocs');
 const { applyEvoLevels } = require('./evoLevelWriter');
+const { stoneUnlockLevel } = require('./bossCaps');   // B-067 — stone availability, from the caps SSOT
 const { buildStarterNaming } = require('./modules/starterNames');
 const { buildLocationNaming, buildTradeNaming } = require('./modules/locationNames');
 const { WILD_ROUTE_LOCATIONS, STATIC_LOCATIONS, GIFT_LOCATIONS } = require('./data/encounterLocations');
@@ -40,7 +41,11 @@ async function makePokedex(mcfg, baseData) {
     // T-052 — evolution-level adjustment is now optional + tunable. When disabled, base-game
     // evolution levels are left untouched; when enabled (default) the config tunes the algorithm.
     const evoConfig = mcfg.evoLevels || {};
-    if (evoConfig.enabled !== false) applyEvoLevels(pokedex.pokes, evoConfig);
+    // B-067 — clamp every stone gate to the level the player first holds a stone at, derived from the
+    // caps SSOT (src/caps.c → pokedex.capLevels) rather than hardcoded here.
+    if (evoConfig.enabled !== false) {
+        applyEvoLevels(pokedex.pokes, evoConfig, { stoneUnlockLevel: stoneUnlockLevel(pokedex.capLevels) });
+    }
     return pokedex;
 }
 

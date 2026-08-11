@@ -105,9 +105,13 @@ function finalStageTierFor(stage1, pokemonMap) {
  * Call this from any pipeline that needs the updated levels without touching game files.
  *
  * @param {Array} pokemonList - Full rated pokemon list
+ * @param {object} [evoConfig] - the run's evoLevels config
+ * @param {object} [opts]
+ * @param {number} [opts.stoneUnlockLevel] - B-067: no stone evolution may be gated below this level,
+ *        because that is when the player first holds a stone (bossCaps.stoneUnlockLevel).
  * @returns {Map<string, number>} evoLevelMap — species ID → computed level
  */
-function applyEvoLevels(pokemonList, evoConfig = {}) {
+function applyEvoLevels(pokemonList, evoConfig = {}, { stoneUnlockLevel = null } = {}) {
     const params = resolveEvoParams(evoConfig);
     const pokemonMap = new Map(pokemonList.map(p => [p.id, p]));
     const levelMap = new Map();   // EVO_LEVEL target → level (stored on evo.param)
@@ -184,6 +188,24 @@ function applyEvoLevels(pokemonList, evoConfig = {}) {
         }
     }
 
+    // B-067 — a stone evolution needs a stone, and every stone arrives at once from the Rustboro rival
+    // (see bossCaps.EVOLUTION_STONES_UNLOCK_FLAG). So the real requirement is max(unlock, rolled gate).
+    // Applied LAST so the stage-gap safeguard above cannot push a gate back under the floor, and it
+    // consumes no RNG — the roll already happened, this only clamps its result, leaving the rest of the
+    // run's stream untouched. Level evolutions are deliberately not floored: they need no item.
+    if (Number.isFinite(stoneUnlockLevel)) {
+        for (const pokemon of pokemonList) {
+            for (const evo of pokemon.evolutions || []) {
+                if (evo.method !== 'ITEM' || evo.minLevel === undefined) continue;
+                const gate = parseInt(evo.minLevel, 10);
+                if (Number.isFinite(gate) && gate < stoneUnlockLevel) {
+                    evo.minLevel = String(stoneUnlockLevel);
+                    stoneMap.set(evo.pokemon, stoneUnlockLevel);
+                }
+            }
+        }
+    }
+
     return { levelMap, stoneMap };
 }
 
@@ -244,10 +266,12 @@ function patchStoneMinLevelInContent(content, evoSpecies, level) {
  * @param {boolean} [opts.recompute=true] - When true, re-roll levels via RNG
  *        (randomize/analyze mode). When false, write the levels already stored
  *        on evo.param (bundle mode — single source of truth, no RNG).
+ * @param {number} [opts.stoneUnlockLevel] - B-067 stone-availability floor; only used when
+ *        recomputing. In bundle mode the stored levels were already floored at bundle-creation time.
  */
-async function writeEvoLevels(pokemonList, { recompute = true, evoConfig = {} } = {}) {
+async function writeEvoLevels(pokemonList, { recompute = true, evoConfig = {}, stoneUnlockLevel = null } = {}) {
     const { levelMap, stoneMap } = recompute
-        ? applyEvoLevels(pokemonList, evoConfig)
+        ? applyEvoLevels(pokemonList, evoConfig, { stoneUnlockLevel })
         : buildEvoLevelMapFromParams(pokemonList);
 
     if (levelMap.size === 0 && stoneMap.size === 0) {

@@ -74,6 +74,25 @@ const STATIC_UNLOCKS = {
     FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN: ['MAP_SKY_PILLAR_TOP'], // after Archie
 };
 
+// B-067 — the cap flag whose boss ALSO hands the player every evolution stone. The Rustboro rival
+// battle scripts (`RustboroCity_EventScript_BattleBrendan*` / `*BattleMay*` in
+// data/maps/RustboroCity/scripts.inc) call `RustboroCity_EventScript_GiveEvolutionStones`, which
+// `additem`s all ten stones, and set FLAG_DEFEATED_RIVAL_RUSTBORO. So no stone evolution — the player's
+// or a trainer's — is reachable before this cap's level, whatever level the run rolled for it. Same
+// kind of documented script relation as BOSS_CAP_TRAINERS and STATIC_UNLOCKS above: the level itself
+// stays in caps.c and reaches us through capLevels, only the relation lives here.
+const EVOLUTION_STONES_UNLOCK_FLAG = 'FLAG_DEFEATED_RIVAL_RUSTBORO';
+
+/**
+ * B-067 — the earliest level at which any evolution stone can exist, read from the caps SSOT.
+ * @param {object} capLevels flag → level map (from capLevelMap / baseData.capLevels)
+ * @returns {number|null} the level, or null when the map is absent (caller keeps its own default)
+ */
+function stoneUnlockLevel(capLevels) {
+    const level = capLevels && capLevels[EVOLUTION_STONES_UNLOCK_FLAG];
+    return Number.isFinite(level) ? level : null;
+}
+
 // Parse src/caps.c text → ordered [{ flag, level }] from the sLevelCapFlagMap array only.
 function parseLevelCaps(capsCText) {
     const start = capsCText.indexOf('sLevelCapFlagMap');
@@ -107,4 +126,7 @@ function buildBossCaps(capsCText, map = BOSS_CAP_TRAINERS) {
     return caps.map((c, i) => ({ order: i, flag: c.flag, level: c.level, trainers: map[c.flag].trainers, label: map[c.flag].label }));
 }
 
-module.exports = { parseLevelCaps, capLevelMap, buildBossCaps, BOSS_CAP_TRAINERS, STATIC_UNLOCKS };
+module.exports = {
+    parseLevelCaps, capLevelMap, buildBossCaps, BOSS_CAP_TRAINERS, STATIC_UNLOCKS,
+    EVOLUTION_STONES_UNLOCK_FLAG, stoneUnlockLevel,   // B-067
+};
