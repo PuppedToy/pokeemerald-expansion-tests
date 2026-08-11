@@ -76,3 +76,4 @@
 | [B-070](B-070-empty-reward-pool-crashes-the-run.md) | An exhausted gym/static reward pool crashes the run with a null dereference | fixed | major | 0.5.0 | 0.9.0 | randomizer/__tests__/unit/wildModule.test.js |
 | [B-071](B-071-tm-teach-not-charged-for-over-level-move.md) | A TM teach is never charged when the move also sits higher in the mon's learnset | fixed | major | 0.5.0 | 0.9.0 | randomizer/__tests__/unit/tmChargeOverLevelMove.test.js |
 | [B-072](B-072-koichi-tm-pick-missing-from-bag-cascade.md) | The Route 104 south TM pick (TM08-10, Koichi) never enters any trainer bag | fixed | minor | 0.5.0 | 0.9.0 | randomizer/__tests__/unit/tmPickCascade.test.js |
+| [B-073](B-073-traded-mon-repeats-an-already-used-family.md) | A town trade offers a species whose family is already used elsewhere in the run | open | major | 0.9.0 |  |  |

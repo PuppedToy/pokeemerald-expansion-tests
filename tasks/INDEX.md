@@ -270,3 +270,6 @@
 | [T-266](T-266-tm-charging-and-koichi-tm-cascade.md) | Charge TM teaches correctly and cascade the Route 104 south TM pick | done | 0.9.0 | 2026-08-11 |
 | [T-267](T-267-remove-disobedience.md) | Remove the over-level disobedience mechanic entirely | done | 0.9.0 | 2026-08-11 |
 | [T-268](T-268-route116-docs-order-after-roxanne.md) | List Route 116 after the Roxanne reward in the docs | done | 0.9.0 | 2026-08-11 |
+| [T-269](T-269-trader-rework-pipeline.md) | Rework the town traders — 15 quality-for-quality trades chosen from the progression pool | in-progress | 0.9.0 | 2026-08-11 |
+| [T-270](T-270-trader-rework-rom-side.md) | Put the 15 traders in the game — engine fields, trade slots, Pokémon Center placement, injector | proposed | 0.9.0 | 2026-08-11 |
+| [T-271](T-271-trader-rework-docs-viewer.md) | Show the 15 traders in the docs — several trades per route, learned TMs and perfect IVs | proposed | 0.9.0 | 2026-08-11 |
