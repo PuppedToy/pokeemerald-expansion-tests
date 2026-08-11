@@ -58,6 +58,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Trainers no longer carry stone evolutions years before you could have one.** A Pokémon that evolves
+  with a stone was treated as fair game for any trainer above level 28, whatever level the run had
+  actually set for that evolution — so Wally on Route 110, at level 29, showed up with a **Basculegion**
+  that your own Basculin could not become until **level 49**, and Norman fielded a Kleavor gated at 55.
+  Every trainer now respects the run's own evolution level, in both directions: a stone evolution the run
+  puts at 20 is available to a level-20 trainer instead of being blocked until 29. The same check now
+  applies to the **gym 2 Pokémon reward**, which could be a mon whose evolution was out of reach for the
+  whole early game. (T-264, B-067)
+
 - **The status TMs are sorted by what they actually do.** The high-utility TM tier had inherited a
   classification nobody had ever reviewed, so it handed out **terrain moves** next to Calm Mind and
   Stealth Rock — and in one run all three of Psychic, Grassy and Electric Terrain landed in the *same*
