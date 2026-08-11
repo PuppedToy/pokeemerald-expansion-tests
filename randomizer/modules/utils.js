@@ -6,6 +6,9 @@ const {
     TIER_ZU,
     TIER_MAGIKARP,
     EVO_TYPE_SOLO,
+    EVO_TYPE_LC,
+    EVO_TYPE_LC_OF_2,
+    EVO_TYPE_LC_OF_3,
     NATURE_STRATEGY_MIN_LEVEL,
     ABILITY_STRATEGY_MIN_LEVEL,
     DEFAULT_EVOLUTION_LEVEL,
@@ -122,54 +125,70 @@ function devolveToLevel(pokemonList, pokemon, level) {
     return current;
 }
 
+// B-068 — does the data call this mon a FIRST stage (nothing is supposed to evolve into it)? Read from
+// both signals, because they can disagree: `isLC` is a boolean flag while EVO_TYPE_LC / _OF_2 / _OF_3 all
+// name a first stage in their own right, and a mon can carry the type without the flag.
+const FIRST_STAGE_TYPES = new Set([EVO_TYPE_SOLO, EVO_TYPE_LC, EVO_TYPE_LC_OF_2, EVO_TYPE_LC_OF_3]);
+function isFirstStage(pokemon) {
+    return FIRST_STAGE_TYPES.has(pokemon.evolutionData.type) || !!pokemon.evolutionData.isLC;
+}
+
+// Can a trainer of `level` legitimately own this mon — i.e. is there a path from a base form up to it
+// whose every step is legal at that level?
+//
+// B-068 — this used to short-circuit to `true` whenever `evolutionData` said the mon was solo or LC,
+// on the assumption that such a mon has no pre-evolution to satisfy. A branch evolution that crosses
+// families makes that label lie: Koffing (P_FAMILY_KOFFING) evolves by Moon Stone into Weezing-Galar,
+// which lives in P_FAMILY_KOFFING_GALAR and is therefore parsed as EVO_TYPE_SOLO with no pre-evolution
+// recorded — so its stone gate was never checked and any trainer could field it. Ask the data instead
+// of the label: whether anything in THIS run's pool actually evolves into the mon.
 function checkValidEvo(pokemonList, evaluatedPokemon, level, trainer) {
-    let devolvedForm = evaluatedPokemon;
-    if (devolvedForm.evolutionData.megaBaseForm) {
-        devolvedForm = pokemonList.find(p => p.id === devolvedForm.evolutionData.megaBaseForm);
-    }
-    if (devolvedForm.evolutionData.type === EVO_TYPE_SOLO || devolvedForm.evolutionData.isLC) {
-        return true;
-    }
-    if (!devolvedForm) {
-        if (trainer) {
-            activeDiagnostics().warn(
-                DIAGNOSTIC_CODES.MEGA_NO_BASE_FORM,
-                `Could not find base form for mega pokemon ${evaluatedPokemon.id} when checking valid evolutions`,
-                { pokemon: evaluatedPokemon.id, trainerId: trainer.id },
-            );
+    let current = evaluatedPokemon;
+    if (current.evolutionData.megaBaseForm) {
+        const baseForm = pokemonList.find(p => p.id === current.evolutionData.megaBaseForm);
+        if (!baseForm) {
+            if (trainer) {
+                activeDiagnostics().warn(
+                    DIAGNOSTIC_CODES.MEGA_NO_BASE_FORM,
+                    `Could not find base form for mega pokemon ${evaluatedPokemon.id} when checking valid evolutions`,
+                    { pokemon: evaluatedPokemon.id, trainerId: trainer.id },
+                );
+            }
+            return false;   // (this guard used to sit AFTER the dereference above, so it never ran)
         }
-        return false;
+        current = baseForm;
     }
-    const filterMethod = p => {
-        const evolutions = (p.evolutions || []).filter(e => e.pokemon === devolvedForm.id);
-        if (!evolutions.length) return false;
-        return evolutions.some(evo => isValidEvolution(level, evo));
-    };
-    let pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
-    if (pokemonThatEvolveToThis.length > 1
-        && devolvedForm.id !== 'SPECIES_GHOLDENGO'
-        && !devolvedForm.id.includes('SPECIES_LYCANROC')) {
-        if (trainer) {
-            activeDiagnostics().warn(
-                DIAGNOSTIC_CODES.MULTIPLE_PRE_EVOLUTIONS,
-                `Multiple pre-evolutions found for ${devolvedForm.id}`,
-                {
-                    pokemon: devolvedForm.id,
-                    trainerId: trainer?.id,
-                    preEvolutions: pokemonThatEvolveToThis.map(p => p.id),
-                },
-            );
+    // Walk DOWN the line, requiring one legal incoming step per stage. Guard bound mirrors
+    // devolveToLevel's: malformed data must not hang a run.
+    for (let guard = 0; guard < 12; guard++) {
+        const preEvos = pokemonList.filter(p => (p.evolutions || []).some(e => e.pokemon === current.id));
+        if (preEvos.length === 0) {
+            // Nothing in this pool evolves into `current`. If the data also calls it a first stage it is
+            // genuinely obtainable as it stands; if the data says it has a pre-evolution, that
+            // pre-evolution was filtered out of this run and we keep the old conservative answer.
+            return isFirstStage(current);
         }
+        if (preEvos.length > 1
+            && current.id !== 'SPECIES_GHOLDENGO'
+            && !current.id.includes('SPECIES_LYCANROC')) {
+            if (trainer) {
+                activeDiagnostics().warn(
+                    DIAGNOSTIC_CODES.MULTIPLE_PRE_EVOLUTIONS,
+                    `Multiple pre-evolutions found for ${current.id}`,
+                    {
+                        pokemon: current.id,
+                        trainerId: trainer?.id,
+                        preEvolutions: preEvos.map(p => p.id),
+                    },
+                );
+            }
+        }
+        const legal = preEvos.filter(p =>
+            p.evolutions.some(e => e.pokemon === current.id && isValidEvolution(level, e)));
+        if (legal.length === 0) return false;
+        current = legal[0];
     }
-    if (pokemonThatEvolveToThis.length === 0) {
-        return false;
-    }
-    if (pokemonThatEvolveToThis[0].evolutionData.isLC) {
-        return true;
-    }
-    devolvedForm = pokemonThatEvolveToThis[0];
-    pokemonThatEvolveToThis = pokemonList.filter(filterMethod);
-    return pokemonThatEvolveToThis.length > 0;
+    return true;
 }
 
 // T-057: whether a trainer of this level picks a strategic nature (true) or a random one (false).

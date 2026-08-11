@@ -18,6 +18,7 @@
 
 const { TIER_SEQ } = require('../constants');
 const { DIAGNOSTIC_CODES } = require('../diagnostics');
+const { devolveToLevel } = require('./utils');   // B-068 — project a favourite onto a legal form
 
 const LEVEL_CAPS = [5, 7, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 35, 38, 40, 43, 46, 50, 55, 60, 65, 70];
 function nearestCap(level) {
@@ -139,7 +140,22 @@ function resolveFavourites(team, favourites, ctx = {}) {
                     if (e.key.mega) return false;            // a non-mega never claims the mega slot
                     return speciesTierForKey(p, e.key, cap, doubles) === e.key.tier; // EXACT tier, no downgrade
                 });
-                if (entry) { entry.claimed = true; claimed.push(mark({ specific: cand })); done = true; break; }
+                if (entry) {
+                    // B-068 — a named favourite reaches the team as a `specific` slot, which fills
+                    // trainerSelector's STRICT list; checkValidEvo only ever filtered the loose list, so
+                    // the ace was fielded however early the trainer was (Norman at 39 with a Slaking gated
+                    // at 50). Field the most-evolved form of its line that is legal here — the same T-106
+                    // projection recurring characters get — so an early boss shows its signature LINE and
+                    // still gets the real ace once it is reachable. A mega is exempt: it is gated by the
+                    // mega slot's own budget rules, and the whole point of that slot is to field a mega.
+                    const fielded = isMega ? p : devolveToLevel(pokemonList, p, level);
+                    // The CLAIM keeps the named species' tier slot on purpose: that is the budget the
+                    // trainer means to spend on its signature, whether or not the ace is reachable yet.
+                    entry.claimed = true;
+                    claimed.push(mark({ specific: fielded.id }));
+                    done = true;
+                    break;
+                }
             } else if (cand && cand.villainMega) {
                 // T-144 — a villain leader's signature-mega ladder: resolve the {isMega} slot to a concrete
                 // mega (rungs above), claimed as a `specific` (like a named signature). No eligible mega →
