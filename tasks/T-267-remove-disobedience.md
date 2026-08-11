@@ -43,6 +43,7 @@ Acceptance criteria:
       irrelevant.
 - [x] A test covers it (`test/obedience.c`), including the vanilla worst case (level 100 outsider, no
       Badges).
+- [x] No in-game text still tells the player that Badges gate obedience.
 - [x] `cd randomizer && npm test` green (nothing pipeline-side should move).
 - [ ] Owner manually verifies in a ROM built from a rebuilt base: an over-level / traded mon with few
       Badges always executes the chosen move.
@@ -68,6 +69,13 @@ Acceptance criteria:
   battle tests never disobeyed. So the coverage is a plain `TEST()` that stages the battler globals and
   calls the function directly (precedent: `test/text.c:605-620`). `make check` needs the GBA toolchain, so
   it runs in CI / on the builder, never locally.
+- **2026-08-11** — Owner chose to strip the obedience claims from the in-game texts too (minimal edit, no
+  new claims about the level cap). Four blocks, all of them dialogue the engine no longer backs: Fortree
+  (Feather), Lavaridge (Heat), Sootopolis (Rain) and the Rustboro trade NPC. Kept every HM/gift sentence,
+  and the Badge-receipt level-cap line was already there and is untouched. Checked the rewrapped lines
+  against the width the originals already used (≤38 chars) so no box overflows, and confirmed the
+  randomizer's map writers key off script labels and TM-name texts, not these blocks. Suite re-run after
+  the edit: 2338 passing.
 
 ## Outcome
 

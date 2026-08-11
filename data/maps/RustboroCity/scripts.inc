@@ -1110,8 +1110,8 @@ RustboroCity_Text_PokemonChangeShape:
 RustboroCity_Text_TradePokemonGrowFast:
 	.string "A POKéMON you get in a trade from\n"
 	.string "someone grows fast.\p"
-	.string "But if you don't have certain GYM\n"
-	.string "BADGES, it may not obey you…$"
+	.string "And it will listen to you no matter\n"
+	.string "how strong it gets…$"
 
 RustboroCity_Text_OutOfTheWay:
 	.string "Get out!\n"
