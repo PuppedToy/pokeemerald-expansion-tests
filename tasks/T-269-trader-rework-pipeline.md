@@ -107,19 +107,19 @@ Design reference for all of it: new `randomizer/docs/trades.md`, linked from the
 `CLAUDE.md`.
 
 Acceptance criteria:
-- [ ] `progression.js` classifies every `wild.js` encounter map exactly once and a test fails if a
+- [x] `progression.js` classifies every `wild.js` encounter map exactly once and a test fails if a
       new map is added without a milestone.
-- [ ] Each trader's request pool equals "every land/old-rod (+good/surf/super once unlocked)
+- [x] Each trader's request pool equals "every land/old-rod (+good/surf/super once unlocked)
       encounter reachable before its boss" — asserted per trader against the owner's table.
-- [ ] The TM pool is derived, not restated: every row of the real TM table resolves to a milestone
+- [x] The TM pool is derived, not restated: every row of the real TM table resolves to a milestone
       (an unclassified location throws), and the pool at Roxanne is exactly the TMs `roxanneBag()`
       holds. Trainer bags are untouched (determinism suites green).
-- [ ] `offeredSpecies.rating.bestEvoTier === wantedSpecies.rating.bestEvoTier` for all 15 trades.
-- [ ] **B-073**: no offered family repeats a starter / extra starter / gym reward / static / wild
+- [x] `offeredSpecies.rating.bestEvoTier === wantedSpecies.rating.bestEvoTier` for all 15 trades.
+- [x] **B-073**: no offered family repeats a starter / extra starter / gym reward / static / wild
       family, nor another trade's — regression test named for B-073.
-- [ ] Every offered mon carries its N TM moves (all learnable by it, none an HM) and M IVs at 31.
-- [ ] Offered families that can mega-evolve appear in `wild.foundMegaEvos`.
-- [ ] `cd randomizer && npm test` green.
+- [x] Every offered mon carries its N TM moves (all learnable by it, none an HM) and M IVs at 31.
+- [x] Offered families that can mega-evolve appear in `wild.foundMegaEvos`.
+- [x] `cd randomizer && npm test` green.
 
 ## Progress log
 
