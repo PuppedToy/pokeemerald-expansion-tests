@@ -54,7 +54,7 @@ Acceptance criteria:
 - [x] `cd randomizer && npm test` green.
 - [x] `randomizer/docs/tms.md` documents pool membership (it only documented tiers and locations —
       that is why nobody ever reviewed the contents).
-- [ ] Owner decides on the three remaining duplicate pairs (allow-list entries) and on the extra
+- [x] Owner decides on the three remaining duplicate pairs (allow-list entries) and on the extra
       promotion candidates (Work Up, Agility).
 - [ ] Owner manual-tests a fresh run and confirms.
 
@@ -83,6 +83,22 @@ Acceptance criteria:
     with all three down to 0.03 % from 1.0 %. Electric Terrain availability is unchanged (52 % mixed
     / 62 % singles, was 59 %), so T-137's `electric_terrain` gimmick and the Electric Seed keep
     working, and the other three seeds keep a source in the average tier.
+
+- **2026-08-10 (second round — owner answered the open questions).**
+  - **Deleted** `MOVE_METAL_SOUND` (kept Fake Tears, the other −2 Sp. Def) and `MOVE_WHIRLWIND` (kept
+    Roar; identical `EFFECT_ROAR`), plus `MOVE_DOUBLE_TEAM` — evasion, owner's call. The
+    allow-list is down to the one `weatherMoves` entry. `averageStatusMoves` 40 → **37** for 11 slots.
+  - **Not applied, owner declined:** promoting Work Up (its siblings Bulk Up / Calm Mind are good-tier,
+    so this stays an open inconsistency by choice) and Agility (the "not speed" exclusion was
+    deliberate). Explosion / Self-Destruct stay both in `nichePool`.
+  - **Test spec deliberately changed:** `tmPoolsDoubles.test.js` pinned T-152's additions, two of
+    which (Metal Sound, Whirlwind) this task deletes. The list was trimmed with a comment pointing at
+    the reason — the specification changed, the test was not weakened, and `tmPoolHygiene.test.js` now
+    asserts those moves are in *no* pool.
+  - **Aurora Veil check (raised by the Hail/Snowscape finding):** no problem. The gate is
+    `B_WEATHER_ICY_ANY` = `B_WEATHER_HAIL | B_WEATHER_SNOW` (`include/constants/battle.h:362`), and
+    `B_PREFERRED_ICE_WEATHER` is `B_ICE_WEATHER_BOTH`, so the fixed TM75 = Hail does enable Aurora
+    Veil. Snowscape is simply dead weight in a list that is never drawn.
 
 ## Outcome
 

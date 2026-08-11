@@ -247,14 +247,14 @@ const nichePool = [
 
 // T-263 — Grassy/Psychic/Misty Terrain came down from goodStatusMoves (conditional team support, not
 // a good-tier card). Amnesia, Charm, Eerie Impulse, Endure, Haze and Iron Defense went the other way.
-// Feather Dance (a second -2 Atk next to Charm) and Rock Polish (a second +2 Speed next to Agility)
-// were deleted outright: same effect, no added choice. See tmPoolHygiene.test.js.
+// Deleted outright as second copies of a card the pool already had: Feather Dance (-2 Atk, Charm),
+// Rock Polish (+2 Speed, Agility), Metal Sound (-2 Sp. Def, Fake Tears) and Whirlwind (Roar's exact
+// EFFECT_ROAR). Double Team went too — evasion turns a turn into a coin flip. See tmPoolHygiene.test.js.
 const averageStatusMoves = [
     "MOVE_AGILITY",
     "MOVE_ATTRACT",
     "MOVE_CHARGE",
     "MOVE_CONFIDE",
-    "MOVE_DOUBLE_TEAM",
     "MOVE_FAKE_TEARS",
     "MOVE_FOCUS_ENERGY",
     "MOVE_EMBARGO",
@@ -284,13 +284,11 @@ const averageStatusMoves = [
     "MOVE_DEFENSE_CURL",
     "MOVE_GRAVITY",
     "MOVE_IMPRISON",
-    "MOVE_METAL_SOUND",
     "MOVE_MIMIC",
     "MOVE_QUASH",
     "MOVE_SNATCH",
     "MOVE_TELEKINESIS",
     "MOVE_TELEPORT",
-    "MOVE_WHIRLWIND",
 ];
 
 const weatherMoves = [

@@ -13,7 +13,9 @@ describe('T-152 — new TM classifications in the base pools', () => {
         ['averageDamagePool', ['MOVE_FIRE_SPIN', 'MOVE_INCINERATE', 'MOVE_SAND_TOMB', 'MOVE_SNORE', 'MOVE_WHIRLPOOL', 'MOVE_FURY_CUTTER', 'MOVE_DRAGON_BREATH', 'MOVE_SILVER_WIND', 'MOVE_BUBBLE_BEAM', 'MOVE_SUBMISSION']],
         ['goodDamagePool', ['MOVE_POWER_UP_PUNCH', 'MOVE_ROCK_CLIMB', 'MOVE_EGG_BOMB', 'MOVE_SKY_ATTACK']],
         ['strongDamagePool', ['MOVE_DYNAMIC_PUNCH', 'MOVE_ZAP_CANNON']],
-        ['averageStatusMoves', ['MOVE_CONFUSE_RAY', 'MOVE_CAPTIVATE', 'MOVE_DEFENSE_CURL', 'MOVE_GRAVITY', 'MOVE_IMPRISON', 'MOVE_METAL_SOUND', 'MOVE_MIMIC', 'MOVE_QUASH', 'MOVE_SNATCH', 'MOVE_TELEKINESIS', 'MOVE_TELEPORT', 'MOVE_WHIRLWIND']],
+        // T-263 deliberately deleted two of T-152's additions: Metal Sound (a second -2 Sp. Def next
+        // to Fake Tears) and Whirlwind (Roar's exact EFFECT_ROAR). tmPoolHygiene.test.js keeps them out.
+        ['averageStatusMoves', ['MOVE_CONFUSE_RAY', 'MOVE_CAPTIVATE', 'MOVE_DEFENSE_CURL', 'MOVE_GRAVITY', 'MOVE_IMPRISON', 'MOVE_MIMIC', 'MOVE_QUASH', 'MOVE_SNATCH', 'MOVE_TELEKINESIS', 'MOVE_TELEPORT']],
         ['goodStatusMoves', ['MOVE_HONE_CLAWS']],
         ['godlikeStatusMoves', ['MOVE_SOFT_BOILED']],
         ['nichePool', ['MOVE_BIDE', 'MOVE_COUNTER', 'MOVE_NATURAL_GIFT', 'MOVE_NATURE_POWER']],

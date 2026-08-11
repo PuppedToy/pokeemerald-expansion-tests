@@ -55,10 +55,9 @@ const cardIdentity = (id) => {
 // Duplicate status cards that survive on purpose. Empty is the goal; every entry needs a reason.
 // Pairs are written sorted so the key is stable.
 const ACCEPTED_DUPLICATE_EFFECTS = new Map([
-    ['averageStatusMoves:Fake Tears/Metal Sound', 'both -2 Sp. Def — pending owner call (T-263)'],
-    ['averageStatusMoves:Roar/Whirlwind', 'identical EFFECT_ROAR — pending owner call (T-263)'],
     // Not a draw pool: TM72-75 are FIXED_TMS (Rain Dance / Sunny Day / Sandstorm / Hail), so this
     // list is documentation only and Snowscape — Hail's modern replacement — is never assigned.
+    // Hail is a valid Aurora Veil enabler either way: the gate is B_WEATHER_ICY_ANY (hail | snow).
     ['weatherMoves:Hail/Snowscape', 'weatherMoves is never drawn; Snowscape is listed but unused'],
 ]);
 
@@ -153,10 +152,14 @@ describe('status classification decisions (T-263)', () => {
         expect(tms.goodStatusMoves).not.toContain('MOVE_CAPTIVATE');
     });
 
-    test('the deleted duplicates are in no pool at all', () => {
-        for (const pool of ALL_POOLS) {
-            expect(tms[pool]).not.toContain('MOVE_FEATHER_DANCE');
-            expect(tms[pool]).not.toContain('MOVE_ROCK_POLISH');
-        }
+    // Each was the second copy of a card the pool already had: Feather Dance/Charm (-2 Atk),
+    // Rock Polish/Agility (+2 Spe), Metal Sound/Fake Tears (-2 Sp. Def), Whirlwind/Roar (EFFECT_ROAR).
+    test.each(['MOVE_FEATHER_DANCE', 'MOVE_ROCK_POLISH', 'MOVE_METAL_SOUND', 'MOVE_WHIRLWIND'])(
+        '%s was deleted as a duplicate and is in no pool', (move) => {
+            for (const pool of ALL_POOLS) expect(tms[pool]).not.toContain(move);
+        });
+
+    test('Double Team is in no pool — evasion turns a turn into a coin flip', () => {
+        for (const pool of ALL_POOLS) expect(tms[pool]).not.toContain('MOVE_DOUBLE_TEAM');
     });
 });

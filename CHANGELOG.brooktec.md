@@ -65,8 +65,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   average-utility TMs; **Electric Terrain stays** in the high tier, since it is the terrain the game
   builds teams around. Moving up to the high tier: **Amnesia, Iron Defense** (+2 to a defensive stat),
   **Charm, Eerie Impulse** (the two debuffs that cut an attack stat outright), **Haze** and **Endure**.
-  **Feather Dance** and **Rock Polish** are gone — they did nothing that Charm and Agility did not
-  already do. (T-263, B-066)
+  Four TMs are gone because a sibling already did their job: **Feather Dance** (Charm), **Rock Polish**
+  (Agility), **Metal Sound** (Fake Tears) and **Whirlwind** (Roar). **Double Team** is gone too —
+  evasion turns a turn into a coin flip. (T-263, B-066)
 
 - **The Route 121 item ball is a real choice again.** It used to be the last of five resist-berry
   locations, and there are only 18 resist berries to go around four at a time — so that ball always

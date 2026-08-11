@@ -42,6 +42,10 @@ Status-tier criteria, as classified by the owner:
   (`electric_terrain` gimmick, Electric Seed, Rising Voltage).
 - **averageStatus** — conditional, single-stage or gimmicky: Grassy/Psychic/Misty Terrain, the
   gender-gated debuffs (Captivate, Attract), the −1 versions (Confide), the swaps and rooms.
+- **In no pool at all** — a second copy of a card the pool already had (Feather Dance/Charm, Rock
+  Polish/Agility, Metal Sound/Fake Tears, Whirlwind/Roar) and **Double Team**, because evasion turns a
+  turn into a coin flip. Kept deliberately: Explosion **and** Self-Destruct (same effect, 250 vs 200
+  power) — the hygiene rule is status-only, damage moves are told apart by power and type.
 
 The tier also sets the TM's **price** (T-073), so moving a move between pools moves its price.
 
