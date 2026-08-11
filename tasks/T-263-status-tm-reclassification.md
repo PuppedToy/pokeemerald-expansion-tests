@@ -1,10 +1,10 @@
 ---
 id: T-263
 title: Reclassify the status TM pools by real effect strength
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-08-10
-updated: 2026-08-10
+updated: 2026-08-11
 target-version: 0.9.0
 links: [B-066, T-152]
 blocked-by: []
@@ -56,7 +56,7 @@ Acceptance criteria:
       that is why nobody ever reviewed the contents).
 - [x] Owner decides on the three remaining duplicate pairs (allow-list entries) and on the extra
       promotion candidates (Work Up, Agility).
-- [ ] Owner manual-tests a fresh run and confirms.
+- [x] Owner manual-tests a fresh run and confirms.
 
 ## Progress log
 
@@ -100,6 +100,30 @@ Acceptance criteria:
     `B_PREFERRED_ICE_WEATHER` is `B_ICE_WEATHER_BOTH`, so the fixed TM75 = Hail does enable Aurora
     Veil. Snowscape is simply dead weight in a list that is never drawn.
 
+- **2026-08-11** — Owner reviewed the result and approved ("lo veo bien"). Closing.
+
 ## Outcome
 
-<!-- Filled when closing. -->
+The status tiers now reflect what the moves do. `goodStatusMoves` holds **21** candidates for its 13
+slots (was 18), `averageStatusMoves` **37** for its 11 (was 45). Grassy/Psychic/Misty Terrain went
+down, Electric Terrain stayed as the one terrain the pipeline builds around, and Amnesia, Iron
+Defense, Charm, Eerie Impulse, Haze and Endure came up. Five moves left the TM system entirely: four
+as second copies of a card their pool already had (Feather Dance, Rock Polish, Metal Sound, Whirlwind)
+and Double Team for being evasion.
+
+B-066 is fixed by reclassification, not by a constraint, and the bug file states the residual
+honestly: a good-tier pick can no longer hold two terrains at all, but two average-tier terrains still
+share a pick 3.4 % of runs (was 28.4 %). A per-pick family-spread constraint remains available if the
+owner ever wants 0 % — it would need the TM pick groups from `src/randomizer_picks.c` mirrored in JS.
+
+Deviations from the plan: the owner declined two of the extras I proposed — promoting Work Up (its
+siblings Bulk Up and Calm Mind are good-tier, so that inconsistency stands by choice) and Agility
+(the "not speed" exclusion was deliberate) — and kept both Explosion and Self-Destruct. One test spec
+changed deliberately: `tmPoolsDoubles.test.js` pinned T-152's additions, two of which this task
+deletes.
+
+What the hygiene test bought beyond the ask: it reads the real `moves_info.h`, so an upstream sync that
+renames or re-effects a pooled move now fails a test instead of surfacing in someone's run. It also
+caught Hail/Snowscape both sitting in the never-drawn `weatherMoves` list, which prompted verifying
+that the fixed TM75 = Hail does enable Aurora Veil (`B_WEATHER_ICY_ANY` = hail | snow). No follow-ups
+spawned.

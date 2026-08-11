@@ -1,10 +1,10 @@
 ---
 id: T-262
 title: Give Route 121 a real item ball and stop starving the berry picks
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-08-10
-updated: 2026-08-10
+updated: 2026-08-11
 target-version: 0.9.0
 links: [B-065, B-066]
 blocked-by: []
@@ -51,7 +51,7 @@ Acceptance criteria:
 - [x] A pre-existing bundle (`route121Berries` key) still writes `gItemPicks[]` without throwing.
 - [x] `cd randomizer && npm test` green.
 - [x] `randomizer/docs/items.md` matches the new reality; no stale pick-2 note.
-- [ ] Owner manual-tests the Route 121 balls in a fresh run and confirms.
+- [x] Owner manual-tests the Route 121 balls in a fresh run and confirms.
 
 ## Progress log
 
@@ -91,6 +91,23 @@ Acceptance criteria:
   - B-066 (terrain TMs) left open on purpose — owner is still deciding whether terrain moves leave
     the TM pools; the bug file carries the provenance, the measured odds and the two knock-on effects.
 
+- **2026-08-11** — Owner reviewed the result and approved ("lo veo bien"). Closing.
+
 ## Outcome
 
-<!-- Filled when closing. -->
+The Route 121 ball left the resist-berry pool and now offers 3 `averageItemPool` items; the 18 berries
+feed exactly 4 locations at 4 each (16 drawn, 2 unused per run). B-065 fixed, with
+`berryPickSizes.test.js` finding berry picks by content so the invariant survives a location moving.
+
+Cheap by construction: `gItemPicks` index 6 never moved, so the compiled bytecode is unchanged and
+no base-ROM rebuild or corpus re-verify was needed — only the injected table and its runtime labels.
+Bundles generated before the rename still build through `LEGACY_ASSIGNMENT_KEYS` and reproduce their
+own original 2-berry menu.
+
+Deviations from the plan: none in substance. Two things were added along the way — the legacy-key
+alias (the plan had it as a risk, it became code plus a test) and the `items.md` drift repair
+(`averageItemPool` claimed 40 draws where the real number is 31; four pick-3 rows were TM picks or a
+`goodItemPool` ball; Wyatt's ball was missing from the goodItemPool table). `FLAG_ITEM_ROUTE_121_PICK_BERRY`
+kept its legacy name, consistent with every other `FLAG_ITEM_*` in this repo.
+
+No follow-ups spawned. B-066, found during the same investigation, went to [T-263](T-263-status-tm-reclassification.md).

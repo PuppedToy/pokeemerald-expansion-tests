@@ -1,10 +1,10 @@
 ---
 id: B-065
 title: The Route 121 berry pick only ever offers 2 options
-status: fixing          # open | fixing | fixed | wont-fix
+status: fixed           # open | fixing | fixed | wont-fix
 severity: minor         # critical | major | minor
 created: 2026-08-10
-updated: 2026-08-10
+updated: 2026-08-11
 found-in: 0.5.0         # version where the bug was observed
 fixed-in: 0.9.0         # version that ships the fix (set when fixed)
 regression-test: randomizer/__tests__/unit/berryPickSizes.test.js
@@ -44,4 +44,4 @@ unchanged, so no base-ROM rebuild is involved — only the injected table and it
 Regression test `randomizer/__tests__/unit/berryPickSizes.test.js` finds the berry picks **by content**
 (any assignment whose items are all resist berries) and asserts each offers 4. Verified red before the
 fix — `["route121Berries", 2]` vs `["route121Berries", 4]` on seeds 1 / 42 / 735016030 — and green
-after. Status stays `fixing` until the owner confirms the in-game manual test.
+after. Owner confirmed the result on 2026-08-11.

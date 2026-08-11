@@ -1,10 +1,10 @@
 ---
 id: B-066
 title: The 4 terrain moves are unvetted TM-pool members and can fill one pick entirely
-status: fixing          # open | fixing | fixed | wont-fix
+status: fixed           # open | fixing | fixed | wont-fix
 severity: minor         # critical | major | minor
 created: 2026-08-10
-updated: 2026-08-10
+updated: 2026-08-11
 found-in: 0.5.0         # version where the bug was observed
 fixed-in: 0.9.0         # version that ships the fix (set when fixed)
 regression-test: randomizer/__tests__/unit/tmPoolHygiene.test.js
@@ -77,5 +77,4 @@ still on the table.
 
 Regression test `randomizer/__tests__/unit/tmPoolHygiene.test.js` pins the classification (and the
 rest of the pool invariants) against the real `src/data/moves_info.h`. Verified red before the fix on
-the terrain-tier assertions, green after. Status stays `fixing` until the owner confirms the manual
-test.
+the terrain-tier assertions, green after. Owner confirmed the result on 2026-08-11.
