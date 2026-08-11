@@ -7463,6 +7463,10 @@ u8 GetAttackerObedienceForAction()
     u8 obedienceLevel = 0;
     u8 levelReferenced;
 
+    // Checked first, and before any RNG is consumed, so disabling obedience cannot shift battle RNG.
+    if (B_OBEDIENCE_DISABLED)
+        return OBEYS;
+
     if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
         return OBEYS;
     if (BattlerHasAi(gBattlerAttacker))

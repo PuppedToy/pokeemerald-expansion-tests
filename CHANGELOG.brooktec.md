@@ -56,6 +56,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   right away (or, if they'd already prepared a ROM, a single combined "you're in + it's ready" email when it
   finishes building). (T-217)
 
+### Removed
+
+- **Your Pokémon always listen to you now.** The old rule where a Pokémon above the level your Badges
+  "allowed" could loaf around, turn away, fall asleep, hurt itself or use a move you never picked is gone
+  for good — at any level, with any number of Badges, traded or caught, gift or starter. Every Pokémon
+  always does exactly what you tell it to. (T-267)
+
 ### Fixed
 
 - **One TM no longer arms half a team.** A trainer's bag holds a single copy of each TM, and teaching it
