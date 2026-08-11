@@ -242,7 +242,6 @@
     ],
     [
       "SPECIES_POLIWRATH",
-      "SPECIES_POLITOED",
       "SPECIES_POLITOED"
     ]
   ],
@@ -313,7 +312,6 @@
     "SPECIES_SLOWPOKE",
     [
       "SPECIES_SLOWBRO",
-      "SPECIES_SLOWKING",
       "SPECIES_SLOWKING"
     ]
   ],
@@ -504,7 +502,6 @@
   "P_FAMILY_SCYTHER": [
     "SPECIES_SCYTHER",
     [
-      "SPECIES_SCIZOR",
       "SPECIES_SCIZOR",
       "SPECIES_KLEAVOR"
     ]
@@ -985,7 +982,6 @@
     "SPECIES_NINCADA",
     [
       "SPECIES_NINJASK",
-      "SPECIES_SHEDINJA",
       "SPECIES_SHEDINJA"
     ]
   ],
@@ -1174,8 +1170,6 @@
     "SPECIES_CLAMPERL",
     [
       "SPECIES_HUNTAIL",
-      "SPECIES_GOREBYSS",
-      "SPECIES_HUNTAIL",
       "SPECIES_GOREBYSS"
     ]
   ],
@@ -1264,6 +1258,27 @@
     "SPECIES_SHIELDON",
     [
       "SPECIES_BASTIODON"
+    ]
+  ],
+  "P_FAMILY_BURMY": [
+    "SPECIES_BURMY_PLANT",
+    [
+      "SPECIES_WORMADAM_PLANT",
+      "SPECIES_MOTHIM_PLANT"
+    ]
+  ],
+  "P_FAMILY_BURMY_SANDY": [
+    "SPECIES_BURMY_SANDY",
+    [
+      "SPECIES_WORMADAM_SANDY",
+      "SPECIES_MOTHIM_PLANT"
+    ]
+  ],
+  "P_FAMILY_BURMY_TRASH": [
+    "SPECIES_BURMY_TRASH",
+    [
+      "SPECIES_WORMADAM_TRASH",
+      "SPECIES_MOTHIM_PLANT"
     ]
   ],
   "P_FAMILY_COMBEE": [
@@ -1849,10 +1864,28 @@
       "SPECIES_TALONFLAME"
     ]
   ],
+  "P_FAMILY_SCATTERBUG": [
+    "SPECIES_SCATTERBUG_ICY_SNOW",
+    [
+      "SPECIES_SPEWPA_ICY_SNOW"
+    ],
+    [
+      "SPECIES_VIVILLON_ICY_SNOW"
+    ]
+  ],
   "P_FAMILY_LITLEO": [
     "SPECIES_LITLEO",
     [
       "SPECIES_PYROAR"
+    ]
+  ],
+  "P_FAMILY_FLABEBE": [
+    "SPECIES_FLABEBE_RED",
+    [
+      "SPECIES_FLOETTE_RED"
+    ],
+    [
+      "SPECIES_FLORGES_RED"
     ]
   ],
   "P_FAMILY_SKIDDO": [
@@ -2139,6 +2172,12 @@
       "SPECIES_PALOSSAND"
     ]
   ],
+  "P_FAMILY_TYPE_NULL": [
+    "SPECIES_TYPE_NULL",
+    [
+      "SPECIES_SILVALLY_NORMAL"
+    ]
+  ],
   "P_FAMILY_JANGMO_O": [
     "SPECIES_JANGMO_O",
     [
@@ -2326,6 +2365,12 @@
       "SPECIES_GRIMMSNARL"
     ]
   ],
+  "P_FAMILY_MILCERY": [
+    "SPECIES_MILCERY",
+    [
+      "SPECIES_ALCREMIE_STRAWBERRY_VANILLA_CREAM"
+    ]
+  ],
   "P_FAMILY_SNOM": [
     "SPECIES_SNOM",
     [
@@ -2357,7 +2402,7 @@
     "SPECIES_KUBFU",
     [
       "SPECIES_URSHIFU_SINGLE_STRIKE",
-      "  SPECIES_URSHIFU_RAPID_STRIKE"
+      "SPECIES_URSHIFU_RAPID_STRIKE"
     ]
   ],
   "P_FAMILY_SPRIGATITO": [

@@ -4,7 +4,7 @@
 // sharing group, so no auto-nickname repeats anywhere in a ROM, and attaches the new `tradeNaming` artifact.
 
 const { attachAutoNaming } = require('../../generate');
-const { TOWN_TRADES } = require('../../trades');
+const { TRADERS } = require('../../trades');
 
 const mkRom = (extraCount) => ({
     romIndex: 0,
@@ -35,7 +35,7 @@ test('attaches starterNaming, locationNaming and tradeNaming when all toggles on
     expect(roms[0].artifacts.locationNaming).toBeDefined();
     const tn = roms[0].artifacts.tradeNaming;
     expect(tn).toBeDefined();
-    expect(Object.keys(tn).sort()).toEqual(TOWN_TRADES.map((t) => t.ingameTradeId).sort());
+    expect(Object.keys(tn).sort()).toEqual(TRADERS.map((t) => t.ingameTradeId).sort());
 });
 
 test('no auto-nickname repeats across starters + locations + trades within a ROM', () => {

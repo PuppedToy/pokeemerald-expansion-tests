@@ -17,9 +17,9 @@ const { resolveSeeds, deriveSeed, romSeed: deriveRomSeed, trainerBaseSeed } = re
 const { runPokedexModule } = require('./modules/pokedexModule');
 const { runTrainersModule } = require('./modules/trainersModule');
 const { runStartersModule } = require('./modules/startersModule');
-const { runWildModule } = require('./modules/wildModule');
+const { runWildModule, addTradeMegaEvos } = require('./modules/wildModule');
 const wildData = require('./wild');
-const { selectTrades, TOWN_TRADES } = require('./trades');
+const { selectTrades, TRADERS } = require('./trades');
 const { writerDocs } = require('./writerDocs');
 const { applyEvoLevels } = require('./evoLevelWriter');
 const { stoneUnlockLevel } = require('./bossCaps');   // B-067 — stone availability, from the caps SSOT
@@ -86,7 +86,7 @@ function attachLocationNaming(cfg, mcfg, roms, romDescriptors, usedByGroup) {
 function attachTradeNaming(cfg, mcfg, roms, romDescriptors, usedByGroup) {
     const nicknames = mcfg.nicknames;
     if (!nicknames || !nicknames.enabled || nicknames.autoTradesGifts === false) return;
-    const tradeIds = TOWN_TRADES.map((t) => t.ingameTradeId);
+    const tradeIds = TRADERS.map((t) => t.ingameTradeId);
     const naming = buildTradeNaming({ nicknames, trades: tradeIds, roms: romDescriptors, seed: cfg.seed, usedByGroup });
     roms.forEach((rom, i) => { rom.artifacts.tradeNaming = naming[i]; });
 }
@@ -155,17 +155,22 @@ async function computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, 
     });
 }
 
-// T-194 — decide the 4 town trades for one ROM. Deterministic per ROM (its own local RNG seeded from
-// romSeed), stored in the bundle artifact and fed to the docs, so docs and the built ROM always agree.
+// T-194/T-269 — decide the 15 town trades for one ROM. Deterministic per ROM (its own local RNG seeded
+// from romSeed), stored in the bundle artifact and fed to the docs, so docs and the built ROM always
+// agree. The gifts then join the run's mega pool, so a traded family generates its stone like a wild
+// one (owner's note with the rework) — done here, before the docs read the pool.
 function computeTrades(pokedex, wild, romSeed, diag) {
-    return selectTrades({
+    const trades = selectTrades({
         pokemonList: pokedex.pokes,
         wildArtifact: wild,
         wildMaps: wildData.maps,
         capLevels: pokedex.capLevels,
+        moves: pokedex.moves,
         seed: (romSeed >>> 0),
         diagnostics: diag,
     });
+    addTradeMegaEvos(wild, trades, pokedex.pokes);
+    return trades;
 }
 
 async function generateDefault(cfg, mcfg, sessionId, ctx) {

@@ -9,7 +9,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_STENCH": {
     "name": "Stench",
@@ -21,7 +22,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 1
   },
   "ABILITY_DRIZZLE": {
     "name": "Drizzle",
@@ -33,7 +35,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 9
   },
   "ABILITY_SPEED_BOOST": {
     "name": "Speed Boost",
@@ -45,7 +48,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 9
   },
   "ABILITY_BATTLE_ARMOR": {
     "name": "Battle Armor",
@@ -57,7 +61,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_STURDY": {
     "name": "Sturdy",
@@ -69,7 +74,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_DAMP": {
     "name": "Damp",
@@ -81,7 +87,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_LIMBER": {
     "name": "Limber",
@@ -93,7 +100,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_SAND_VEIL": {
     "name": "Sand Veil",
@@ -105,7 +113,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_STATIC": {
     "name": "Static",
@@ -117,7 +126,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_VOLT_ABSORB": {
     "name": "Volt Absorb",
@@ -129,7 +139,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_WATER_ABSORB": {
     "name": "Water Absorb",
@@ -141,7 +152,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_OBLIVIOUS": {
     "name": "Oblivious",
@@ -153,7 +165,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_CLOUD_NINE": {
     "name": "Cloud Nine",
@@ -165,7 +178,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_COMPOUND_EYES": {
     "name": "Compound Eyes",
@@ -177,7 +191,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_INSOMNIA": {
     "name": "Insomnia",
@@ -189,7 +204,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_COLOR_CHANGE": {
     "name": "Color Change",
@@ -201,7 +217,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_IMMUNITY": {
     "name": "Immunity",
@@ -213,7 +230,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_FLASH_FIRE": {
     "name": "Flash Fire",
@@ -225,7 +243,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_SHIELD_DUST": {
     "name": "Shield Dust",
@@ -237,7 +256,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_OWN_TEMPO": {
     "name": "Own Tempo",
@@ -249,7 +269,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_SUCTION_CUPS": {
     "name": "Suction Cups",
@@ -261,7 +282,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_INTIMIDATE": {
     "name": "Intimidate",
@@ -273,7 +295,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 9
   },
   "ABILITY_SHADOW_TAG": {
     "name": "Shadow Tag",
@@ -285,7 +308,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_ROUGH_SKIN": {
     "name": "Rough Skin",
@@ -297,11 +321,12 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_WONDER_GUARD": {
     "name": "Wonder Guard",
-    "description": "Only “Supereffective” hits.",
+    "description": "1 HP. Only supereffective hits.",
     "rating": 10,
     "breakable": true,
     "cantBeCopied": true,
@@ -309,7 +334,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_LEVITATE": {
     "name": "Levitate",
@@ -321,7 +347,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_EFFECT_SPORE": {
     "name": "Effect Spore",
@@ -333,7 +360,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_SYNCHRONIZE": {
     "name": "Synchronize",
@@ -345,7 +373,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_CLEAR_BODY": {
     "name": "Clear Body",
@@ -357,7 +386,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_NATURAL_CURE": {
     "name": "Natural Cure",
@@ -369,7 +399,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_LIGHTNING_ROD": {
     "name": "Lightning Rod",
@@ -381,7 +412,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_SERENE_GRACE": {
     "name": "Serene Grace",
@@ -393,7 +425,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_SWIFT_SWIM": {
     "name": "Swift Swim",
@@ -405,7 +438,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_CHLOROPHYLL": {
     "name": "Chlorophyll",
@@ -417,7 +451,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_ILLUMINATE": {
     "name": "Illuminate",
@@ -429,7 +464,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_TRACE": {
     "name": "Trace",
@@ -441,7 +477,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_HUGE_POWER": {
     "name": "Huge Power",
@@ -453,7 +490,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_POISON_POINT": {
     "name": "Poison Point",
@@ -465,7 +503,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_INNER_FOCUS": {
     "name": "Inner Focus",
@@ -477,7 +516,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_MAGMA_ARMOR": {
     "name": "Magma Armor",
@@ -489,7 +529,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 1
   },
   "ABILITY_WATER_VEIL": {
     "name": "Water Veil",
@@ -501,7 +542,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_MAGNET_PULL": {
     "name": "Magnet Pull",
@@ -513,7 +555,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 9
   },
   "ABILITY_SOUNDPROOF": {
     "name": "Soundproof",
@@ -525,7 +568,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_RAIN_DISH": {
     "name": "Rain Dish",
@@ -537,7 +581,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_SAND_STREAM": {
     "name": "Sand Stream",
@@ -549,7 +594,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 9
   },
   "ABILITY_PRESSURE": {
     "name": "Pressure",
@@ -561,7 +607,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_THICK_FAT": {
     "name": "Thick Fat",
@@ -573,7 +620,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_EARLY_BIRD": {
     "name": "Early Bird",
@@ -585,7 +633,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_FLAME_BODY": {
     "name": "Flame Body",
@@ -597,7 +646,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_RUN_AWAY": {
     "name": "Run Away",
@@ -609,7 +659,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_KEEN_EYE": {
     "name": "Keen Eye",
@@ -621,7 +672,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 1
   },
   "ABILITY_HYPER_CUTTER": {
     "name": "Hyper Cutter",
@@ -633,11 +685,12 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_PICKUP": {
     "name": "Pickup",
-    "description": "May pick up items.",
+    "description": "Picks up items foes have used.",
     "rating": 1,
     "breakable": false,
     "cantBeCopied": false,
@@ -645,7 +698,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 1
   },
   "ABILITY_TRUANT": {
     "name": "Truant",
@@ -657,7 +711,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": -2
   },
   "ABILITY_HUSTLE": {
     "name": "Hustle",
@@ -669,7 +724,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_CUTE_CHARM": {
     "name": "Cute Charm",
@@ -681,7 +737,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_PLUS": {
     "name": "Plus",
@@ -693,7 +750,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_MINUS": {
     "name": "Minus",
@@ -705,7 +763,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_FORECAST": {
     "name": "Forecast",
@@ -717,7 +776,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_STICKY_HOLD": {
     "name": "Sticky Hold",
@@ -729,7 +789,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_SHED_SKIN": {
     "name": "Shed Skin",
@@ -741,7 +802,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_GUTS": {
     "name": "Guts",
@@ -753,7 +815,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_MARVEL_SCALE": {
     "name": "Marvel Scale",
@@ -765,7 +828,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_LIQUID_OOZE": {
     "name": "Liquid Ooze",
@@ -777,7 +841,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_OVERGROW": {
     "name": "Overgrow",
@@ -789,7 +854,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_BLAZE": {
     "name": "Blaze",
@@ -801,7 +867,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_TORRENT": {
     "name": "Torrent",
@@ -813,7 +880,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_SWARM": {
     "name": "Swarm",
@@ -825,7 +893,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_ROCK_HEAD": {
     "name": "Rock Head",
@@ -837,7 +906,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_DROUGHT": {
     "name": "Drought",
@@ -849,7 +919,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 9
   },
   "ABILITY_ARENA_TRAP": {
     "name": "Arena Trap",
@@ -861,7 +932,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 9
   },
   "ABILITY_VITAL_SPIRIT": {
     "name": "Vital Spirit",
@@ -873,7 +945,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_WHITE_SMOKE": {
     "name": "White Smoke",
@@ -885,7 +958,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_PURE_POWER": {
     "name": "Pure Power",
@@ -897,7 +971,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_SHELL_ARMOR": {
     "name": "Shell Armor",
@@ -909,7 +984,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_AIR_LOCK": {
     "name": "Air Lock",
@@ -921,7 +997,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_TANGLED_FEET": {
     "name": "Tangled Feet",
@@ -933,7 +1010,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_MOTOR_DRIVE": {
     "name": "Motor Drive",
@@ -945,7 +1023,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_RIVALRY": {
     "name": "Rivalry",
@@ -957,7 +1036,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 1
   },
   "ABILITY_STEADFAST": {
     "name": "Steadfast",
@@ -969,7 +1049,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_SNOW_CLOAK": {
     "name": "Snow Cloak",
@@ -981,7 +1062,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_GLUTTONY": {
     "name": "Gluttony",
@@ -993,7 +1075,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_ANGER_POINT": {
     "name": "Anger Point",
@@ -1005,7 +1088,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_UNBURDEN": {
     "name": "Unburden",
@@ -1017,7 +1101,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_HEATPROOF": {
     "name": "Heatproof",
@@ -1029,7 +1114,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_SIMPLE": {
     "name": "Simple",
@@ -1041,7 +1127,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_DRY_SKIN": {
     "name": "Dry Skin",
@@ -1053,7 +1140,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_DOWNLOAD": {
     "name": "Download",
@@ -1065,7 +1153,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_IRON_FIST": {
     "name": "Iron Fist",
@@ -1077,7 +1166,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_POISON_HEAL": {
     "name": "Poison Heal",
@@ -1089,7 +1179,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_ADAPTABILITY": {
     "name": "Adaptability",
@@ -1101,7 +1192,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_SKILL_LINK": {
     "name": "Skill Link",
@@ -1113,7 +1205,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_HYDRATION": {
     "name": "Hydration",
@@ -1125,7 +1218,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_SOLAR_POWER": {
     "name": "Solar Power",
@@ -1137,7 +1231,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_QUICK_FEET": {
     "name": "Quick Feet",
@@ -1149,7 +1244,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_NORMALIZE": {
     "name": "Normalize",
@@ -1161,7 +1257,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": -1
   },
   "ABILITY_SNIPER": {
     "name": "Sniper",
@@ -1173,7 +1270,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_MAGIC_GUARD": {
     "name": "Magic Guard",
@@ -1185,7 +1283,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 9
   },
   "ABILITY_NO_GUARD": {
     "name": "No Guard",
@@ -1197,7 +1296,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_STALL": {
     "name": "Stall",
@@ -1209,7 +1309,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": -1
   },
   "ABILITY_TECHNICIAN": {
     "name": "Technician",
@@ -1221,7 +1322,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_LEAF_GUARD": {
     "name": "Leaf Guard",
@@ -1233,7 +1335,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_KLUTZ": {
     "name": "Klutz",
@@ -1245,7 +1348,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": -1
   },
   "ABILITY_MOLD_BREAKER": {
     "name": "Mold Breaker",
@@ -1257,7 +1361,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_SUPER_LUCK": {
     "name": "Super Luck",
@@ -1269,7 +1374,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_AFTERMATH": {
     "name": "Aftermath",
@@ -1281,7 +1387,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_ANTICIPATION": {
     "name": "Anticipation",
@@ -1293,7 +1400,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_FOREWARN": {
     "name": "Forewarn",
@@ -1305,7 +1413,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_UNAWARE": {
     "name": "Unaware",
@@ -1317,7 +1426,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_TINTED_LENS": {
     "name": "Tinted Lens",
@@ -1329,7 +1439,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_FILTER": {
     "name": "Filter",
@@ -1341,7 +1452,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_SLOW_START": {
     "name": "Slow Start",
@@ -1353,7 +1465,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": -2
   },
   "ABILITY_SCRAPPY": {
     "name": "Scrappy",
@@ -1365,7 +1478,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_STORM_DRAIN": {
     "name": "Storm Drain",
@@ -1377,7 +1491,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_ICE_BODY": {
     "name": "Ice Body",
@@ -1389,7 +1504,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_SOLID_ROCK": {
     "name": "Solid Rock",
@@ -1401,7 +1517,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_SNOW_WARNING": {
     "name": "Snow Warning",
@@ -1413,19 +1530,21 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_HONEY_GATHER": {
     "name": "Honey Gather",
-    "description": "May gather Honey.",
-    "rating": 0,
+    "description": "Picks up items foes have used.",
+    "rating": 1,
     "breakable": false,
     "cantBeCopied": false,
     "cantBeOverwritten": false,
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 1
   },
   "ABILITY_FRISK": {
     "name": "Frisk",
@@ -1437,7 +1556,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_RECKLESS": {
     "name": "Reckless",
@@ -1449,7 +1569,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_MULTITYPE": {
     "name": "Multitype",
@@ -1461,7 +1582,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_FLOWER_GIFT": {
     "name": "Flower Gift",
@@ -1473,7 +1595,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_BAD_DREAMS": {
     "name": "Bad Dreams",
@@ -1485,7 +1608,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_PICKPOCKET": {
     "name": "Pickpocket",
@@ -1497,7 +1621,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_SHEER_FORCE": {
     "name": "Sheer Force",
@@ -1509,7 +1634,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_CONTRARY": {
     "name": "Contrary",
@@ -1521,7 +1647,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_UNNERVE": {
     "name": "Unnerve",
@@ -1533,7 +1660,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_DEFIANT": {
     "name": "Defiant",
@@ -1545,7 +1673,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_DEFEATIST": {
     "name": "Defeatist",
@@ -1557,7 +1686,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": -1
   },
   "ABILITY_CURSED_BODY": {
     "name": "Cursed Body",
@@ -1569,7 +1699,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_HEALER": {
     "name": "Healer",
@@ -1581,7 +1712,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_FRIEND_GUARD": {
     "name": "Friend Guard",
@@ -1593,7 +1725,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_WEAK_ARMOR": {
     "name": "Weak Armor",
@@ -1605,7 +1738,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_HEAVY_METAL": {
     "name": "Heavy Metal",
@@ -1617,7 +1751,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": -1
   },
   "ABILITY_LIGHT_METAL": {
     "name": "Light Metal",
@@ -1629,7 +1764,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_MULTISCALE": {
     "name": "Multiscale",
@@ -1641,7 +1777,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_TOXIC_BOOST": {
     "name": "Toxic Boost",
@@ -1653,7 +1790,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_FLARE_BOOST": {
     "name": "Flare Boost",
@@ -1665,7 +1803,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_HARVEST": {
     "name": "Harvest",
@@ -1677,7 +1816,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_TELEPATHY": {
     "name": "Telepathy",
@@ -1689,7 +1829,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_MOODY": {
     "name": "Moody",
@@ -1701,7 +1842,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_OVERCOAT": {
     "name": "Overcoat",
@@ -1713,7 +1855,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_POISON_TOUCH": {
     "name": "Poison Touch",
@@ -1725,7 +1868,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_REGENERATOR": {
     "name": "Regenerator",
@@ -1737,7 +1881,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_BIG_PECKS": {
     "name": "Big Pecks",
@@ -1749,7 +1894,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 1
   },
   "ABILITY_SAND_RUSH": {
     "name": "Sand Rush",
@@ -1761,7 +1907,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_WONDER_SKIN": {
     "name": "Wonder Skin",
@@ -1773,7 +1920,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_ANALYTIC": {
     "name": "Analytic",
@@ -1785,7 +1933,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_ILLUSION": {
     "name": "Illusion",
@@ -1797,7 +1946,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_IMPOSTER": {
     "name": "Imposter",
@@ -1809,7 +1959,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 9
   },
   "ABILITY_INFILTRATOR": {
     "name": "Infiltrator",
@@ -1821,7 +1972,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_MUMMY": {
     "name": "Mummy",
@@ -1833,7 +1985,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_MOXIE": {
     "name": "Moxie",
@@ -1845,7 +1998,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_JUSTIFIED": {
     "name": "Justified",
@@ -1857,7 +2011,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_RATTLED": {
     "name": "Rattled",
@@ -1869,7 +2024,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_MAGIC_BOUNCE": {
     "name": "Magic Bounce",
@@ -1881,7 +2037,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 9
   },
   "ABILITY_SAP_SIPPER": {
     "name": "Sap Sipper",
@@ -1893,7 +2050,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_PRANKSTER": {
     "name": "Prankster",
@@ -1905,7 +2063,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_SAND_FORCE": {
     "name": "Sand Force",
@@ -1917,7 +2076,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_IRON_BARBS": {
     "name": "Iron Barbs",
@@ -1929,7 +2089,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_ZEN_MODE": {
     "name": "Zen Mode",
@@ -1941,7 +2102,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": -1
   },
   "ABILITY_VICTORY_STAR": {
     "name": "Victory Star",
@@ -1953,7 +2115,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_TURBOBLAZE": {
     "name": "Turboblaze",
@@ -1965,7 +2128,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_TERAVOLT": {
     "name": "Teravolt",
@@ -1977,7 +2141,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_AROMA_VEIL": {
     "name": "Aroma Veil",
@@ -1989,7 +2154,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_FLOWER_VEIL": {
     "name": "Flower Veil",
@@ -2001,7 +2167,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_CHEEK_POUCH": {
     "name": "Cheek Pouch",
@@ -2013,7 +2180,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_PROTEAN": {
     "name": "Protean",
@@ -2025,7 +2193,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_FUR_COAT": {
     "name": "Fur Coat",
@@ -2037,7 +2206,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_MAGICIAN": {
     "name": "Magician",
@@ -2049,7 +2219,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_BULLETPROOF": {
     "name": "Bulletproof",
@@ -2061,7 +2232,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_COMPETITIVE": {
     "name": "Competitive",
@@ -2073,7 +2245,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_STRONG_JAW": {
     "name": "Strong Jaw",
@@ -2085,7 +2258,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_REFRIGERATE": {
     "name": "Refrigerate",
@@ -2097,7 +2271,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_SWEET_VEIL": {
     "name": "Sweet Veil",
@@ -2109,7 +2284,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_STANCE_CHANGE": {
     "name": "Stance Change",
@@ -2121,7 +2297,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_GALE_WINGS": {
     "name": "Gale Wings",
@@ -2133,7 +2310,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_MEGA_LAUNCHER": {
     "name": "Mega Launcher",
@@ -2145,7 +2323,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_GRASS_PELT": {
     "name": "Grass Pelt",
@@ -2157,7 +2336,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_SYMBIOSIS": {
     "name": "Symbiosis",
@@ -2169,7 +2349,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_TOUGH_CLAWS": {
     "name": "Tough Claws",
@@ -2181,7 +2362,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_PIXILATE": {
     "name": "Pixilate",
@@ -2193,7 +2375,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_GOOEY": {
     "name": "Gooey",
@@ -2205,7 +2388,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_AERILATE": {
     "name": "Aerilate",
@@ -2217,7 +2401,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_PARENTAL_BOND": {
     "name": "Parental Bond",
@@ -2229,7 +2414,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_DARK_AURA": {
     "name": "Dark Aura",
@@ -2241,7 +2427,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_FAIRY_AURA": {
     "name": "Fairy Aura",
@@ -2253,7 +2440,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_AURA_BREAK": {
     "name": "Aura Break",
@@ -2265,7 +2453,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_PRIMORDIAL_SEA": {
     "name": "Primordial Sea",
@@ -2277,7 +2466,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_DESOLATE_LAND": {
     "name": "Desolate Land",
@@ -2289,7 +2479,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_DELTA_STREAM": {
     "name": "Delta Stream",
@@ -2301,7 +2492,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_STAMINA": {
     "name": "Stamina",
@@ -2313,7 +2505,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_WIMP_OUT": {
     "name": "Wimp Out",
@@ -2325,7 +2518,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_EMERGENCY_EXIT": {
     "name": "Emergency Exit",
@@ -2337,7 +2531,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_WATER_COMPACTION": {
     "name": "Water Compaction",
@@ -2349,7 +2544,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_MERCILESS": {
     "name": "Merciless",
@@ -2361,7 +2557,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_SHIELDS_DOWN": {
     "name": "Shields Down",
@@ -2373,7 +2570,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_STAKEOUT": {
     "name": "Stakeout",
@@ -2385,7 +2583,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_WATER_BUBBLE": {
     "name": "Water Bubble",
@@ -2397,7 +2596,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_STEELWORKER": {
     "name": "Steelworker",
@@ -2409,7 +2609,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_BERSERK": {
     "name": "Berserk",
@@ -2421,7 +2622,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_SLUSH_RUSH": {
     "name": "Slush Rush",
@@ -2433,7 +2635,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_LONG_REACH": {
     "name": "Long Reach",
@@ -2445,7 +2648,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_LIQUID_VOICE": {
     "name": "Liquid Voice",
@@ -2457,7 +2661,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_TRIAGE": {
     "name": "Triage",
@@ -2469,7 +2674,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_GALVANIZE": {
     "name": "Galvanize",
@@ -2481,7 +2687,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_SURGE_SURFER": {
     "name": "Surge Surfer",
@@ -2493,7 +2700,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_SCHOOLING": {
     "name": "Schooling",
@@ -2505,7 +2713,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_DISGUISE": {
     "name": "Disguise",
@@ -2517,7 +2726,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 8
   },
   "ABILITY_BATTLE_BOND": {
     "name": "Battle Bond",
@@ -2529,7 +2739,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_POWER_CONSTRUCT": {
     "name": "Power Construct",
@@ -2541,7 +2752,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_CORROSION": {
     "name": "Corrosion",
@@ -2553,7 +2765,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_COMATOSE": {
     "name": "Comatose",
@@ -2565,7 +2778,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_QUEENLY_MAJESTY": {
     "name": "Queenly Majesty",
@@ -2577,7 +2791,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_INNARDS_OUT": {
     "name": "Innards Out",
@@ -2589,7 +2804,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_DANCER": {
     "name": "Dancer",
@@ -2601,7 +2817,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_BATTERY": {
     "name": "Battery",
@@ -2613,7 +2830,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_FLUFFY": {
     "name": "Fluffy",
@@ -2625,7 +2843,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_DAZZLING": {
     "name": "Dazzling",
@@ -2637,7 +2856,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_SOUL_HEART": {
     "name": "Soul-Heart",
@@ -2649,7 +2869,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_TANGLING_HAIR": {
     "name": "Tangling Hair",
@@ -2661,7 +2882,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_RECEIVER": {
     "name": "Receiver",
@@ -2673,7 +2895,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_POWER_OF_ALCHEMY": {
     "name": "Power Of Alchemy",
@@ -2685,7 +2908,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_BEAST_BOOST": {
     "name": "Beast Boost",
@@ -2697,7 +2921,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_RKS_SYSTEM": {
     "name": "RKS System",
@@ -2709,7 +2934,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_ELECTRIC_SURGE": {
     "name": "Electric Surge",
@@ -2721,7 +2947,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_PSYCHIC_SURGE": {
     "name": "Psychic Surge",
@@ -2733,7 +2960,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_MISTY_SURGE": {
     "name": "Misty Surge",
@@ -2745,7 +2973,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_GRASSY_SURGE": {
     "name": "Grassy Surge",
@@ -2757,7 +2986,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_FULL_METAL_BODY": {
     "name": "Full Metal Body",
@@ -2769,7 +2999,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_SHADOW_SHIELD": {
     "name": "Shadow Shield",
@@ -2781,7 +3012,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_PRISM_ARMOR": {
     "name": "Prism Armor",
@@ -2793,7 +3025,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_NEUROFORCE": {
     "name": "Neuroforce",
@@ -2805,7 +3038,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_INTREPID_SWORD": {
     "name": "Intrepid Sword",
@@ -2817,7 +3051,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_DAUNTLESS_SHIELD": {
     "name": "Dauntless Shield",
@@ -2829,7 +3064,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_LIBERO": {
     "name": "Libero",
@@ -2841,7 +3077,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_BALL_FETCH": {
     "name": "Ball Fetch",
@@ -2853,7 +3090,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_COTTON_DOWN": {
     "name": "Cotton Down",
@@ -2865,7 +3103,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_PROPELLER_TAIL": {
     "name": "Propeller Tail",
@@ -2877,7 +3116,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_MIRROR_ARMOR": {
     "name": "Mirror Armor",
@@ -2889,7 +3129,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_GULP_MISSILE": {
     "name": "Gulp Missile",
@@ -2901,7 +3142,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 3
   },
   "ABILITY_STALWART": {
     "name": "Stalwart",
@@ -2913,7 +3155,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_STEAM_ENGINE": {
     "name": "Steam Engine",
@@ -2925,7 +3168,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_PUNK_ROCK": {
     "name": "Punk Rock",
@@ -2937,7 +3181,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_SAND_SPIT": {
     "name": "Sand Spit",
@@ -2949,7 +3194,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_ICE_SCALES": {
     "name": "Ice Scales",
@@ -2961,7 +3207,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_RIPEN": {
     "name": "Ripen",
@@ -2973,7 +3220,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_ICE_FACE": {
     "name": "Ice Face",
@@ -2985,19 +3233,21 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 4
   },
   "ABILITY_POWER_SPOT": {
     "name": "Power Spot",
     "description": "Powers up ally moves.",
-    "rating": 2,
+    "rating": 0,
     "breakable": false,
     "cantBeCopied": false,
     "cantBeOverwritten": false,
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_MIMICRY": {
     "name": "Mimicry",
@@ -3009,7 +3259,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_SCREEN_CLEANER": {
     "name": "Screen Cleaner",
@@ -3021,7 +3272,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_STEELY_SPIRIT": {
     "name": "Steely Spirit",
@@ -3033,7 +3285,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_PERISH_BODY": {
     "name": "Perish Body",
@@ -3045,7 +3298,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": -1
   },
   "ABILITY_WANDERING_SPIRIT": {
     "name": "Wandering Spirit",
@@ -3057,7 +3311,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_GORILLA_TACTICS": {
     "name": "Gorilla Tactics",
@@ -3069,7 +3324,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_NEUTRALIZING_GAS": {
     "name": "Neutralizing Gas",
@@ -3081,7 +3337,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 5
   },
   "ABILITY_PASTEL_VEIL": {
     "name": "Pastel Veil",
@@ -3093,7 +3350,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_HUNGER_SWITCH": {
     "name": "Hunger Switch",
@@ -3105,7 +3363,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 2
   },
   "ABILITY_QUICK_DRAW": {
     "name": "Quick Draw",
@@ -3117,7 +3376,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_UNSEEN_FIST": {
     "name": "Unseen Fist",
@@ -3129,7 +3389,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_CURIOUS_MEDICINE": {
     "name": "Curious Medicine",
@@ -3141,7 +3402,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_TRANSISTOR": {
     "name": "Transistor",
@@ -3153,7 +3415,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_DRAGONS_MAW": {
     "name": "Dragon's Maw",
@@ -3165,7 +3428,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_CHILLING_NEIGH": {
     "name": "Chilling Neigh",
@@ -3177,7 +3441,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_GRIM_NEIGH": {
     "name": "Grim Neigh",
@@ -3189,7 +3454,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_AS_ONE_ICE_RIDER": {
     "name": "As One",
@@ -3201,7 +3467,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_AS_ONE_SHADOW_RIDER": {
     "name": "As One",
@@ -3213,7 +3480,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_LINGERING_AROMA": {
     "name": "Lingering Aroma",
@@ -3225,7 +3493,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_SEED_SOWER": {
     "name": "Seed Sower",
@@ -3237,7 +3506,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_THERMAL_EXCHANGE": {
     "name": "Thermal Exchange",
@@ -3249,7 +3519,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_ANGER_SHELL": {
     "name": "Anger Shell",
@@ -3261,7 +3532,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 3
   },
   "ABILITY_PURIFYING_SALT": {
     "name": "Purifying Salt",
@@ -3273,7 +3545,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_WELL_BAKED_BODY": {
     "name": "Well-Baked Body",
@@ -3285,7 +3558,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_WIND_RIDER": {
     "name": "Wind Rider",
@@ -3297,7 +3571,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_GUARD_DOG": {
     "name": "Guard Dog",
@@ -3309,7 +3584,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_ROCKY_PAYLOAD": {
     "name": "Rocky Payload",
@@ -3321,7 +3597,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_WIND_POWER": {
     "name": "Wind Power",
@@ -3333,7 +3610,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_ZERO_TO_HERO": {
     "name": "Zero to Hero",
@@ -3345,19 +3623,21 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 10
   },
   "ABILITY_COMMANDER": {
     "name": "Commander",
     "description": "Commands from Dondozo.",
-    "rating": 10,
+    "rating": 0,
     "breakable": false,
     "cantBeCopied": true,
     "cantBeOverwritten": true,
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_ELECTROMORPHOSIS": {
     "name": "Electromorphosis",
@@ -3369,7 +3649,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_PROTOSYNTHESIS": {
     "name": "Protosynthesis",
@@ -3381,7 +3662,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 7
   },
   "ABILITY_QUARK_DRIVE": {
     "name": "Quark Drive",
@@ -3393,7 +3675,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 7
   },
   "ABILITY_GOOD_AS_GOLD": {
     "name": "Good as Gold",
@@ -3405,7 +3688,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_VESSEL_OF_RUIN": {
     "name": "Vessel of Ruin",
@@ -3417,7 +3701,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_SWORD_OF_RUIN": {
     "name": "Sword of Ruin",
@@ -3429,7 +3714,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_TABLETS_OF_RUIN": {
     "name": "Tablets of Ruin",
@@ -3441,7 +3727,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_BEADS_OF_RUIN": {
     "name": "Beads of Ruin",
@@ -3453,7 +3740,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_ORICHALCUM_PULSE": {
     "name": "Orichalcum Pulse",
@@ -3465,7 +3753,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_HADRON_ENGINE": {
     "name": "Hadron Engine",
@@ -3477,7 +3766,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_OPPORTUNIST": {
     "name": "Opportunist",
@@ -3489,7 +3779,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_CUD_CHEW": {
     "name": "Cud Chew",
@@ -3501,7 +3792,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_SHARPNESS": {
     "name": "Sharpness",
@@ -3513,7 +3805,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_SUPREME_OVERLORD": {
     "name": "Supreme Overlord",
@@ -3525,19 +3818,21 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_COSTAR": {
     "name": "Costar",
     "description": "Copies ally's stat changes.",
-    "rating": 5,
+    "rating": 0,
     "breakable": false,
     "cantBeCopied": false,
     "cantBeOverwritten": false,
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 0
   },
   "ABILITY_TOXIC_DEBRIS": {
     "name": "Toxic Debris",
@@ -3549,7 +3844,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 4
   },
   "ABILITY_ARMOR_TAIL": {
     "name": "Armor Tail",
@@ -3561,7 +3857,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_EARTH_EATER": {
     "name": "Earth Eater",
@@ -3573,7 +3870,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 7
   },
   "ABILITY_MYCELIUM_MIGHT": {
     "name": "Mycelium Might",
@@ -3585,19 +3883,21 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 2
   },
   "ABILITY_HOSPITALITY": {
     "name": "Hospitality",
     "description": "Restores ally's HP.",
-    "rating": 5,
+    "rating": 0,
     "breakable": false,
     "cantBeCopied": false,
     "cantBeOverwritten": false,
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 6
   },
   "ABILITY_MINDS_EYE": {
     "name": "Mind's Eye",
@@ -3609,7 +3909,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_EMBODY_ASPECT_TEAL_MASK": {
     "name": "Embody Aspect",
@@ -3621,7 +3922,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 6
   },
   "ABILITY_EMBODY_ASPECT_HEARTHFLAME_MASK": {
     "name": "Embody Aspect",
@@ -3633,7 +3935,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 6
   },
   "ABILITY_EMBODY_ASPECT_WELLSPRING_MASK": {
     "name": "Embody Aspect",
@@ -3645,7 +3948,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 6
   },
   "ABILITY_EMBODY_ASPECT_CORNERSTONE_MASK": {
     "name": "Embody Aspect",
@@ -3657,7 +3961,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 6
   },
   "ABILITY_TOXIC_CHAIN": {
     "name": "Toxic Chain",
@@ -3669,7 +3974,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   },
   "ABILITY_SUPERSWEET_SYRUP": {
     "name": "Supersweet Syrup",
@@ -3681,7 +3987,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": false,
     "cantBeTraced": false,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 5
   },
   "ABILITY_TERA_SHIFT": {
     "name": "Tera Shift",
@@ -3693,7 +4000,8 @@
     "cantBeSuppressed": true,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": true
+    "failsOnImposter": true,
+    "ratingDoubles": 10
   },
   "ABILITY_TERA_SHELL": {
     "name": "Tera Shell",
@@ -3705,7 +4013,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_TERAFORM_ZERO": {
     "name": "Teraform Zero",
@@ -3717,7 +4026,8 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 10
   },
   "ABILITY_POISON_PUPPETEER": {
     "name": "Poison Puppeteer",
@@ -3729,6 +4039,7 @@
     "cantBeSuppressed": false,
     "cantBeSwapped": true,
     "cantBeTraced": true,
-    "failsOnImposter": false
+    "failsOnImposter": false,
+    "ratingDoubles": 8
   }
 }
