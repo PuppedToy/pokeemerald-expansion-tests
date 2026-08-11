@@ -31,6 +31,7 @@ const {
     checkValidEvo,
     evolutionMinLevel,
 } = require('./utils');
+const { activeDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');   // B-070 — reward-pool warnings
 
 // The gym-2 reward is a two-stage mon handed over at level 19; to be worth anything it has to reach
 // its second stage inside the early game, so its evolution may not be gated above this level.
@@ -532,90 +533,144 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig, moduleConfi
 
     // ── Gym pokemon rewards ────────────────────────────────────────────────────
 
-    const gym1ReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && !poke.evolutionData.isMega
-        && poke.rating.tier === TIER_NU
-        && poke.evolutionData.type === EVO_TYPE_SOLO
-    );
-    const gym1Replacement = sampleAndRemove(gym1ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym1Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym1Replacement, 13);
+    // B-070 — every reward pick below used to be `sampleAndRemove(list)` followed by an immediate
+    // dereference. `sampleAndRemove` returns null for an empty array (by design — the extra-starters
+    // block above checks for it), so an exhausted pool ended the run with
+    // "Cannot read properties of null (reading 'family')", naming neither the reward nor the reason.
+    //
+    // Each reward now states its filter ONCE, without the one-family-per-run dedup, and `takeReward`
+    // applies the dedup on top. When the deduped list runs dry it widens to the same filter without it —
+    // a repeated family beats losing the reward — and only then gives up. Byte-identical while the
+    // deduped list has entries: that path is the old code verbatim, the widening builds nothing and
+    // draws nothing until it is actually needed.
+    const usedFamily = poke => alreadyChosenFamilySet.has(getFamilyGroup(poke.family));
+    const handedOut = new Set();
 
-    const gym2ReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
+    /**
+     * @param {string}   label     reward name, for the error/diagnostic
+     * @param {Array}    strict    the family-deduped candidate list; mutated by removal, as before, so
+     *                             repeated picks from one pool keep dedupe-by-removal semantics
+     * @param {Function} predicate the same filter minus the dedup, for the widened retry
+     * @param {boolean}  required  true for the eleven gym rewards: writer.js reads `.id` off every one
+     *                             of them to regenerate gGymRewards[], so an empty one cannot be skipped
+     */
+    const takeReward = (label, strict, predicate, { required = false } = {}) => {
+        const pick = sampleAndRemove(strict);
+        if (pick) { handedOut.add(pick.id); return pick; }
+
+        const widened = pokemonList.filter(p => predicate(p) && !handedOut.has(p.id));
+        const reused = sampleAndRemove(widened);
+        if (reused) {
+            handedOut.add(reused.id);
+            activeDiagnostics().warn(
+                DIAGNOSTIC_CODES.REWARD_FAMILY_REUSED,
+                `Reward ${label}: no candidate left in an unused family; reusing ${getFamilyGroup(reused.family)}`,
+                { reward: label, pokemon: reused.id, family: getFamilyGroup(reused.family) },
+            );
+            return reused;
+        }
+        if (required) {
+            // Last resort for a reward the ROM cannot go without: hand out a species some other reward
+            // already got. Two rewards sharing a species is poor variety; a dead run is worse. Matters
+            // because required and optional rewards share pools and the required one is not always drawn
+            // first — `wallyLilycove` comes last out of the same pool as the three regis, so a thin pool
+            // would otherwise kill the run on its final draw.
+            const reused = sample(pokemonList.filter(predicate));
+            if (reused) {
+                activeDiagnostics().error(
+                    DIAGNOSTIC_CODES.REWARD_POOL_EMPTY,
+                    `Reward ${label}: pool exhausted; reusing ${reused.id}, already given by another reward`,
+                    { reward: label, pokemon: reused.id },
+                );
+                return reused;
+            }
+            throw new Error(
+                `No candidate pokemon for the required reward "${label}": nothing in the pool matches its `
+                + `tier/evolution filter, with or without the one-family-per-run rule.`);
+        }
+        activeDiagnostics().error(
+            DIAGNOSTIC_CODES.REWARD_POOL_EMPTY,
+            `Reward ${label} has no candidate at all; leaving it unrandomized`,
+            { reward: label },
+        );
+        return null;
+    };
+
+    // Register a filled reward's family (and its mega, when the caller tracks one here). A reward that
+    // could not be filled is passed through untouched.
+    const claimReward = (poke, levelFound) => {
+        if (!poke) return poke;
+        alreadyChosenFamilySet.add(getFamilyGroup(poke.family));
+        if (levelFound !== undefined) addToFoundMegaEvosIfHasMegaEvo(poke, levelFound);
+        return poke;
+    };
+
+    const gym1Pred = poke =>
+        !poke.evolutionData.isMega
         && poke.rating.tier === TIER_NU
+        && poke.evolutionData.type === EVO_TYPE_SOLO;
+    const gym1ReplacementList = pokemonList.filter(poke => !usedFamily(poke) && gym1Pred(poke));
+    const gym1Replacement = claimReward(
+        takeReward('gym1', gym1ReplacementList, gym1Pred, { required: true }), 13);
+
+    const gym2Pred = poke =>
+        poke.rating.tier === TIER_NU
         && poke.evolutionData.type === EVO_TYPE_LC_OF_2
         && poke.rating.bestEvoTier === TIER_RU
         // B-067 — the gym-2 reward must still evolve within the early game. This used to admit ANY
         // `method === 'ITEM'` evolution unconditionally, which is the same defect one level up: a
         // stone gated at 55 read as "evolves early". Read the evolution's own level instead.
-        && (poke.evolutions || []).some(evo => evolutionMinLevel(evo) <= GYM2_REWARD_MAX_EVO_LEVEL)
-    );
-    const gym2Replacement = sampleAndRemove(gym2ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym2Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym2Replacement, 19);
+        && (poke.evolutions || []).some(evo => evolutionMinLevel(evo) <= GYM2_REWARD_MAX_EVO_LEVEL);
+    const gym2ReplacementList = pokemonList.filter(poke => !usedFamily(poke) && gym2Pred(poke));
+    const gym2Replacement = claimReward(
+        takeReward('gym2', gym2ReplacementList, gym2Pred, { required: true }), 19);
 
     // gym3 + slateportGrunts: final form with mega, devolved to base form
-    const gym3ReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && !poke.evolutionData.isMega
+    const gym3Pred = poke =>
+        !poke.evolutionData.isMega
         && poke.evolutionData.isFinal
         && hasValidMega(poke)
         && poke.rating.bestEvoRating < TIER_UU_THRESHOLD
         && poke.rating.megaEvoRating < TIER_UBERS_THRESHOLD
-        && checkValidEvo(pokemonList, poke, 29)
-    );
-    const gym3Replacement = devolveToBase(pokemonList, sampleAndRemove(gym3ReplacementList));
-    alreadyChosenFamilySet.add(getFamilyGroup(gym3Replacement.family));
-    const slateportGruntsReward = devolveToBase(pokemonList, sampleAndRemove(gym3ReplacementList));
-    alreadyChosenFamilySet.add(getFamilyGroup(slateportGruntsReward.family));
+        && checkValidEvo(pokemonList, poke, 29);
+    const gym3ReplacementList = pokemonList.filter(poke => !usedFamily(poke) && gym3Pred(poke));
+    const gym3Replacement = claimReward(devolveToBase(pokemonList,
+        takeReward('gym3', gym3ReplacementList, gym3Pred, { required: true })));
+    const slateportGruntsReward = claimReward(devolveToBase(pokemonList,
+        takeReward('slateportGrunts', gym3ReplacementList, gym3Pred, { required: true })));
 
-    const gym4n5ReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.evolutionData.isLC
-        && poke.rating.bestEvoTier === TIER_UU
-    );
-    const gym4Replacement = sampleAndRemove(gym4n5ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym4Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym4Replacement, 36);
-    const gym5Replacement = sampleAndRemove(gym4n5ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym5Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym5Replacement, 39);
+    const gym4n5Pred = poke => poke.evolutionData.isLC && poke.rating.bestEvoTier === TIER_UU;
+    const gym4n5ReplacementList = pokemonList.filter(poke => !usedFamily(poke) && gym4n5Pred(poke));
+    const gym4Replacement = claimReward(
+        takeReward('gym4', gym4n5ReplacementList, gym4n5Pred, { required: true }), 36);
+    const gym5Replacement = claimReward(
+        takeReward('gym5', gym4n5ReplacementList, gym4n5Pred, { required: true }), 39);
 
-    const shellyRewardReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && !poke.evolutionData.isMega
+    const shellyPred = poke =>
+        !poke.evolutionData.isMega
         && poke.evolutionData.isFinal
         && hasValidMega(poke)
         && poke.rating.bestEvoRating < TIER_UBERS_THRESHOLD
         && poke.rating.megaEvoTier === TIER_OU
-        && checkValidEvo(pokemonList, poke, 41)
-    );
-    const shellyRewardReplacement = sampleAndRemove(shellyRewardReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(shellyRewardReplacement.family));
+        && checkValidEvo(pokemonList, poke, 41);
+    const shellyRewardReplacementList = pokemonList.filter(poke => !usedFamily(poke) && shellyPred(poke));
+    const shellyRewardReplacement = claimReward(
+        takeReward('shellyReward', shellyRewardReplacementList, shellyPred, { required: true }));
 
-    const gym6ReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.evolutionData.isLC
-        && poke.rating.bestEvoTier === TIER_OU
-    );
-    const gym6Replacement = sampleAndRemove(gym6ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym6Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym6Replacement, 46);
+    const gym6Pred = poke => poke.evolutionData.isLC && poke.rating.bestEvoTier === TIER_OU;
+    const gym6ReplacementList = pokemonList.filter(poke => !usedFamily(poke) && gym6Pred(poke));
+    const gym6Replacement = claimReward(
+        takeReward('gym6', gym6ReplacementList, gym6Pred, { required: true }), 46);
 
-    const gym7n8ReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && !poke.evolutionData.isMega
+    const gym7n8Pred = poke =>
+        !poke.evolutionData.isMega
         && poke.evolutionData.isFinal
-        && poke.rating.bestEvoTier === TIER_OU
-    );
-    const gym7Replacement = sampleAndRemove(gym7n8ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym7Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym7Replacement, 56);
-    const gym8Replacement = sampleAndRemove(gym7n8ReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(gym8Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(gym8Replacement, 64);
+        && poke.rating.bestEvoTier === TIER_OU;
+    const gym7n8ReplacementList = pokemonList.filter(poke => !usedFamily(poke) && gym7n8Pred(poke));
+    const gym7Replacement = claimReward(
+        takeReward('gym7', gym7n8ReplacementList, gym7n8Pred, { required: true }), 56);
+    const gym8Replacement = claimReward(
+        takeReward('gym8', gym7n8ReplacementList, gym7n8Pred, { required: true }), 64);
 
     // Decide the mega stone each mega-giving reward hands out HERE, at bundle-creation
     // time, picking one of the family's stones at random, and store it on the reward.
@@ -645,49 +700,43 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig, moduleConfi
 
     // ── Static pokemon rewards ─────────────────────────────────────────────────
 
-    const strongSoloReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.rating.bestEvoTier === TIER_UU
-        && poke.evolutionData.type === EVO_TYPE_SOLO
-    );
-    const regirockReplacement = sampleAndRemove(strongSoloReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(regirockReplacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(regirockReplacement, 36);
-    const regiceReplacement = sampleAndRemove(strongSoloReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(regiceReplacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(regiceReplacement, 39);
-    const mewReplacement = sampleAndRemove(strongSoloReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(mewReplacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(mewReplacement, 39);
-    const wallyLilycoveReward = sampleAndRemove(strongSoloReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(wallyLilycoveReward.family));
-    addToFoundMegaEvosIfHasMegaEvo(wallyLilycoveReward, 48);
+    // B-070 — the statics (regis, Mew, the Sky Pillar legends) are OPTIONAL: writer.js already falls back
+    // to the vanilla species for each one (`staticRewards.regirock && … || 'SPECIES_REGIROCK'`), so an
+    // unfillable one degrades to null with a diagnostic and the run finishes. `wallyLilycove` draws from
+    // the same pool but is a GYM reward downstream, so it stays required.
+    const strongSoloPred = poke =>
+        poke.rating.bestEvoTier === TIER_UU
+        && poke.evolutionData.type === EVO_TYPE_SOLO;
+    const strongSoloReplacementList = pokemonList.filter(poke => !usedFamily(poke) && strongSoloPred(poke));
+    const regirockReplacement = claimReward(
+        takeReward('regirock', strongSoloReplacementList, strongSoloPred), 36);
+    const regiceReplacement = claimReward(
+        takeReward('regice', strongSoloReplacementList, strongSoloPred), 39);
+    const mewReplacement = claimReward(
+        takeReward('mew', strongSoloReplacementList, strongSoloPred), 39);
+    const wallyLilycoveReward = claimReward(
+        takeReward('wallyLilycove', strongSoloReplacementList, strongSoloPred, { required: true }), 48);
 
     gymRewards.wallyLilycove = wallyLilycoveReward;
 
-    const premiumSoloReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.rating.bestEvoTier === TIER_OU
-        && poke.evolutionData.type === EVO_TYPE_SOLO
-    );
-    const registeelReplacement = sampleAndRemove(premiumSoloReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(registeelReplacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(registeelReplacement, 46);
+    const premiumSoloPred = poke =>
+        poke.rating.bestEvoTier === TIER_OU
+        && poke.evolutionData.type === EVO_TYPE_SOLO;
+    const premiumSoloReplacementList = pokemonList.filter(poke => !usedFamily(poke) && premiumSoloPred(poke));
+    const registeelReplacement = claimReward(
+        takeReward('registeel', premiumSoloReplacementList, premiumSoloPred), 46);
 
-    const legendReplacementList = pokemonList.filter(poke =>
-        !alreadyChosenFamilySet.has(getFamilyGroup(poke.family))
-        && poke.rating.bestEvoTier === TIER_LEGEND
-        && poke.evolutionData.type === EVO_TYPE_SOLO
-    );
-    const legend1Replacement = sampleAndRemove(legendReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(legend1Replacement.family));
-    const legend2Replacement = sampleAndRemove(legendReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(legend2Replacement.family));
-    const legend3Replacement = sampleAndRemove(legendReplacementList);
-    alreadyChosenFamilySet.add(getFamilyGroup(legend3Replacement.family));
-    addToFoundMegaEvosIfHasMegaEvo(legend1Replacement, 61);
-    addToFoundMegaEvosIfHasMegaEvo(legend2Replacement, 61);
-    addToFoundMegaEvosIfHasMegaEvo(legend3Replacement, 61);
+    const legendPred = poke =>
+        poke.rating.bestEvoTier === TIER_LEGEND
+        && poke.evolutionData.type === EVO_TYPE_SOLO;
+    const legendReplacementList = pokemonList.filter(poke => !usedFamily(poke) && legendPred(poke));
+    const legend1Replacement = claimReward(takeReward('legend1', legendReplacementList, legendPred));
+    const legend2Replacement = claimReward(takeReward('legend2', legendReplacementList, legendPred));
+    const legend3Replacement = claimReward(takeReward('legend3', legendReplacementList, legendPred));
+    // Kept as a separate pass (not folded into claimReward) so the mega-discovery order is unchanged.
+    if (legend1Replacement) addToFoundMegaEvosIfHasMegaEvo(legend1Replacement, 61);
+    if (legend2Replacement) addToFoundMegaEvosIfHasMegaEvo(legend2Replacement, 61);
+    if (legend3Replacement) addToFoundMegaEvosIfHasMegaEvo(legend3Replacement, 61);
 
     const staticRewards = {
         regirock: regirockReplacement,
@@ -723,10 +772,13 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig, moduleConfi
     // legend2→Torchic, legend3→Mudkip). Done AFTER the sweep so the wild-plan RNG stream stays
     // byte-identical — only the two draws below are new. The three remain the Sky Pillar legendaries,
     // so the rival's ace is still catchable there; only WHICH one each rival gets is now randomised.
-    const rivalLegendPool = [legend1Replacement, legend2Replacement, legend3Replacement];
+    // B-070 — filter(Boolean): a legend that could not be filled is null, and shuffling nulls would hand a
+    // rival an empty ace. A no-op (and byte-identical) whenever all three are present, which is every
+    // healthy run.
+    const rivalLegendPool = [legend1Replacement, legend2Replacement, legend3Replacement].filter(Boolean);
     staticRewards.rivalLegendTreecko = sampleAndRemove(rivalLegendPool);
     staticRewards.rivalLegendTorchic = sampleAndRemove(rivalLegendPool);
-    staticRewards.rivalLegendMudkip = rivalLegendPool[0];
+    staticRewards.rivalLegendMudkip = rivalLegendPool[0] || null;
 
     return {
         extraStarters,

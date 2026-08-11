@@ -701,3 +701,86 @@ describe('runWildModule — deterministic equals classic N=1 (T-162)', () => {
         expect(det.wildPlan['SPECIES_T1']).toHaveLength(1); // and it really is one per zone/method
     });
 });
+
+// ── B-070 — an exhausted reward pool must not kill the run ─────────────────────
+// Every gym/static reward pick used to be `sampleAndRemove(list)` followed by an immediate dereference.
+// `sampleAndRemove` returns null for an empty array — by design, and the extra-starters block above
+// already checks for it — so an exhausted pool ended the run with
+// "Cannot read properties of null (reading 'family')", naming neither the reward nor the reason.
+//
+// The ladder, in order: the family-deduped pool (unchanged, byte-identical while it has entries) → the
+// same filter without the one-family-per-run rule → for a reward the ROM cannot go without, a species
+// another reward already got → only then an error naming the reward. GYM rewards are required (writer.js
+// reads `.id` off all eleven to regenerate gGymRewards[]); statics are optional (writer.js already falls
+// back to the vanilla species), so they degrade to null with a diagnostic.
+describe('runWildModule — reward pools cannot be exhausted into a crash (B-070)', () => {
+    const { createDiagnostics, setActiveDiagnostics, clearActiveDiagnostics } = require('../../diagnostics');
+
+    // Run with a diagnostics sink attached, muted so the suite output stays readable.
+    function runWithDiag(pokemonList, artifact = startersArtifact) {
+        const { runWildModule } = require('../../modules/wildModule');
+        const diag = createDiagnostics({ mirror: false });
+        setActiveDiagnostics(diag);
+        try {
+            rng.seed(7);
+            return { result: runWildModule(pokemonList, artifact, emptyWildConfig), diag };
+        } finally {
+            clearActiveDiagnostics();
+        }
+    }
+
+    test('a gym reward whose family is already claimed reuses that family instead of dying', () => {
+        // Claiming P_FAMILY_GYM1 up front empties gym1's deduped pool; only the widened retry can fill it.
+        const artifact = {
+            starters: startersArtifact.starters,
+            alreadyChosenFamilies: [...startersArtifact.alreadyChosenFamilies, 'P_FAMILY_GYM1'],
+        };
+        let out;
+        expect(() => { out = runWithDiag([...extendedPokemonList], artifact); }).not.toThrow();
+        expect(out.result.gymRewards.gym1).toBeTruthy();
+        expect(out.result.gymRewards.gym1.id).toBe('SPECIES_GYM1');
+        expect(out.diag.all().some(d => d.code === 'REWARD_FAMILY_REUSED' && /gym1/.test(d.message))).toBe(true);
+    });
+
+    test('an unfillable GYM reward raises a message naming it, not a null dereference', () => {
+        // Both NU solos have to go: SPECIES_NU_SOLO (the extra-starters slot-4 candidate) also satisfies
+        // gym1's filter, so dropping SPECIES_GYM1 alone still leaves the reward fillable.
+        const noNuSolo = extendedPokemonList.filter(p => !['SPECIES_GYM1', 'SPECIES_NU_SOLO'].includes(p.id));
+        let err;
+        try { runWithDiag(noNuSolo); } catch (e) { err = e; }
+        expect(err).toBeDefined();
+        expect(err.message).toMatch(/gym1/);
+        expect(err.message).not.toMatch(/Cannot read properties/);
+    });
+
+    test('unfillable STATIC rewards degrade to null with a diagnostic and the run finishes', () => {
+        // One strongSolo candidate for four draws: regirock takes it, regice and mew have nothing left,
+        // and wallyLilycove (a GYM reward from the same pool, drawn last) survives on the reuse rung.
+        const oneStrongSolo = extendedPokemonList.filter(p =>
+            !['SPECIES_REGI2', 'SPECIES_REGI3', 'SPECIES_REGI4'].includes(p.id));
+        let out;
+        expect(() => { out = runWithDiag(oneStrongSolo); }).not.toThrow();
+        expect(out.result.staticRewards.regirock).toBeTruthy();
+        expect(out.result.staticRewards.regice).toBeNull();
+        expect(out.result.staticRewards.mew).toBeNull();
+        expect(out.result.gymRewards.wallyLilycove).toBeTruthy();   // required — never null
+        expect(out.diag.all().some(d => d.code === 'REWARD_POOL_EMPTY' && /regice/.test(d.message))).toBe(true);
+    });
+
+    test('a healthy pool hands out four distinct strongSolo rewards and warns about nothing', () => {
+        const { result, diag } = runWithDiag([...extendedPokemonList]);
+        const ids = [result.staticRewards.regirock, result.staticRewards.regice,
+            result.staticRewards.mew, result.gymRewards.wallyLilycove].map(p => p.id);
+        expect(new Set(ids).size).toBe(4);
+        expect(diag.all().filter(d => /^REWARD_/.test(d.code))).toEqual([]);
+    });
+
+    test('a missing legend leaves the rival aces null rather than handing out an empty ace', () => {
+        const noLegends = extendedPokemonList.filter(p => !['SPECIES_LEG1', 'SPECIES_LEG2', 'SPECIES_LEG3'].includes(p.id));
+        let out;
+        expect(() => { out = runWithDiag(noLegends); }).not.toThrow();
+        expect(out.result.staticRewards.legend1).toBeNull();
+        expect(out.result.staticRewards.rivalLegendTreecko).toBeNull();
+        expect(out.result.staticRewards.rivalLegendMudkip).toBeNull();
+    });
+});
