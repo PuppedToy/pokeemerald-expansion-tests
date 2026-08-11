@@ -20,7 +20,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-const { TRADE_SPECIES_LIST_CAPACITY } = require('./layout');
+const { TRADE_SPECIES_LIST_CAPACITY, TRADE_MOVE_LIST_CAPACITY } = require('./layout');
 
 const TRADE_H_FILE = path.resolve(__dirname, '..', 'src', 'data', 'trade.h');
 
@@ -28,30 +28,38 @@ const TRADE_H_FILE = path.resolve(__dirname, '..', 'src', 'data', 'trade.h');
 // array is the only `\n};` at column 0 in this region (entries close with an indented `},`).
 const SINGAME_TRADES_RE = /const struct InGameTrade gIngameTrades\[[^\]]*\] =\n\{[\s\S]*?\n\};/;
 
-const IVS = '{ 15, 15, 15, 15, 15, 15 }';
+// T-269 — the IVs are per trade now (`perfectIvs` stats at 31, the rest at 15; trades.js rolls them).
+// This is the fallback for a caller that has none: T-194's flat 15.
+const DEFAULT_IVS = [15, 15, 15, 15, 15, 15];
 const CONDITIONS = '{ 0, 0, 0, 0, 0 }';
 
-// An inline `{ SPECIES_A, SPECIES_B }` initializer for one of the two fixed-capacity species lists.
-function renderSpeciesList(field, species, tradeId) {
-    if (species.length > TRADE_SPECIES_LIST_CAPACITY) {
-        throw new Error(`tradeWriter: ${tradeId}.${field} has ${species.length} species; `
-            + `TRADE_SPECIES_LIST_CAPACITY is ${TRADE_SPECIES_LIST_CAPACITY}. `
-            + `Raise it in include/constants/randomizer_layout.h.`);
+// An inline `{ A, B }` initializer for one of the fixed-capacity lists. An EMPTY list still needs one
+// element to be valid C, and the count (0) is what the engine reads, so the zero constant is harmless.
+function renderList(field, values, capacity, constant, tradeId, zero) {
+    if (values.length > capacity) {
+        throw new Error(`tradeWriter: ${tradeId}.${field} has ${values.length} entries; ${constant} is `
+            + `${capacity}. Raise it in include/constants/randomizer_layout.h.`);
     }
-    return `{ ${species.join(', ')} }`;
+    return `{ ${(values.length ? values : [zero]).join(', ')} }`;
 }
 
+const renderSpeciesList = (field, species, tradeId) =>
+    renderList(field, species, TRADE_SPECIES_LIST_CAPACITY, 'TRADE_SPECIES_LIST_CAPACITY', tradeId, 'SPECIES_NONE');
+
 // One designated `[INGAME_TRADE_X] = { … }` entry. Empty nickname + ITEM_NONE → the gift keeps its
-// species name and carries no mail; `.level` forces the gym-cap level; the lists drive accept + message.
+// species name and carries no mail; `.level` forces the milestone's cap level; the lists drive accept +
+// message; `.ivs` / `.moves` are what T-269's traders hand the mon over with.
 function renderEntry(trade) {
     const accepted = renderSpeciesList('requestedSpeciesList', trade.acceptedSpecies, trade.ingameTradeId);
     const base = renderSpeciesList('requestedBaseForms', trade.acceptedBaseForms, trade.ingameTradeId);
+    const moves = trade.offeredMoves || [];
     const requestedSpecies = trade.acceptedBaseForms[0] || trade.acceptedSpecies[0] || 'SPECIES_NONE';
+    const ivs = (Array.isArray(trade.ivs) && trade.ivs.length === DEFAULT_IVS.length) ? trade.ivs : DEFAULT_IVS;
     return `    [${trade.ingameTradeId}] =\n`
         + `    {\n`
         + `        .nickname = _(""),\n`
         + `        .species = ${trade.offeredSpecies || 'SPECIES_NONE'},\n`
-        + `        .ivs = ${IVS},\n`
+        + `        .ivs = { ${ivs.map(v => v | 0).join(', ')} },\n`
         + `        .abilityNum = 0,\n`
         + `        .otId = 51436,\n`
         + `        .conditions = ${CONDITIONS},\n`
@@ -67,6 +75,8 @@ function renderEntry(trade) {
         + `        .requestedSpeciesCount = ${trade.acceptedSpecies.length},\n`
         + `        .requestedBaseForms = ${base},\n`
         + `        .requestedBaseFormCount = ${trade.acceptedBaseForms.length},\n`
+        + `        .moves = ${renderList('moves', moves, TRADE_MOVE_LIST_CAPACITY, 'TRADE_MOVE_LIST_CAPACITY', trade.ingameTradeId, 'MOVE_NONE')},\n`
+        + `        .moveCount = ${moves.length},\n`
         + `    },`;
 }
 
@@ -93,4 +103,4 @@ async function writeTrades(trades) {
     await fs.writeFile(TRADE_H_FILE, applyTradesToContent(content, trades), 'utf8');
 }
 
-module.exports = { writeTrades, applyTradesToContent, renderTradeData, renderEntry, renderSpeciesList };
+module.exports = { writeTrades, applyTradesToContent, renderTradeData, renderEntry, renderSpeciesList, renderList };

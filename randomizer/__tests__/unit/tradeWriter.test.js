@@ -12,10 +12,10 @@ const { renderTradeData, applyTradesToContent, renderEntry } = require('../../tr
 const { TRADE_SPECIES_LIST_CAPACITY } = require('../../layout');
 
 const TRADES = [
-    { town: 'RUSTBORO', ingameTradeId: 'INGAME_TRADE_SEEDOT', tier: 'RU', level: 13,
+    { town: 'RUSTBORO', ingameTradeId: 'INGAME_TRADE_RUSTBORO', tier: 'RU', level: 13,
       routeMapId: 'MAP_ROUTE101', offeredSpecies: 'SPECIES_PINCURCHIN',
       acceptedSpecies: ['SPECIES_RATTATA', 'SPECIES_RATICATE'], acceptedBaseForms: ['SPECIES_RATTATA'] },
-    { town: 'LAVARIDGE', ingameTradeId: 'INGAME_TRADE_HORSEA', tier: 'UU', level: 36,
+    { town: 'LAVARIDGE', ingameTradeId: 'INGAME_TRADE_SLATEPORT', tier: 'UU', level: 36,
       routeMapId: 'MAP_ROUTE102', offeredSpecies: 'SPECIES_LILLIGANT',
       acceptedSpecies: ['SPECIES_WURMPLE', 'SPECIES_SILCOON', 'SPECIES_BEAUTIFLY', 'SPECIES_CASCOON', 'SPECIES_DUSTOX', 'SPECIES_WINGULL', 'SPECIES_PELIPPER'],
       acceptedBaseForms: ['SPECIES_WURMPLE', 'SPECIES_WINGULL'] },
@@ -24,7 +24,7 @@ const TRADES = [
 describe('renderEntry', () => {
     const entry = renderEntry(TRADES[0]);
     test('uses a designated initializer keyed by the trade id', () => {
-        expect(entry).toContain('[INGAME_TRADE_SEEDOT] =');
+        expect(entry).toContain('[INGAME_TRADE_RUSTBORO] =');
     });
     test('sets the offered species, gym-cap level and empty nickname', () => {
         expect(entry).toContain('.species = SPECIES_PINCURCHIN,');
@@ -53,8 +53,8 @@ describe('renderTradeData', () => {
     test('emits the exported, explicitly sized table with one entry per trade', () => {
         expect(out).toContain('const struct InGameTrade gIngameTrades[INGAME_TRADES_COUNT] =');
         expect(out).not.toContain('static const struct InGameTrade');
-        expect(out).toContain('[INGAME_TRADE_SEEDOT] =');
-        expect(out).toContain('[INGAME_TRADE_HORSEA] =');
+        expect(out).toContain('[INGAME_TRADE_RUSTBORO] =');
+        expect(out).toContain('[INGAME_TRADE_SLATEPORT] =');
     });
     test('declares no per-trade lookup arrays', () => {
         expect(out).not.toContain('static const u16 sTrade');
@@ -67,7 +67,7 @@ describe('applyTradesToContent', () => {
     const CONTENT = [
         'const struct InGameTrade gIngameTrades[INGAME_TRADES_COUNT] =',
         '{',
-        '    [INGAME_TRADE_SEEDOT] =',
+        '    [INGAME_TRADE_RUSTBORO] =',
         '    {',
         '        .nickname = _("DOTS"),',
         '        .species = SPECIES_SEEDOT,',

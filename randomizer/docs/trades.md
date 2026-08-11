@@ -118,6 +118,25 @@ Every trader stands at the **same tile of its city's healing building**: `(3, 3)
 free of NPCs in all fifteen maps. The League's trader stands in the Pokémon League lobby
 (`MAP_EVER_GRANDE_CITY_POKEMON_LEAGUE_1F`), its own healing counter.
 
+## In the ROM
+
+Everything that varies per run lives in **`gIngameTrades[]`** (`src/data/trade.h`, rewritten by
+`tradeWriter.js` on the compile path and injected in place by
+`injector/modules/tradesStartersNicknames.js`); the scripts are static and committed.
+
+| Piece | Where |
+|---|---|
+| The 15 trade slots | `enum InGameTradeID` (`include/constants/trade.h`) — **in `TRADERS` order and contiguous** |
+| The flow | `Common_EventScript_TownTrader` (`data/scripts/town_traders.inc`); each map's script is a 3-line stub that sets `VAR_0x8008` and jumps in |
+| "Already traded with this one" | `FLAG_TRADE_COMPLETED_*`, contiguous in the same order, resolved from the trade id by the `IsTownTradeDone` / `SetTownTradeDone` specials — that is why a trader is a stub plus a flag, not a copy of the flow |
+| The learned TMs | `struct InGameTrade.moves[TRADE_MOVE_LIST_CAPACITY]` + `.moveCount`; `CreateInGameTradePokemonInternal` teaches them over the level-up moveset (a move it already knows is skipped; a full moveset loses its oldest slot, like a TM the player uses) |
+| The IVs | `struct InGameTrade.ivs` — already existed, per trade now |
+
+Adding a trader touches four places: a row in `TRADERS`, an `INGAME_TRADE_*` id, a
+`FLAG_TRADE_COMPLETED_*` flag, and a stub + NPC in its map. `__tests__/unit/townTraderPlacement.test.js`
+checks the NPC side (one per trader, walkable tile, same tile everywhere, none left outdoors) since the
+game cannot be walked locally.
+
 ## The artifact
 
 One entry per trader, in `TRADERS` order:

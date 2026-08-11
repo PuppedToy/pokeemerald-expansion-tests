@@ -11,7 +11,7 @@
 //
 // T-237 — fixed-capacity and exported so the injector can overwrite it in place (ADR-022): the name is
 // stored INLINE at a fixed width instead of pointing at a COMPOUND_STRING, and gTradeNicknameCount says
-// how many rows are real (trailing rows are zero-filled, and trade id 0 is INGAME_TRADE_SEEDOT — a real
+// how many rows are real (trailing rows are zero-filled, and trade id 0 is INGAME_TRADE_RUSTBORO — a real
 // trade — so the count cannot be inferred from the data). 0 = feature off = every lookup returns NULL =
 // the traded Pokémon keeps its vanilla nickname, which is the committed default.
 const u8 gTradeNicknameCount =

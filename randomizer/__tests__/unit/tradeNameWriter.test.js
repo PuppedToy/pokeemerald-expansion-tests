@@ -15,33 +15,33 @@ const { TRADE_NICKNAME_CAPACITY } = require('../../layout');
 describe('buildTradeRows', () => {
     test('emits one sorted row per named trade with the trade constant + inline name', () => {
         const rows = buildTradeRows({
-            INGAME_TRADE_SEEDOT: { nickname: 'Percy', gender: null },
-            INGAME_TRADE_HORSEA: { nickname: 'Ann', gender: 'F' },
+            INGAME_TRADE_RUSTBORO: { nickname: 'Percy', gender: null },
+            INGAME_TRADE_SLATEPORT: { nickname: 'Ann', gender: 'F' },
         });
-        expect(rows).toContain('{ INGAME_TRADE_SEEDOT, _("Percy") },');
-        expect(rows).toContain('{ INGAME_TRADE_HORSEA, _("Ann") },');
-        // sorted: HORSEA before SEEDOT
-        expect(rows.indexOf('INGAME_TRADE_HORSEA')).toBeLessThan(rows.indexOf('INGAME_TRADE_SEEDOT'));
+        expect(rows).toContain('{ INGAME_TRADE_RUSTBORO, _("Percy") },');
+        expect(rows).toContain('{ INGAME_TRADE_SLATEPORT, _("Ann") },');
+        // sorted by key, not by insertion order: RUSTBORO before SLATEPORT
+        expect(rows.indexOf('INGAME_TRADE_RUSTBORO')).toBeLessThan(rows.indexOf('INGAME_TRADE_SLATEPORT'));
         expect(rows).not.toContain('COMPOUND_STRING');
     });
 
     test('dirty nicknames are sanitized to [A-Za-z0-9 ]; no injection survives', () => {
-        const rows = buildTradeRows({ INGAME_TRADE_MEOWTH: { nickname: '"),evil//', gender: null } });
+        const rows = buildTradeRows({ INGAME_TRADE_MAUVILLE: { nickname: '"),evil//', gender: null } });
         expect(rows).toContain('_("evil")');
         expect(rows).not.toContain('//');
     });
 
     test('null / empty-name entries are dropped (kept vanilla), not emitted as blank rows', () => {
         const rows = buildTradeRows({
-            INGAME_TRADE_SEEDOT: { nickname: null, gender: null },
-            INGAME_TRADE_HORSEA: { nickname: '   ', gender: null },
+            INGAME_TRADE_RUSTBORO: { nickname: null, gender: null },
+            INGAME_TRADE_SLATEPORT: { nickname: '   ', gender: null },
         });
         expect(rows).toBe('');
     });
 
     test('unsafe keys are dropped', () => {
-        const rows = buildTradeRows({ INGAME_TRADE_SEEDOT: { nickname: 'X' }, 'bad key;': { nickname: 'Y' } });
-        expect(rows).toContain('INGAME_TRADE_SEEDOT');
+        const rows = buildTradeRows({ INGAME_TRADE_RUSTBORO: { nickname: 'X' }, 'bad key;': { nickname: 'Y' } });
+        expect(rows).toContain('INGAME_TRADE_RUSTBORO');
         expect(rows).not.toContain('bad key');
     });
 
@@ -66,20 +66,20 @@ describe('applyTradeNames', () => {
     ].join('\n');
 
     test('replaces the anchored block with generated rows, keeping the anchors, idempotently', () => {
-        const out = applyTradeNames(sample, { INGAME_TRADE_SEEDOT: { nickname: 'Percy' } });
+        const out = applyTradeNames(sample, { INGAME_TRADE_RUSTBORO: { nickname: 'Percy' } });
         expect(out).toContain('// @TRADE_NICKNAMES_START');
         expect(out).toContain('// @TRADE_NICKNAMES_END');
         expect(out).toContain('_("Percy")');
-        const out2 = applyTradeNames(out, { INGAME_TRADE_HORSEA: { nickname: 'Lee' } });
+        const out2 = applyTradeNames(out, { INGAME_TRADE_SLATEPORT: { nickname: 'Lee' } });
         expect(out2).toContain('_("Lee")');
         expect(out2).not.toContain('_("Percy")');
     });
 
     test('writes the row count alongside the rows so the two can never disagree', () => {
         const out = applyTradeNames(sample, {
-            INGAME_TRADE_SEEDOT: { nickname: 'Percy' },
-            INGAME_TRADE_HORSEA: { nickname: 'Lee' },
-            INGAME_TRADE_MEOWTH: { nickname: '' },       // dropped → not counted
+            INGAME_TRADE_RUSTBORO: { nickname: 'Percy' },
+            INGAME_TRADE_SLATEPORT: { nickname: 'Lee' },
+            INGAME_TRADE_MAUVILLE: { nickname: '' },       // dropped → not counted
         });
         expect(out).toMatch(/@TRADE_NICKNAMES_COUNT_START\n\s*2\n\s*\/\/ @TRADE_NICKNAMES_COUNT_END/);
         expect(applyTradeNames(out, {})).toMatch(/@TRADE_NICKNAMES_COUNT_START\n\s*0\n/);

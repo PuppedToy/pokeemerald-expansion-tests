@@ -175,6 +175,10 @@ struct InGameTrade {
     u8 requestedSpeciesCount;
     u16 requestedBaseForms[TRADE_SPECIES_LIST_CAPACITY];   // base forms listed in the "want" message
     u8 requestedBaseFormCount;
+    // T-269 — TMs the gift arrives already knowing (the randomizer picks ones the player could hold by
+    // that point and the mon can actually learn). A count of 0 means "just its level-up moveset".
+    u16 moves[TRADE_MOVE_LIST_CAPACITY];
+    u8 moveCount;
 };
 
 static EWRAM_DATA u8 *sMenuTextTileBuffer = NULL;
@@ -4603,6 +4607,22 @@ static void CreateInGameTradePokemonInternal(u8 whichPlayerMon, u8 whichInGameTr
     SetMonData(pokemon, MON_DATA_SHEEN, &inGameTrade->sheen);
     SetMonData(pokemon, MON_DATA_MET_LOCATION, &metLocation);
 
+    // T-269 — the town traders hand over a mon that already knows a few of the TMs the player could
+    // hold by then. Teach them on top of the level-up moveset it was created with: a move it already
+    // knows is skipped, and once the four slots are full the OLDEST one makes way (the same
+    // "learn over" the player gets from a TM).
+    {
+        u32 i;
+        for (i = 0; i < inGameTrade->moveCount && i < TRADE_MOVE_LIST_CAPACITY; i++)
+        {
+            u16 move = inGameTrade->moves[i];
+            if (move == MOVE_NONE || MonKnowsMove(pokemon, move))
+                continue;
+            if (GiveMoveToMon(pokemon, move) == MON_HAS_MAX_MOVES)
+                DeleteFirstMoveAndGiveMoveToMon(pokemon, move);
+        }
+    }
+
     mailNum = 0;
     if (inGameTrade->heldItem != ITEM_NONE)
     {
@@ -4680,6 +4700,23 @@ void BufferInGameTradeOffer(void)
         StringAppend(gStringVar1, (i == count - 1) ? sText_TradeListOr : sText_TradeListComma);
         StringAppend(gStringVar1, GetSpeciesName(list[i]));
     }
+}
+
+// T-269 — the 15 town traders share ONE script (Common_EventScript_TownTrader), so the "already traded
+// with this one" flag cannot be a literal in the script: it is derived from the trade id the stub set in
+// gSpecialVar_0x8008. FLAG_TRADE_COMPLETED_* is contiguous and in INGAME_TRADE_* order for exactly this
+// (include/constants/flags.h says so too).
+bool8 IsTownTradeDone(void)
+{
+    if (gSpecialVar_0x8008 >= INGAME_TRADES_COUNT)
+        return TRUE;   // an out-of-range id must never start a trade
+    return FlagGet(FLAG_TRADE_COMPLETED_FIRST + gSpecialVar_0x8008);
+}
+
+void SetTownTradeDone(void)
+{
+    if (gSpecialVar_0x8008 < INGAME_TRADES_COUNT)
+        FlagSet(FLAG_TRADE_COMPLETED_FIRST + gSpecialVar_0x8008);
 }
 
 // Return TRUE when the player's chosen mon (gSpecialVar_0x8005) is accepted by the trade

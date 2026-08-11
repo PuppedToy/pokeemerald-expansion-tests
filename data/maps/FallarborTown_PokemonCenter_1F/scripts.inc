@@ -3,6 +3,13 @@ FallarborTown_PokemonCenter_1F_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, CableClub_OnResume
 	.byte 0
 
+@ T-269 — town trader. All the per-run data (offer, level, TMs, IVs, what it wants) lives in
+@ gIngameTrades[INGAME_TRADE_FALLARBOR]; the flow is shared (data/scripts/town_traders.inc).
+FallarborTown_PokemonCenter_1F_EventScript_Trader::
+	setvar VAR_0x8008, INGAME_TRADE_FALLARBOR
+	goto Common_EventScript_TownTrader
+	end
+
 FallarborTown_PokemonCenter_1F_OnTransition:
 	setrespawn HEAL_LOCATION_FALLARBOR_TOWN
 	call Common_EventScript_UpdateBrineyLocation

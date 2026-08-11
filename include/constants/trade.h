@@ -5,12 +5,30 @@
 #define TRADE_PARTNER 1
 
 // In-game Trade IDs
+//
+// T-269 — one per town trader: fifteen, in progression order, each standing in its city's healing
+// building. The order MUST match randomizer/trades.js's TRADERS table (the randomizer writes the whole
+// gIngameTrades[] table by these designated indices) and MUST stay contiguous, because the trader
+// script resolves a trade's "already done" flag as FLAG_TRADE_COMPLETED_FIRST + the trade id
+// (see IsTownTradeDone in src/trade.c). The vanilla SEEDOT/PLUSLE/HORSEA/MEOWTH slots are gone: the
+// trades they held were already randomized per run (T-194), and their old mail path with them.
 enum InGameTradeID
 {
-    INGAME_TRADE_SEEDOT,
-    INGAME_TRADE_PLUSLE,
-    INGAME_TRADE_HORSEA,
-    INGAME_TRADE_MEOWTH,
+    INGAME_TRADE_RUSTBORO,
+    INGAME_TRADE_DEWFORD,
+    INGAME_TRADE_SLATEPORT,
+    INGAME_TRADE_MAUVILLE,
+    INGAME_TRADE_VERDANTURF,
+    INGAME_TRADE_LAVARIDGE,
+    INGAME_TRADE_FALLARBOR,
+    INGAME_TRADE_PETALBURG,
+    INGAME_TRADE_FORTREE,
+    INGAME_TRADE_LILYCOVE,
+    INGAME_TRADE_MOSSDEEP,
+    INGAME_TRADE_PACIFIDLOG,
+    INGAME_TRADE_SOOTOPOLIS,
+    INGAME_TRADE_EVER_GRANDE,
+    INGAME_TRADE_LEAGUE,
     INGAME_TRADES_COUNT,   // T-237 — sizes gIngameTrades[] explicitly so the table's length is fixed
 };
 

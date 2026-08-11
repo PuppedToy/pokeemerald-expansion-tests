@@ -155,8 +155,11 @@ const TRADE_NICKNAME = { stride: 14, tradeId: 0, nickname: 1, nicknameWidth: 13 
 // the committed gIngameTrades[] block is re-encoded and byte-matched against the base ROM, so a wrong
 // offset here fails before anything is written — and that same pass proves the charmap encoder, since
 // the base's own nicknames ("DOTS", "KOBE") are text.
+// T-269 appended `u16 moves[TRADE_MOVE_LIST_CAPACITY]` + `u8 moveCount`. requestedBaseFormCount ends at
+// 127, the u16 array realigns to 128 (8 B), moveCount lands at 136, and the struct's 4-byte alignment
+// (its u32s) rounds 137 up to a 140 B stride.
 const INGAME_TRADE = {
-    stride: 128,
+    stride: 140,
     nickname: 0, nicknameWidth: 13,
     species: 14,
     ivs: 16, ivCount: 6,
@@ -175,6 +178,8 @@ const INGAME_TRADE = {
     requestedSpeciesCount: 92,
     requestedBaseForms: 94,
     requestedBaseFormCount: 126,
+    moves: 128,
+    moveCount: 136,
 };
 
 // ── The Phase-2 data-driven tables (T-234/T-235/T-236, injected by T-243) ─────

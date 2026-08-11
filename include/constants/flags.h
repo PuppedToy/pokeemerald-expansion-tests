@@ -46,21 +46,26 @@
 #define FLAG_HIDE_ROUTE103_FISHERMAN    0x20
 
 #define FLAG_DEFEATED_EVERGRANDE_RIVAL  0x21
-#define FLAG_UNUSED_0x022    0x22 // Unused Flag
-#define FLAG_UNUSED_0x023    0x23 // Unused Flag
-#define FLAG_UNUSED_0x024    0x24 // Unused Flag
-#define FLAG_UNUSED_0x025    0x25 // Unused Flag
-#define FLAG_UNUSED_0x026    0x26 // Unused Flag
-#define FLAG_UNUSED_0x027    0x27 // Unused Flag
-#define FLAG_UNUSED_0x028    0x28 // Unused Flag
-#define FLAG_UNUSED_0x029    0x29 // Unused Flag
-#define FLAG_UNUSED_0x02A    0x2A // Unused Flag
-#define FLAG_UNUSED_0x02B    0x2B // Unused Flag
-#define FLAG_UNUSED_0x02C    0x2C // Unused Flag
-#define FLAG_UNUSED_0x02D    0x2D // Unused Flag
-#define FLAG_UNUSED_0x02E    0x2E // Unused Flag
-#define FLAG_UNUSED_0x02F    0x2F // Unused Flag
-#define FLAG_UNUSED_0x030    0x30 // Unused Flag
+// T-269 — the 15 town traders, one "already traded with" flag each. CONTIGUOUS and in
+// INGAME_TRADE_* order: the shared trader script resolves a trade's flag as
+// FLAG_TRADE_COMPLETED_FIRST + the trade id (IsTownTradeDone / SetTownTradeDone, src/trade.c),
+// so inserting anything in the middle breaks every trader after it.
+#define FLAG_TRADE_COMPLETED_RUSTBORO        0x022
+#define FLAG_TRADE_COMPLETED_DEWFORD         0x023
+#define FLAG_TRADE_COMPLETED_SLATEPORT       0x024
+#define FLAG_TRADE_COMPLETED_MAUVILLE        0x025
+#define FLAG_TRADE_COMPLETED_VERDANTURF      0x026
+#define FLAG_TRADE_COMPLETED_LAVARIDGE       0x027
+#define FLAG_TRADE_COMPLETED_FALLARBOR       0x028
+#define FLAG_TRADE_COMPLETED_PETALBURG       0x029
+#define FLAG_TRADE_COMPLETED_FORTREE         0x02A
+#define FLAG_TRADE_COMPLETED_LILYCOVE        0x02B
+#define FLAG_TRADE_COMPLETED_MOSSDEEP        0x02C
+#define FLAG_TRADE_COMPLETED_PACIFIDLOG      0x02D
+#define FLAG_TRADE_COMPLETED_SOOTOPOLIS      0x02E
+#define FLAG_TRADE_COMPLETED_EVER_GRANDE     0x02F
+#define FLAG_TRADE_COMPLETED_LEAGUE          0x030
+#define FLAG_TRADE_COMPLETED_FIRST           FLAG_TRADE_COMPLETED_RUSTBORO
 #define FLAG_UNUSED_0x031    0x31 // Unused Flag
 #define FLAG_UNUSED_0x032    0x32 // Unused Flag
 #define FLAG_UNUSED_0x033    0x33 // Unused Flag
