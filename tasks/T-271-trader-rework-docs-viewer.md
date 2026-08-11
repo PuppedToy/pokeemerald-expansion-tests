@@ -1,7 +1,7 @@
 ---
 id: T-271
 title: Show the 15 traders in the docs — several trades per route, learned TMs and perfect IVs
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-08-11
 updated: 2026-08-11
@@ -49,6 +49,8 @@ Acceptance criteria:
 
 - **2026-08-11** — Task created (planned together with T-269/T-270).
 
+- **2026-08-11** — Owner validated and asked to close. Closing.
+
 - **2026-08-11** — Docs + viewer done; randomizer (2438), frontend (232), backend (240) and the
   Playwright docs specs all green.
   - `docsMapOrder.attachTradesToMaps()` is the one home for "which encounter entry does a trade show
@@ -73,4 +75,16 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+**Shipped.** Every trade reaches the docs on the tile of the mon it asks for, with the town, the gift
+and its level, the TMs it arrives knowing and its perfect-IV count; a route two traders want from shows
+both cards. `docsMapOrder.attachTradesToMaps()` is the one home for that attachment, called by the
+analyze path and the bundle path alike, and the nuzlocke tracker is keyed by trade id throughout.
+
+**Deviations.** One extra fix the work surfaced: the visual-test docs fixture carried a private copy of
+`generate.js`'s trade step and never passed the move database, so every gift in the fixture arrived with
+no TMs. `computeTrades` is exported and the fixture calls it — the fixture now makes the same decision
+the app does.
+
+**Left for the owner.** The docs-encounters **pixel baselines** legitimately changed (the card grew two
+lines and there are more of them). CI does not run the visual suite; refresh with `npm run visual:update`
+next time you review the shots in an environment where the baselines are valid.
