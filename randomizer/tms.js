@@ -245,28 +245,27 @@ const nichePool = [
 
 // ─── STATUS MOVES ─────────────────────────────────────────────────────────────
 
+// T-263 — Grassy/Psychic/Misty Terrain came down from goodStatusMoves (conditional team support, not
+// a good-tier card). Amnesia, Charm, Eerie Impulse, Endure, Haze and Iron Defense went the other way.
+// Deleted outright as second copies of a card the pool already had: Feather Dance (-2 Atk, Charm),
+// Rock Polish (+2 Speed, Agility), Metal Sound (-2 Sp. Def, Fake Tears) and Whirlwind (Roar's exact
+// EFFECT_ROAR). Double Team went too — evasion turns a turn into a coin flip. See tmPoolHygiene.test.js.
 const averageStatusMoves = [
     "MOVE_AGILITY",
-    "MOVE_AMNESIA",
     "MOVE_ATTRACT",
     "MOVE_CHARGE",
-    "MOVE_CHARM",
     "MOVE_CONFIDE",
-    "MOVE_DOUBLE_TEAM",
-    "MOVE_EERIE_IMPULSE",
     "MOVE_FAKE_TEARS",
-    "MOVE_ENDURE",
     "MOVE_FOCUS_ENERGY",
     "MOVE_EMBARGO",
-    "MOVE_FEATHER_DANCE",
-    "MOVE_HAZE",
-    "MOVE_IRON_DEFENSE",
+    "MOVE_GRASSY_TERRAIN",  // T-263 — down from goodStatus
+    "MOVE_MISTY_TERRAIN",   // T-263 — down from goodStatus
+    "MOVE_PSYCHIC_TERRAIN", // T-263 — down from goodStatus
     "MOVE_METRONOME",
     "MOVE_PAIN_SPLIT",
     "MOVE_PSYCH_UP",
     "MOVE_RECYCLE",
     "MOVE_ROAR",
-    "MOVE_ROCK_POLISH",
     "MOVE_SAFEGUARD",
     "MOVE_SPEED_SWAP",
     "MOVE_SKILL_SWAP",
@@ -285,13 +284,11 @@ const averageStatusMoves = [
     "MOVE_DEFENSE_CURL",
     "MOVE_GRAVITY",
     "MOVE_IMPRISON",
-    "MOVE_METAL_SOUND",
     "MOVE_MIMIC",
     "MOVE_QUASH",
     "MOVE_SNATCH",
     "MOVE_TELEKINESIS",
     "MOVE_TELEPORT",
-    "MOVE_WHIRLWIND",
 ];
 
 const weatherMoves = [
@@ -307,18 +304,27 @@ const barrierMoves = [
     "MOVE_REFLECT",
 ];
 
+// T-263 — reviewed against the real effects (B-066: the inherited classification put all four
+// terrains here and three of them filled one Route 121 pick). Promoted from averageStatusMoves:
+// the +2 defensive boosts (Amnesia, Iron Defense), the two unconditional -2 attack debuffs (Charm,
+// Eerie Impulse), Haze (the answer to a setup sweeper) and Endure. Only Electric Terrain stays a
+// good-tier terrain — it is the one the pipeline builds around (electric_terrain gimmick, Electric
+// Seed, Rising Voltage); Grassy/Psychic/Misty went down to averageStatusMoves.
 const goodStatusMoves = [
+    "MOVE_AMNESIA",         // T-263 — +2 Sp. Def
     "MOVE_BULK_UP",
     "MOVE_CALM_MIND",
+    "MOVE_CHARM",           // T-263 — -2 Atk, unconditional
     "MOVE_CURSE",
     "MOVE_DEFOG",
+    "MOVE_EERIE_IMPULSE",   // T-263 — -2 Sp. Atk, unconditional
     "MOVE_ELECTRIC_TERRAIN",
     "MOVE_ENCORE",
-    "MOVE_GRASSY_TERRAIN",
+    "MOVE_ENDURE",          // T-263
+    "MOVE_HAZE",            // T-263
+    "MOVE_IRON_DEFENSE",    // T-263 — +2 Def
     "MOVE_PROTECT",
-    "MOVE_PSYCHIC_TERRAIN",
     "MOVE_REST",
-    "MOVE_MISTY_TERRAIN",
     "MOVE_SPIKES",
     "MOVE_THUNDER_WAVE",
     "MOVE_TOXIC_SPIKES",

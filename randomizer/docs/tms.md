@@ -17,6 +17,38 @@ All 95 TMs and 8 HMs. Pool determines which move is randomly assigned to each sl
 | goodStatus | TM78–TM90 | High-utility status moves |
 | godlikeStatus | TM91–TM95 | Top-tier status moves |
 
+### Pool membership — what earns a tier (T-263)
+
+This table above says which *tier* each slot draws from; the **list of moves in each pool lives in
+`randomizer/tms.js`** and nowhere else. That gap is how the four terrain moves sat in `goodStatus`
+unreviewed from the inherited puppedjs classification until B-066 (three of them filled one Route 121
+pick). The criteria are now explicit, and `__tests__/unit/tmPoolHygiene.test.js` enforces them against
+the real `src/data/moves_info.h`:
+
+| Invariant | Why |
+|---|---|
+| A move belongs to exactly one pool | a move has one price and one tier |
+| **One status effect per pool** — identity is `effect` + `argument` | a "choose 1 of 3" where two options are the same card is not a choice. Toxic and Will-O-Wisp share `EFFECT_NON_VOLATILE_STATUS` but differ in `argument`, so they stay distinct |
+| Every pooled move exists in the game data | an upstream sync that renames a move fails the test, not a run |
+| Each status tier keeps ≥ slots + 3 candidates | a tier with as many moves as slots produces the same TMs every run |
+
+Status-tier criteria, as classified by the owner:
+
+- **godlikeStatus** — wins games on its own: setup that snowballs (Swords Dance, Nasty Plot, Dragon
+  Dance), Stealth Rock, the recovery/status cards (Roost, Toxic, Will-O-Wisp).
+- **goodStatus** — a real turn: +2 to a defensive stat (Amnesia, Iron Defense), the unconditional −2
+  attack debuffs (Charm, Eerie Impulse), Haze, Endure, the hazards, the +1/+1 boosts, Trick Room.
+  **Electric Terrain** is the only terrain here — it is the one the pipeline builds around
+  (`electric_terrain` gimmick, Electric Seed, Rising Voltage).
+- **averageStatus** — conditional, single-stage or gimmicky: Grassy/Psychic/Misty Terrain, the
+  gender-gated debuffs (Captivate, Attract), the −1 versions (Confide), the swaps and rooms.
+- **In no pool at all** — a second copy of a card the pool already had (Feather Dance/Charm, Rock
+  Polish/Agility, Metal Sound/Fake Tears, Whirlwind/Roar) and **Double Team**, because evasion turns a
+  turn into a coin flip. Kept deliberately: Explosion **and** Self-Destruct (same effect, 250 vs 200
+  power) — the hygiene rule is status-only, damage moves are told apart by power and type.
+
+The tier also sets the TM's **price** (T-073), so moving a move between pools moves its price.
+
 ### Doubles-only status TMs (T-152)
 
 A few status moves are **doubles-relevant support** (Ally Switch, Coaching, Detect, Dragon Cheer →

@@ -20,8 +20,8 @@ function fakeRawAssignments() {
         route116Berries:          ['ITEM_YACHE_BERRY', 'ITEM_CHOPLE_BERRY', 'ITEM_KEBIA_BERRY', 'ITEM_SHUCA_BERRY'],
         route111Berries:          ['ITEM_COBA_BERRY', 'ITEM_PAYAPA_BERRY', 'ITEM_TANGA_BERRY', 'ITEM_CHARTI_BERRY'],
         route117Berries:          ['ITEM_KASIB_BERRY', 'ITEM_HABAN_BERRY', 'ITEM_COLBUR_BERRY', 'ITEM_BABIRI_BERRY'],
-        route121Berries:          ['ITEM_CHILAN_BERRY', 'ITEM_ROSELI_BERRY', 'ITEM_OCCA_BERRY', 'ITEM_PASSHO_BERRY'],
         route111Items:            ['ITEM_FLOAT_STONE', 'ITEM_IRON_BALL', 'ITEM_ABSORB_BULB'],
+        route121Items:            ['ITEM_CLEAR_AMULET', 'ITEM_COVERT_CLOAK', 'ITEM_MENTAL_HERB'],
         route106GoodItem:         'ITEM_LIFE_ORB',
         route109GoodItem:         'ITEM_BLACK_SLUDGE',
         route110GoodItem:         'ITEM_ASSAULT_VEST',
@@ -130,5 +130,21 @@ describe('writeItemFilesFromBundle (T-236 — table sink)', () => {
         const touched = [...Object.keys(written), ...reads];
         expect(touched.some(p => p.includes('scripts.inc'))).toBe(false);
         expect(touched.some(p => p.includes('script_menu.h'))).toBe(false);
+    });
+
+    // T-262 — a bundle is immutable input. Bundles generated before Route 121 moved from the berry
+    // pool to averageItemPool carry `route121Berries`; they must still build, reproducing their own
+    // original ROM (2-berry menu included).
+    test('a pre-T-262 bundle (route121Berries) still fills the Route 121 pick', () => {
+        const legacy = fakeDisplayAssignments();
+        legacy.route121Berries = ['Chilan Berry', 'Roseli Berry'];
+        delete legacy.route121Items;
+
+        const { written } = withMockedFs(TABLE_FILE_CONTENT, () => {
+            writeItemFilesFromBundle(legacy);
+        });
+        const content = Object.entries(written).find(([p]) => p.includes('randomizer_picks.c'))[1];
+        expect(content).toContain(
+            '[PICK_ROUTE121_ITEMS]          = {{ ITEM_CHILAN_BERRY, ITEM_ROSELI_BERRY, ITEM_NONE, ITEM_NONE }},');
     });
 });

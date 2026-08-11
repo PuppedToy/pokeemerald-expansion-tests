@@ -58,6 +58,23 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **The status TMs are sorted by what they actually do.** The high-utility TM tier had inherited a
+  classification nobody had ever reviewed, so it handed out **terrain moves** next to Calm Mind and
+  Stealth Rock — and in one run all three of Psychic, Grassy and Electric Terrain landed in the *same*
+  "choose 1 of 3", which is not a choice at all. Grassy, Psychic and Misty Terrain are now
+  average-utility TMs; **Electric Terrain stays** in the high tier, since it is the terrain the game
+  builds teams around. Moving up to the high tier: **Amnesia, Iron Defense** (+2 to a defensive stat),
+  **Charm, Eerie Impulse** (the two debuffs that cut an attack stat outright), **Haze** and **Endure**.
+  Four TMs are gone because a sibling already did their job: **Feather Dance** (Charm), **Rock Polish**
+  (Agility), **Metal Sound** (Fake Tears) and **Whirlwind** (Roar). **Double Team** is gone too —
+  evasion turns a turn into a coin flip. (T-263, B-066)
+
+- **The Route 121 item ball is a real choice again.** It used to be the last of five resist-berry
+  locations, and there are only 18 resist berries to go around four at a time — so that ball always
+  offered just **two** berries, in every run, no matter the seed. It now offers a **choice of three
+  utility items** instead, and the four remaining berry locations each keep a full pick of four
+  different berries. Cristin, who mirrors that ball, hands out the new items too. (T-262, B-065)
+
 - **Fast attackers no longer waste a slot on Teleport.** Trainer Pokémon like Wally's Gardevoir were being
   handed Teleport ahead of real moves such as Mystical Fire or Calm Mind. Teleport is the slow pivot — it
   leaves *after* taking the hit, so its whole point is letting a slow, bulky Pokémon eat that hit for the
