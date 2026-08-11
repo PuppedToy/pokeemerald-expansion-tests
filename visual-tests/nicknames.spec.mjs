@@ -68,30 +68,33 @@ test.describe('T-201: docs viewer nicknames', () => {
   test('trading a captured wanted mon swaps it to the offered species + trade name; undo reverts', async ({ page }) => {
     await page.goto(NICK_URL, { waitUntil: 'domcontentloaded' });
     await page.click('.nav a[data-target="wildpokes"]');
-    // Find a town-trade route where the wanted species is a capturable slot on that route.
+    // T-269 — a trade lives on the card of the map its WANTED mon is caught on (wantedMapId), and a card
+    // can carry several traders' buttons, so the button is found by its trade id.
     const tr = await page.evaluate(() => {
       const nn = (typeof nicknamesData !== 'undefined') ? nicknamesData : null;
       if (!nn || !nn.tradesInfo) return null;
       for (const t of nn.tradesInfo) {
-        if (!t || !t.routeMapId || !t.wantedSpecies) continue;
-        const card = document.querySelector(`.location-card[data-route-id="${t.routeMapId}"]`);
+        if (!t || !t.wantedMapId || !t.wantedSpecies) continue;
+        const card = document.querySelector(`.location-card[data-route-id="${t.wantedMapId}"]`);
         const tile = card && card.querySelector(`.wild-poke[data-base-species="${t.wantedSpecies}"][data-slot]`);
         if (!tile) continue;
         const slot = tile.getAttribute('data-slot');
         if (!card.querySelector(`.nz-select-cb[data-slot="${slot}"]`)) continue;
-        return { routeId: t.routeMapId, slot, offeredName: t.offeredSpecies.replace('SPECIES_', ''),
+        if (!card.querySelector(`.nz-trade-btn[data-trade-id="${t.ingameTradeId}"]`)) continue;
+        return { routeId: t.wantedMapId, slot, tradeId: t.ingameTradeId,
+                 offeredName: t.offeredSpecies.replace('SPECIES_', ''),
                  tradeNick: (nn.trades && nn.trades[t.ingameTradeId] && nn.trades[t.ingameTradeId].nickname) || null };
       }
       return null;
     });
-    expect(tr, 'a town-trade route with a capturable wanted mon exists').toBeTruthy();
+    expect(tr, 'a town trade whose wanted mon is a capturable slot exists').toBeTruthy();
 
     const card = `.location-card[data-route-id="${tr.routeId}"]`;
-    const tradeBtn = page.locator(`${card} .nz-trade-btn`);
+    const tradeBtn = page.locator(`${card} .nz-trade-btn[data-trade-id="${tr.tradeId}"]`);
     const tileName = page.locator(`${card} .wild-poke[data-slot="${tr.slot}"] .nz-poke-name`);
     const tileNick = page.locator(`${card} .wild-poke[data-slot="${tr.slot}"] .nz-poke-nick`);
 
-    // Capture the wanted mon → the "trade" button appears.
+    // Capture the wanted mon → that trade's button appears.
     await page.locator(`${card} .nz-select-cb[data-slot="${tr.slot}"]`).check();
     await expect(tradeBtn).toBeVisible();
     await expect(tradeBtn).toHaveText('trade');
@@ -106,5 +109,36 @@ test.describe('T-201: docs viewer nicknames', () => {
     await tradeBtn.click();
     await expect(tradeBtn).toHaveText('trade');
     await expect(tileName).not.toContainText(new RegExp(tr.offeredName.replace(/_/g, ' '), 'i'));
+  });
+
+  // T-269 — every trader must reach the docs: fifteen cards, each naming its town, the TMs the gift
+  // arrives knowing and how many of its IVs are perfect. A route that two traders want from shows both.
+  test('all fifteen trade cards render, with their TMs and perfect-IV counts', async ({ page }) => {
+    await page.goto(NICK_URL, { waitUntil: 'domcontentloaded' });
+    await page.click('.nav a[data-target="wildpokes"]');
+
+    const seen = await page.evaluate(() => {
+      const info = (typeof nicknamesData !== 'undefined' && nicknamesData.tradesInfo) || [];
+      const buttons = [...document.querySelectorAll('.nz-trade-btn[data-trade-id]')]
+        .map(b => b.getAttribute('data-trade-id'));
+      const cards = [...document.querySelectorAll('.location-card')].map(c => c.textContent);
+      return {
+        expected: info.length,
+        rendered: buttons.length,
+        unique: new Set(buttons).size,
+        withMoves: info.filter(t => (t.offeredMoves || []).length).length,
+        movesShown: cards.filter(t => t.includes('knows ')).length,
+        ivsShown: cards.filter(t => /perfect IV/.test(t)).length,
+        towns: info.map(t => t.town).filter(town =>
+          cards.some(text => text.toLowerCase().includes(String(town).toLowerCase().replace(/_/g, ' ')))).length,
+      };
+    });
+
+    expect(seen.expected).toBe(15);
+    expect(seen.rendered).toBe(15);
+    expect(seen.unique).toBe(15);            // no trade rendered twice
+    expect(seen.towns).toBe(15);             // every trader's town is named on some card
+    expect(seen.movesShown).toBeGreaterThan(0);
+    expect(seen.ivsShown).toBeGreaterThan(0);
   });
 });

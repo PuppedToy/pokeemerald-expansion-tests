@@ -73,4 +73,39 @@ function applyDocMapOrder(maps, pokeRewardReplacements) {
     return maps;
 }
 
-module.exports = { applyDocMapOrder };
+/**
+ * T-194/T-269 — attach the town trades to the encounter entries the docs render them on.
+ *
+ * A trade is shown on the tile of the mon it ASKS FOR, because that is the tile the player is deciding
+ * about. With 15 traders drawing from the whole reachable pool (randomizer/docs/trades.md) the wanted mon
+ * can live on any earlier map, and two traders can want species from the same one — so an entry carries a
+ * LIST. Both writer paths (`writer.js` for out.html, `writerDocs.js` for the served docs) call this, so
+ * the docs are assembled identically.
+ *
+ * Only what the viewer draws is copied over, and only for a filled trade.
+ *
+ * @param {Array}  maps   the assembled encounter entries (after applyDocMapOrder)
+ * @param {Array}  trades the run's trades artifact
+ * @returns {Array} the same `maps`, mutated
+ */
+function attachTradesToMaps(maps, trades) {
+    for (const t of (trades || [])) {
+        if (!t || !t.offeredSpecies || !t.wantedSpecies) continue;
+        const entry = maps.find(m => m.id === t.wantedMapId);
+        if (!entry) continue;
+        (entry.trades || (entry.trades = [])).push({
+            ingameTradeId: t.ingameTradeId,
+            town: t.town,
+            tier: t.tier,
+            level: t.level,
+            offeredSpecies: t.offeredSpecies,
+            offeredMoves: t.offeredMoves || [],
+            perfectIvs: t.perfectIvs || 0,
+            wantedSpecies: t.wantedSpecies,
+            wantedMethod: t.wantedMethod || null,
+        });
+    }
+    return maps;
+}
+
+module.exports = { applyDocMapOrder, attachTradesToMaps };

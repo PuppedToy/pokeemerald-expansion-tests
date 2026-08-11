@@ -16,7 +16,7 @@ const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 const { typeMainColors } = require('./trainerColors');
 const { noopDiagnostics } = require('./diagnostics');
 const { normalizeDocsVisibility, redactWildPokes } = require('./docsVisibility');
-const { applyDocMapOrder } = require('./docsMapOrder.js');   // T-268 — docs encounter order (SSOT)
+const { applyDocMapOrder, attachTradesToMaps } = require('./docsMapOrder.js');   // T-268/T-269 — docs encounter list (SSOT)
 
 const CONTEXTUAL_TIER_SEQ = ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU', 'UBERS', 'LEGEND', 'AG'];
 
@@ -338,14 +338,10 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     // only home, shared with the analyze path in writer.js.
     applyDocMapOrder(maps, pokeRewardReplacements);
 
-    // T-194 — attach each town trade to its route's encounter entry (routes 101/102/103/104). The
-    // viewer renders the trade sub-card from `entry.trade` (in the grass/old-rod cards and in the
-    // pokemon modal); redactWildPokes strips it when `showTrades` is off.
-    for (const t of (options.trades || [])) {
-        if (!t || !t.offeredSpecies) continue;
-        const entry = maps.find(m => m.id === t.routeMapId);
-        if (entry) entry.trade = { town: t.town, tier: t.tier, level: t.level, offeredSpecies: t.offeredSpecies, wantedSpecies: t.wantedSpecies };
-    }
+    // T-194/T-269 — attach the town trades to the encounter entry of the mon each one ASKS FOR. The
+    // viewer renders a trade sub-card per entry in `entry.trades` (on the encounter tile and in the
+    // pokemon modal); redactWildPokes strips them when `showTrades` is off.
+    attachTradesToMaps(maps, options.trades);
 
     // T-163 — redact the assembled encounter maps per the docs-visibility config (drops hidden
     // statics/rewards/zones, replaces hidden per-method species with count markers) and strip the

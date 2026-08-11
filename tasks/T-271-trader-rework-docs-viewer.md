@@ -1,7 +1,7 @@
 ---
 id: T-271
 title: Show the 15 traders in the docs — several trades per route, learned TMs and perfect IVs
-status: proposed        # proposed | in-progress | done | abandoned
+status: in-progress     # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-08-11
 updated: 2026-08-11
@@ -36,18 +36,40 @@ already knows and how many IVs are perfect.
 5. Rebuild the browser bundle (`node build.js`) — the docs are built client-side.
 
 Acceptance criteria:
-- [ ] Every one of the 15 trades shows on its wanted species' encounter tile, including two on one
+- [x] Every one of the 15 trades shows on its wanted species' encounter tile, including two on one
       route.
-- [ ] Each trade card names the city, the offered mon + level, its learned TMs and its perfect-IV
+- [x] Each trade card names the city, the offered mon + level, its learned TMs and its perfect-IV
       count.
-- [ ] The tracker's trade / undo trade still swaps the right captured mon with several trades in play.
-- [ ] Auto-nicknames cover the 15 trades with no collisions.
-- [ ] `randomizer/docs/trades.md` exists and is linked from `CLAUDE.md`; `cd randomizer && npm test`
+- [x] The tracker's trade / undo trade still swaps the right captured mon with several trades in play.
+- [x] Auto-nicknames cover the 15 trades with no collisions.
+- [x] `randomizer/docs/trades.md` exists and is linked from `CLAUDE.md`; `cd randomizer && npm test`
       green; bundle rebuilt.
 
 ## Progress log
 
 - **2026-08-11** — Task created (planned together with T-269/T-270).
+
+- **2026-08-11** — Docs + viewer done; randomizer (2438), frontend (232), backend (240) and the
+  Playwright docs specs all green.
+  - `docsMapOrder.attachTradesToMaps()` is the one home for "which encounter entry does a trade show
+    on": the map its WANTED mon is caught on (`wantedMapId`), as a LIST — both writer paths call it, so
+    the analyze path and the served docs agree. `entry.trade` → `entry.trades` in the redactor too.
+  - The card now shows the town, the gift + level, **the TMs it knows** and **how many IVs are
+    perfect**; a route that two traders want from renders both cards.
+  - The tracker is keyed by **trade id** everywhere (`docTradeState/docTrade/docUndoTrade`, the
+    buttons, the PC modal) — routes stopped being unique keys the moment traders could share one. A
+    traded entry is matched back to its trade through `store.trades[key].tradeId`.
+  - `NAMEABLE_TRADES_GIFTS` 14 → 25 (10 gift maps + 15 traders), with the frontend drift test importing
+    `TRADERS`.
+  - **Found and fixed a real SSOT break while doing it:** the visual-test docs fixture had its own copy
+    of `computeTrades` and never passed the move database, so every gift in the fixture arrived with no
+    TMs. `computeTrades` is exported from `generate.js` now and the fixture calls it — the fixture makes
+    the same decision the app does (including growing the mega pool).
+  - New Playwright case: all 15 trade cards render, none twice, every town named, with TM and IV lines.
+    `npm run shoot --only docs` reports no horizontal overflow at any of the 5 viewports.
+  - Note for the owner: the docs-encounters **pixel baselines** legitimately changed (the card grew two
+    lines and there are more of them). CI does not run the visual suite; refresh the baselines with
+    `npm run visual:update` next time you review the shots in an environment where they are valid.
 
 ## Outcome
 

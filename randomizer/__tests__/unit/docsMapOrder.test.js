@@ -67,3 +67,53 @@ describe('applyDocMapOrder', () => {
         ]);
     });
 });
+
+// T-269 — the trades are attached to the encounter entry of the mon each one ASKS FOR, because that is
+// the tile the player is deciding about. Both writer paths call this, so the docs agree.
+describe('attachTradesToMaps', () => {
+    const { attachTradesToMaps } = require('../../docsMapOrder');
+
+    const trade = (over = {}) => ({
+        ingameTradeId: 'INGAME_TRADE_RUSTBORO', town: 'RUSTBORO', tier: 'RU', level: 13,
+        offeredSpecies: 'SPECIES_SNOM', offeredMoves: ['MOVE_ICY_WIND'], perfectIvs: 1,
+        wantedSpecies: 'SPECIES_PAWMI', wantedMapId: 'MAP_ROUTE104', wantedMethod: 'land',
+        ...over,
+    });
+
+    test('lands on the wanted mon\'s map, carrying what the viewer draws', () => {
+        const maps = [{ id: 'MAP_ROUTE102' }, { id: 'MAP_ROUTE104' }];
+        attachTradesToMaps(maps, [trade()]);
+
+        expect(maps[0].trades).toBeUndefined();
+        expect(maps[1].trades).toEqual([{
+            ingameTradeId: 'INGAME_TRADE_RUSTBORO', town: 'RUSTBORO', tier: 'RU', level: 13,
+            offeredSpecies: 'SPECIES_SNOM', offeredMoves: ['MOVE_ICY_WIND'], perfectIvs: 1,
+            wantedSpecies: 'SPECIES_PAWMI', wantedMethod: 'land',
+        }]);
+    });
+
+    test('two traders wanting mons from the same map both show', () => {
+        const maps = [{ id: 'MAP_ROUTE104' }];
+        attachTradesToMaps(maps, [
+            trade(),
+            trade({ ingameTradeId: 'INGAME_TRADE_DEWFORD', town: 'DEWFORD', wantedSpecies: 'SPECIES_CACNEA', wantedMethod: 'old' }),
+        ]);
+        expect(maps[0].trades.map(t => t.town)).toEqual(['RUSTBORO', 'DEWFORD']);
+    });
+
+    test('an unfilled trade, or one whose map the docs do not list, is skipped', () => {
+        const maps = [{ id: 'MAP_ROUTE104' }];
+        attachTradesToMaps(maps, [
+            trade({ offeredSpecies: null }),
+            trade({ wantedSpecies: null }),
+            trade({ wantedMapId: 'MAP_NOWHERE' }),
+            null,
+        ]);
+        expect(maps[0].trades).toBeUndefined();
+    });
+
+    test('no trades at all leaves the maps untouched', () => {
+        const maps = [{ id: 'MAP_ROUTE104' }];
+        expect(attachTradesToMaps(maps, undefined)).toEqual([{ id: 'MAP_ROUTE104' }]);
+    });
+});

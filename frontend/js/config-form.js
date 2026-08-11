@@ -407,10 +407,10 @@ export function totalRoms(cfg = {}) {
 }
 
 // T-200 — how many Pokémon each nickname bucket can name. SSOT: randomizer/data/encounterLocations.js
-// bucket sizes (wild routes 120 + statics 4) and randomizer/trades.js (gifts 10 + 4 town trades).
+// bucket sizes (wild routes 120 + statics 4) and randomizer/trades.js (gifts 10 + 15 town traders, T-269).
 // Drift-guarded by frontend/__tests__/nickname-warning.test.js (imports the randomizer data).
 const NAMEABLE_LOCATION = 124;      // wild routes + statics — the autoLocation bucket
-const NAMEABLE_TRADES_GIFTS = 14;   // gift maps + town trades — the autoTradesGifts bucket
+const NAMEABLE_TRADES_GIFTS = 25;   // gift maps + town trades — the autoTradesGifts bucket
 // include/constants/global.h POKEMON_NAME_LENGTH — mirrors randomizer normalizePool (drift is user-visible,
 // not test-guarded here since it's a stable engine constant used identically on both sides).
 const MAX_NICKNAME_LENGTH = 12;
