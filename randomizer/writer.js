@@ -34,6 +34,7 @@ const { savePokemonData } = require('./pokemonWriter.js');
 const { saveMoveData } = require('./moveWriter.js');   // T-187 — persists move mutation to moves_info.h
 const { writeEvoLevels } = require('./evoLevelWriter.js');
 const { stoneUnlockLevel } = require('./bossCaps');   // B-067 — stone availability, from the caps SSOT
+const { applyDocMapOrder } = require('./docsMapOrder.js');   // T-268 — docs encounter order (SSOT)
 const { writeTrades } = require('./tradeWriter.js');   // T-194 — per-ROM town-trade data → src/data/trade.h
 const { applyStarterChoose } = require('./starterNameWriter.js');
 
@@ -778,59 +779,9 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
         special2: starters[1],
         special3: starters[2],
     });
-    // Extract static/legendary encounter entries to reposition them geographically.
-    // Object.assign mutates and returns the extracted entry so we can add props inline.
-    const extractMap = (id, extra = {}) => {
-        const idx = maps.findIndex(m => m.id === id);
-        return idx !== -1 ? Object.assign(maps.splice(idx, 1)[0], extra) : null;
-    };
-    const desertRuinsEntry = extractMap('MAP_DESERT_RUINS',   { label: 'Desert Ruins',  staticEncounter: true });
-    const islandCaveEntry  = extractMap('MAP_ISLAND_CAVE',    { label: 'Island Cave',   staticEncounter: true });
-    const newMauvilleEntry = extractMap('MAP_NEW_MAUVILLE',   { label: 'New Mauville',  staticEncounter: true });
-    const ancientTombEntry = extractMap('MAP_ANCIENT_TOMB',   { label: 'Ancient Tomb',  staticEncounter: true });
-    const skyPillarEntry   = extractMap('MAP_SKY_PILLAR_TOP', { label: 'Sky Pillar Top', legendaryEncounter: true });
-    const route123Entry    = extractMap('MAP_ROUTE123');
-
-    // Insertions: groups sharing the same afterMap are listed in REVERSE desired order so
-    // repeated splices at idx+1 yield the correct final sequence.
-    const insertions = [
-        // Route 116 → Roxanne
-        { afterMap: 'MAP_ROUTE116', entry: { id: 'BOSS_ROXANNE_REWARD',          label: 'Roxanne Reward',          boss: true, special1: pokeRewardReplacements[0].id } },
-        // Route 106 → Brawly (before Granite Cave)
-        { afterMap: 'MAP_ROUTE106', entry: { id: 'BOSS_BRAWLY_REWARD',           label: 'Brawly Reward',           boss: true, special1: pokeRewardReplacements[1].id } },
-        // Route 109 → Slateport Grunts
-        { afterMap: 'MAP_ROUTE109', entry: { id: 'BOSS_SLATEPORT_GRUNTS_REWARD', label: 'Slateport Grunts Reward', boss: true, special1: pokeRewardReplacements[8].id } },
-        // Route 118 → Wattson
-        { afterMap: 'MAP_ROUTE118', entry: { id: 'BOSS_WATTSON_REWARD',          label: 'Wattson Reward',          boss: true, special1: pokeRewardReplacements[2].id } },
-        // Route 114 group (reverse order → final: Flannery, Desert Ruins, Norman, Island Cave)
-        { afterMap: 'MAP_ROUTE114', entry: islandCaveEntry },
-        { afterMap: 'MAP_ROUTE114', entry: { id: 'BOSS_NORMAN_REWARD',           label: 'Norman Reward',           boss: true, special1: pokeRewardReplacements[4].id } },
-        { afterMap: 'MAP_ROUTE114', entry: desertRuinsEntry },
-        { afterMap: 'MAP_ROUTE114', entry: { id: 'BOSS_FLANNERY_REWARD',         label: 'Flannery Reward',         boss: true, special1: pokeRewardReplacements[3].id } },
-        // Island Cave → New Mauville (processed after Island Cave is placed)
-        { afterMap: 'MAP_ISLAND_CAVE', entry: newMauvilleEntry },
-        // Route 119 → Shelly
-        { afterMap: 'MAP_ROUTE119', entry: { id: 'BOSS_SHELLY_REWARD',           label: 'Shelly Reward',           boss: true, special1: pokeRewardReplacements[9].id } },
-        // Route 120 group (reverse order → final: Winona, Ancient Tomb)
-        { afterMap: 'MAP_ROUTE120', entry: ancientTombEntry },
-        { afterMap: 'MAP_ROUTE120', entry: { id: 'BOSS_WINONA_REWARD',           label: 'Winona Reward',           boss: true, special1: pokeRewardReplacements[5].id } },
-        // Route 121 → Wally Lilycove
-        { afterMap: 'MAP_ROUTE121', entry: { id: 'BOSS_WALLY_LILYCOVE',          label: 'Wally Lilycove Reward',   boss: true, special1: pokeRewardReplacements[10].id } },
-        // Route 124 → Tate & Liza (before Route 125)
-        { afterMap: 'MAP_ROUTE124', entry: { id: 'BOSS_TATE_LIZA_REWARD',        label: 'Tate & Liza Reward',      boss: true, special1: pokeRewardReplacements[6].id } },
-        // Route 129 group (reverse order → final: Sky Pillar, Juan, Route 123)
-        { afterMap: 'MAP_ROUTE129', entry: route123Entry },
-        { afterMap: 'MAP_ROUTE129', entry: { id: 'BOSS_JUAN_REWARD',             label: 'Juan Reward',             boss: true, special1: pokeRewardReplacements[7].id } },
-        { afterMap: 'MAP_ROUTE129', entry: skyPillarEntry },
-    ];
-    for (const { afterMap, entry } of insertions) {
-        const idx = maps.findIndex(m => m.id === afterMap);
-        if (idx !== -1) {
-            maps.splice(idx + 1, 0, entry);
-        } else {
-            maps.push(entry);
-        }
-    }
+    // T-268 — progression order (boss rewards, statics, legendaries): docsMapOrder.js is its
+    // only home, shared with the bundle path in writerDocs.js.
+    applyDocMapOrder(maps, pokeRewardReplacements);
     // T-194 — attach each town trade to its route entry for the analyze path (docs=null → inline maps).
     // The maker path reuses the bundle's docs.wildPokes, which already carries `.trade` from writerDocs.
     for (const t of (trades || [])) {
