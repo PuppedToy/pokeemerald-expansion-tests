@@ -406,7 +406,17 @@ export function initPresets(deps = {}) {
   // ── wire the static modal chrome once ──
   $('presets-close')?.addEventListener('click', close);
   $('presets-modal')?.addEventListener('click', (e) => { if (e.target?.id === 'presets-modal') close(); });
-  document.addEventListener?.('keydown', (e) => { if (e.key === 'Escape' && $('presets-modal') && !$('presets-modal').hidden) close(); });
+  // Escape belongs to the topmost modal (B-074): when the auth modal is stacked on top of this one — the
+  // login form summoned from the "Log in / Register" CTA — dismissing it must leave the presets modal
+  // open, so it re-renders with the user's presets once they log in. account.js owns that key press.
+  document.addEventListener?.('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const m = $('presets-modal');
+    if (!m || m.hidden) return;
+    const auth = $('auth-modal');
+    if (auth && !auth.hidden) return;
+    close();
+  });
   document.querySelectorAll('[data-presets-tab]').forEach?.((t) => t.addEventListener('click', () => { pages[t.dataset.presetsTab] = pages[t.dataset.presetsTab] || 1; setTab(t.dataset.presetsTab); }));
 
   const bodyEl = body();

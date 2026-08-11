@@ -77,3 +77,4 @@
 | [B-071](B-071-tm-teach-not-charged-for-over-level-move.md) | A TM teach is never charged when the move also sits higher in the mon's learnset | fixed | major | 0.5.0 | 0.9.0 | randomizer/__tests__/unit/tmChargeOverLevelMove.test.js |
 | [B-072](B-072-koichi-tm-pick-missing-from-bag-cascade.md) | The Route 104 south TM pick (TM08-10, Koichi) never enters any trainer bag | fixed | minor | 0.5.0 | 0.9.0 | randomizer/__tests__/unit/tmPickCascade.test.js |
 | [B-073](B-073-traded-mon-repeats-an-already-used-family.md) | A town trade offers a species whose family is already used elsewhere in the run | fixed | major | 0.9.0 | 0.9.0 | randomizer/__tests__/unit/trades.test.js |
+| [B-074](B-074-login-modal-behind-presets-modal.md) | The login modal opens behind the presets modal, so you cannot log in from there | fixed | major | 0.9.0 | 0.9.0 | visual-tests/interaction.spec.mjs |

@@ -431,3 +431,57 @@ test.describe('B-053: rival gender toggle filters without a starter', () => {
 // itself when ADR-024 retired the fast/slow build tiers (injection put a ROM at ~16.5 s, so there is no
 // slow lane to warn about any more). That commit dropped the feature and its unit test but not this one,
 // because visual-tests/ is a separate dev-only harness (ADR-010) outside `npm test`.
+
+// B-074 regression: logging in from inside the presets modal. Both overlays are `.modal-overlay`
+// (z-index:1000), and `#presets-modal` is declared after `#auth-modal` in index.html, so pre-fix the
+// presets overlay painted — and captured pointer events — on top of the login form summoned from its own
+// "Log in / Register" CTA. Every real click on the auth modal then hit the presets overlay instead, which
+// is exactly what this test does: a stacking/pointer-events bug only a browser can catch. Runs once
+// (desktop) — the stacking is viewport-independent.
+test.describe('B-074: login summoned from the presets modal', () => {
+  test('app: the auth modal is usable on top and the presets modal reloads with the user data', async ({ page }) => {
+    test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
+    await page.goto('/randomizer', { waitUntil: 'domcontentloaded' });
+
+    await page.click('#btn-load-preset');
+    await page.waitForSelector('#presets-modal:not([hidden])');
+    // Logged out, "My Presets" is the login CTA — the entry point users actually take.
+    await page.click('#preset-login-link');
+    await page.waitForSelector('#auth-modal:not([hidden])');
+
+    // The modal underneath must survive: it is what re-renders with the user's presets after login.
+    await expect(page.locator('#presets-modal')).toBeVisible();
+    // Real clicks on the auth modal: pre-fix Playwright fails with "intercepts pointer events".
+    const email = `b074-${Date.now()}@example.test`;
+    await page.click('[data-auth-tab="register"]');
+    await page.fill('#reg-email', email);
+    await page.fill('#reg-password', 'b074-password');
+    await page.check('#reg-consent');
+    await page.click('#auth-form-register button[type="submit"]');
+
+    // Registering logs straight in (T-225): the auth modal closes, the presets modal stays and reloads.
+    await expect(page.locator('#auth-modal')).toBeHidden();
+    await expect(page.locator('#presets-modal')).toBeVisible();
+    await expect(page.locator('#preset-login-link')).toHaveCount(0);
+    await expect(page.locator('#presets-body')).toContainText('No presets found');
+  });
+
+  // Same flow, keyboard: one Escape must dismiss only the topmost modal (the login form), leaving the
+  // presets modal the user was working in open. Pre-fix both modules' document-level handlers fired.
+  test('app: Escape closes only the topmost modal', async ({ page }) => {
+    test.skip(page.viewportSize().width < 1440, 'viewport-independent — run once on desktop');
+    await page.goto('/randomizer', { waitUntil: 'domcontentloaded' });
+    await page.click('#btn-load-preset');
+    await page.waitForSelector('#presets-modal:not([hidden])');
+    await page.click('#preset-login-link');
+    await page.waitForSelector('#auth-modal:not([hidden])');
+
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#auth-modal')).toBeHidden();
+    await expect(page.locator('#presets-modal')).toBeVisible();
+
+    // A second Escape now closes the presets modal (it is the topmost one again).
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#presets-modal')).toBeHidden();
+  });
+});
