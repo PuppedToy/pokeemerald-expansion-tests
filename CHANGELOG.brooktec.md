@@ -58,6 +58,21 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **One TM no longer arms half a team.** A trainer's bag holds a single copy of each TM, and teaching it
+  is supposed to use it up — but if the move happened to sit somewhere higher in that Pokémon's own
+  learnset, the game forgot to spend it. So **Roxanne fielded three Water Pulses off one TM**, Steven three
+  Iron Defenses, and the Ever Grande rival two Outrages. Worse, a TM you get as a **choose-1-of-3** pick
+  never got marked as chosen, so a trainer could show up with options you were never allowed to take
+  together. TMs are now spent when used, and picking one option really does forgo the other two. Trainers
+  can still teach a move earlier than a Pokémon would learn it by itself — that is what a TM is for — they
+  just cannot do it for free any more. (T-266, B-071)
+
+- **The TMs Koichi gives you now reach enemy teams too.** The three-TM pick on Route 104, next to the
+  Petalburg Woods entrance, was handed to you and to nobody else: no trainer in the game could use two of
+  those TMs, and the third only appeared from the Route 110 rival onwards. They now enter the world at
+  Petalburg Woods — where you can already have them — and carry forward from there like every other pick,
+  so the Aqua grunt in the woods and everyone after him can turn up with them. (T-266, B-072)
+
 - **Trainers no longer carry stone evolutions years before you could have one.** A Pokémon that evolves
   with a stone was treated as fair game for any trainer above level 28, whatever level the run had
   actually set for that evolution — so Wally on Route 110, at level 29, showed up with a **Basculegion**
