@@ -35,9 +35,10 @@
 // INLINE at POKEMON_NAME_LENGTH + 1 bytes instead of pointing at a COMPOUND_STRING, so a name change
 // never moves the string pool. The writers fill a row count (gLocationNicknameCount /
 // gTradeNicknameCount) because trailing rows are zero-filled, and zeros are a valid map/trade id.
-// 120 maps have wild encounters today, and there are 4 in-game trades.
+// 120 maps have wild encounters today; T-269 took the in-game trades from 4 to 15 (one per healing
+// building along the progression), so the trade table needs room for all of them plus headroom.
 #define LOCATION_NICKNAME_CAPACITY   160
-#define TRADE_NICKNAME_CAPACITY      8
+#define TRADE_NICKNAME_CAPACITY      16
 
 // Extra starters (T-052/T-068). The config calls this "an unlimited, ordered list" and the writer used
 // to rewrite the STARTER_EXTRA_COUNT #define per ROM — which changes the size of three arrays and moves

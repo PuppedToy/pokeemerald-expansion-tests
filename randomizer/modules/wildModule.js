@@ -176,6 +176,71 @@ function megaBaseFormLevel(levelFound, evolution) {
 }
 
 /**
+ * The `foundMegaEvos` entries one mon's family contributes — the pool the world's mega stones are
+ * generated from (randomizer/megaAssignment.js decides who hands out which). Empty when the family has
+ * no usable mega (or an AG one, which the run never places).
+ *
+ * Pure. Lifted out of runWildModule's closure by T-269 so the town traders can feed the same pool: an
+ * offered Scyther must put a Scizorite in the world exactly as a wild one does, and that rule may not
+ * exist twice.
+ *
+ * @param {Object} poke        the family member that was found
+ * @param {Array}  pokemonList the run's pokédex
+ * @param {number} levelFound  the level it was found at (the sort key that picks its stone's holder)
+ */
+function megaEvoEntries(poke, pokemonList, levelFound = 0) {
+    if (!hasValidMega(poke) || poke.rating.megaEvoTier === TIER_AG) return [];
+    const out = [];
+    (poke.evolutionData.megaEvos || []).forEach(megaEvoId => {
+        const megaForm = pokemonList.find(p => p.id === megaEvoId);
+        if (!megaForm) return;
+        const baseForm = pokemonList.find(p => p.id === megaForm.evolutionData.megaBaseForm);
+        if (!baseForm) return;
+        const pokeThatEvolvesToBase = pokemonList.filter(p =>
+            (p.evolutions || []).some(e => e.pokemon === baseForm.id)
+        )[0];
+        const evolution = (pokeThatEvolvesToBase && pokeThatEvolvesToBase.evolutions)
+            ? pokeThatEvolvesToBase.evolutions.find(e => e.pokemon === baseForm.id)
+            : null;
+        out.push({
+            family: poke.family,
+            megaFormId: megaForm.id,
+            baseFormId: baseForm.id,
+            item: megaForm.evolutionData.megaItem,
+            level: megaBaseFormLevel(levelFound, evolution),
+        });
+    });
+    return out;
+}
+
+/**
+ * T-269 — fold the town traders' gifts into the run's mega pool, in trader order.
+ *
+ * A trade hands over a real mon, so its family must generate its mega stone like any other found
+ * family (owner's note with the rework). Mutates `wildArtifact.foundMegaEvos` — it runs right after
+ * `selectTrades`, before the docs read the pool and before the bundle is serialized.
+ *
+ * @param {Object} wildArtifact the run's wild artifact
+ * @param {Array}  trades       the trades artifact
+ * @param {Array}  pokemonList  the run's pokédex
+ * @returns {Array} the entries that were added (empty when no gift has a mega)
+ */
+function addTradeMegaEvos(wildArtifact, trades, pokemonList) {
+    if (!wildArtifact || !Array.isArray(trades)) return [];
+    const foundMegaEvos = wildArtifact.foundMegaEvos || (wildArtifact.foundMegaEvos = []);
+    const added = [];
+    for (const trade of trades) {
+        const poke = trade && trade.offeredSpecies && pokemonList.find(p => p.id === trade.offeredSpecies);
+        if (!poke) continue;
+        if (!foundMegaEvos.every(m => m.family !== poke.family)) continue;
+        const entries = megaEvoEntries(poke, pokemonList, trade.level);
+        foundMegaEvos.push(...entries);
+        added.push(...entries);
+    }
+    return added;
+}
+
+/**
  * Sweep generator ("batidas"). Fills every wild zone/method with `pokemonPerZone` distinct
  * species (capped to each method's physical slot count), drawn round-by-round across all zones
  * so any forced duplication is spread. One pool per replacementType (family-keyed). While a pool
@@ -339,30 +404,8 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig, moduleConfi
     const foundMegaEvos = [];
 
     const addToFoundMegaEvosIfHasMegaEvo = (poke, levelFound = 0) => {
-        if (
-            hasValidMega(poke)
-            && poke.rating.megaEvoTier !== TIER_AG
-            && foundMegaEvos.every(m => m.family !== poke.family)
-        ) {
-            (poke.evolutionData.megaEvos || []).forEach(megaEvoId => {
-                const megaForm = pokemonList.find(p => p.id === megaEvoId);
-                if (!megaForm) return;
-                const baseForm = pokemonList.find(p => p.id === megaForm.evolutionData.megaBaseForm);
-                if (!baseForm) return;
-                const pokeThatEvolvesToBase = pokemonList.filter(p =>
-                    (p.evolutions || []).some(e => e.pokemon === baseForm.id)
-                )[0];
-                const evolution = (pokeThatEvolvesToBase && pokeThatEvolvesToBase.evolutions)
-                    ? pokeThatEvolvesToBase.evolutions.find(e => e.pokemon === baseForm.id)
-                    : null;
-                foundMegaEvos.push({
-                    family: poke.family,
-                    megaFormId: megaForm.id,
-                    baseFormId: baseForm.id,
-                    item: megaForm.evolutionData.megaItem,
-                    level: megaBaseFormLevel(levelFound, evolution),
-                });
-            });
+        if (foundMegaEvos.every(m => m.family !== poke.family)) {
+            foundMegaEvos.push(...megaEvoEntries(poke, pokemonList, levelFound));
         }
     };
 
@@ -815,6 +858,8 @@ module.exports = {
     runWildModule, buildWildPlan, WILD_METHOD_SLOTS, BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone, rewardMegaStones,
     // B-062 — the mega-evo sort key; exported so the level rule itself is testable.
     megaBaseFormLevel,
+    // T-269 — the mega pool's one home: the per-family entries, and the traders folding into them.
+    megaEvoEntries, addTradeMegaEvos,
     // Exported for the frontend default + unit testing (T-052).
     DEFAULT_EXTRA_STARTER_PRESET, isDefaultStarterPreset, EXTRA_STARTER_TIERS, pickExtraStartersFromSpecs,
 };

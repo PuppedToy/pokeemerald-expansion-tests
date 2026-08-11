@@ -191,39 +191,50 @@ function methodsAvailableAt(flag) {
 }
 
 /**
- * Every species the player could have caught by `flag`, in this run.
+ * Every encounter the player could have caught by `flag`, in this run, WITH where it is caught.
  *
  * A map/method pair names an encounter TEMPLATE species (wild.js); the run's wild artifact says what
  * replaced it — `wildPlan` (several species per slot in `classic` mode), else `replacementLog` (one),
- * else the template itself for a caller that has neither (tests / a bundle-less path).
+ * else the template itself for a caller that has neither (tests / a bundle-less path). A species that
+ * lives in several places appears once per place (the super-rod bands are shared across whole map
+ * groups), so callers that want a set take the first source, which is the earliest one.
  *
  * @param {string} flag        milestone
  * @param {Array}  wildMaps    wild.js `maps`
  * @param {Object} wildArtifact the run's wild artifact ({ wildPlan, replacementLog })
- * @returns {string[]} species ids, deduplicated, in map → method order
+ * @returns {Array<{species: string, mapId: string, method: string}>} in map → method order
  */
-function encounterPoolAt(flag, wildMaps, wildArtifact) {
+function encounterSourcesAt(flag, wildMaps, wildArtifact) {
     const reachable = new Set(mapsAvailableAt(flag));
     const methods = methodsAvailableAt(flag);
     const wildPlan = (wildArtifact && wildArtifact.wildPlan) || {};
     const replacementLog = (wildArtifact && wildArtifact.replacementLog) || {};
-    const pool = [];
+    const out = [];
     for (const map of wildMaps || []) {
         if (!reachable.has(map.id)) continue;
         for (const method of methods) {
             const template = map[method];
             if (!template) continue;
             const picks = wildPlan[template];
-            if (Array.isArray(picks) && picks.length) pool.push(...picks);
-            else if (replacementLog[template]) pool.push(replacementLog[template]);
-            else pool.push(template);
+            const species = (Array.isArray(picks) && picks.length) ? picks
+                : replacementLog[template] ? [replacementLog[template]]
+                : [template];
+            for (const id of species) out.push({ species: id, mapId: map.id, method });
         }
     }
-    return [...new Set(pool)];
+    return out;
+}
+
+/**
+ * Every species the player could have caught by `flag`, in this run.
+ * @returns {string[]} species ids, deduplicated, in map → method order
+ */
+function encounterPoolAt(flag, wildMaps, wildArtifact) {
+    return [...new Set(encounterSourcesAt(flag, wildMaps, wildArtifact).map(e => e.species))];
 }
 
 module.exports = {
     PROGRESSION, STATIC_MAPS, ALL_METHODS,
-    milestoneOrder, mapsAvailableAt, methodsAvailableAt, encounterPoolAt,
+    milestoneOrder, mapsAvailableAt, methodsAvailableAt, encounterPoolAt, encounterSourcesAt,
     tmLocationMilestone, tmNumbersAvailableAt, tmMovesAvailableAt,
 };

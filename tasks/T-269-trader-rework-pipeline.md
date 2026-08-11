@@ -156,6 +156,24 @@ Acceptance criteria:
   before Route 118 opens, so the Mauville trader does not offer them. Kept the reachability answer;
   noted in `randomizer/docs/trades.md`.
 
+- **2026-08-11** — Traders rewritten (`trades.js`), wired into `generate.js`, 32 unit tests green
+  plus 7 for the mega pool; the whole suite is green (2408). Ran the real pipeline end-to-end
+  (scratch dump, seed 20260811) and it caught a defect the fixtures could not: Sootopolis asked for a
+  UU Binacle and offered an **RU Slowbro**, because candidates were filtered by the FAMILY's
+  `bestEvoTier` and that family peaks through Mega Slowbro. Now the form that changes hands must carry
+  the tier itself, must be legally ownable at the level (`checkValidEvo`, most-evolved stage wins), and
+  a mega form is never handed over. Re-ran: all 15 trades match tier-for-tier, no family collides with
+  the run or with another trade, and a traded Swampert put a Swampertite in the world.
+  Also: `TRADE_NICKNAME_CAPACITY` 8 → 16 (15 traders can all be auto-nicknamed; the writer and the
+  injector both guard on it), and battle-only forms are filtered out of the offer pool like the wild
+  module does. Note for T-270: the ROM builder cannot build until it lands — the artifact now names 15
+  `INGAME_TRADE_*` ids the base does not define yet.
+
+- **2026-08-11** — Observation for the owner (no change made): because the pool is cumulative, late
+  traders often ask for an early-game RU mon and therefore give an RU mon back (the League trade in the
+  dump was Nidorina → Corsola-Galar at level 78). That is exactly what the spec says; if late traders
+  should lean toward the species that only just entered the pool, that is a follow-up decision.
+
 ## Outcome
 
 <!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->

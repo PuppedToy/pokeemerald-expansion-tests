@@ -2,101 +2,101 @@
 #define GUARD_CONSTANTS_TMS_HMS_H
 
 #define FOREACH_TM(F) \
-    F(VACUUM_WAVE) \
-    F(BRUTAL_SWING) \
-    F(BRINE) \
-    F(HIDDEN_POWER) \
-    F(ECHOED_VOICE) \
-    F(CHILLING_WATER) \
-    F(MEGA_PUNCH) \
-    F(BREAKING_SWIPE) \
-    F(UPROAR) \
-    F(STEEL_WING) \
-    F(BURNING_JEALOUSY) \
-    F(FIRE_PLEDGE) \
-    F(GIGA_IMPACT) \
-    F(FLASH_CANNON) \
-    F(RAZOR_SHELL) \
-    F(GRASSY_GLIDE) \
-    F(LUNGE) \
-    F(BLAZE_KICK) \
-    F(REVENGE) \
-    F(ICE_SPINNER) \
-    F(MUDDY_WATER) \
-    F(ICE_FANG) \
-    F(REVERSAL) \
-    F(DUAL_WINGBEAT) \
-    F(PLAY_ROUGH) \
-    F(SEISMIC_TOSS) \
-    F(VENOSHOCK) \
-    F(BULLET_SEED) \
+    F(SAND_TOMB) \
+    F(INCINERATE) \
+    F(ELECTROWEB) \
+    F(AIR_CUTTER) \
+    F(WATER_PULSE) \
+    F(METAL_CLAW) \
+    F(ICY_WIND) \
+    F(SILVER_WIND) \
+    F(TAKE_DOWN) \
+    F(ACID_SPRAY) \
+    F(POWER_GEM) \
+    F(EGG_BOMB) \
+    F(FACADE) \
+    F(HEAT_CRASH) \
+    F(BODY_SLAM) \
+    F(EXPANDING_FORCE) \
+    F(BLAST_BURN) \
     F(RETALIATE) \
-    F(BRICK_BREAK) \
-    F(DRAIN_PUNCH) \
-    F(LEECH_LIFE) \
-    F(DOUBLE_EDGE) \
-    F(HIGH_HORSEPOWER) \
-    F(BUG_BUZZ) \
-    F(STEEL_BEAM) \
-    F(FROST_BREATH) \
-    F(HYPER_VOICE) \
-    F(FLAMETHROWER) \
-    F(POLTERGEIST) \
-    F(FOUL_PLAY) \
-    F(BLIZZARD) \
-    F(SUPERCELL_SLAM) \
-    F(PSYCHIC_FANGS) \
-    F(ICE_BEAM) \
-    F(PHANTOM_FORCE) \
-    F(GUNK_SHOT) \
-    F(SOLAR_BEAM) \
-    F(POLLEN_PUFF) \
+    F(PSYCHO_CUT) \
+    F(GRASS_KNOT) \
+    F(POISON_JAB) \
+    F(GIGA_DRAIN) \
+    F(GRASSY_GLIDE) \
+    F(SCALE_SHOT) \
+    F(CROSS_POISON) \
+    F(ICE_FANG) \
+    F(SEISMIC_TOSS) \
+    F(ACROBATICS) \
+    F(BULLET_SEED) \
+    F(NIGHT_SHADE) \
     F(HURRICANE) \
+    F(STEEL_BEAM) \
+    F(TRIPLE_AXEL) \
+    F(POWER_WHIP) \
+    F(DRAGON_PULSE) \
+    F(SUPERCELL_SLAM) \
+    F(POLLEN_PUFF) \
+    F(PSYCHIC) \
+    F(WILD_CHARGE) \
+    F(STONE_EDGE) \
+    F(ZAP_CANNON) \
+    F(HEAT_WAVE) \
+    F(PETAL_BLIZZARD) \
+    F(AURA_SPHERE) \
+    F(EARTH_POWER) \
+    F(DOUBLE_EDGE) \
+    F(FIRE_BLAST) \
+    F(HYDRO_PUMP) \
+    F(DYNAMIC_PUNCH) \
+    F(SLUDGE_BOMB) \
+    F(DRACO_METEOR) \
     F(U_TURN) \
-    F(SUPERPOWER) \
-    F(OVERHEAT) \
-    F(VOLT_SWITCH) \
-    F(CLOSE_COMBAT) \
     F(FLARE_BLITZ) \
-    F(SELF_DESTRUCT) \
-    F(FOCUS_PUNCH) \
+    F(FLIP_TURN) \
+    F(OVERHEAT) \
+    F(OUTRAGE) \
+    F(FLING) \
+    F(HARD_PRESS) \
+    F(ENDEAVOR) \
     F(EXPLOSION) \
-    F(MISTY_EXPLOSION) \
-    F(CHARGE) \
-    F(SWAGGER) \
-    F(FAKE_TEARS) \
-    F(SPEED_SWAP) \
-    F(CHARM) \
-    F(WONDER_ROOM) \
+    F(PSYCHIC_TERRAIN) \
+    F(DEFENSE_CURL) \
     F(PAIN_SPLIT) \
-    F(VENOM_DRENCH) \
-    F(ROCK_POLISH) \
-    F(SLEEP_TALK) \
+    F(CAPTIVATE) \
+    F(GRASSY_TERRAIN) \
+    F(SAFEGUARD) \
+    F(IMPRISON) \
+    F(TORMENT) \
+    F(QUASH) \
+    F(WONDER_ROOM) \
     F(AGILITY) \
     F(RAIN_DANCE) \
     F(SUNNY_DAY) \
     F(SANDSTORM) \
     F(HAIL) \
-    F(LIGHT_SCREEN) \
     F(REFLECT) \
-    F(TAUNT) \
-    F(PSYCHIC_TERRAIN) \
-    F(ELECTRIC_TERRAIN) \
-    F(GRASSY_TERRAIN) \
-    F(CURSE) \
-    F(TRICK_ROOM) \
-    F(THUNDER_WAVE) \
-    F(BULK_UP) \
-    F(CALM_MIND) \
-    F(SPIKES) \
-    F(MISTY_TERRAIN) \
-    F(TRICK) \
+    F(LIGHT_SCREEN) \
     F(PROTECT) \
+    F(TRICK_ROOM) \
+    F(EERIE_IMPULSE) \
+    F(TRICK) \
+    F(TOXIC_SPIKES) \
+    F(ENDURE) \
+    F(CURSE) \
+    F(IRON_DEFENSE) \
+    F(HAZE) \
+    F(ELECTRIC_TERRAIN) \
+    F(ENCORE) \
+    F(DEFOG) \
+    F(TAUNT) \
+    F(SOFT_BOILED) \
+    F(TOXIC) \
     F(AURORA_VEIL) \
     F(WILL_O_WISP) \
-    F(BATON_PASS) \
-    F(COSMIC_POWER) \
-    F(SWORDS_DANCE)
+    F(DRAGON_DANCE)
 
 #define FOREACH_HM(F) \
     F(CUT) \

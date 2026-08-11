@@ -26,6 +26,10 @@ const DIAGNOSTIC_CODES = {
     // Gym / static rewards (modules/wildModule.js) — B-070.
     REWARD_FAMILY_REUSED: 'REWARD_FAMILY_REUSED',   // no unused-family candidate left; a family repeat was accepted
     REWARD_POOL_EMPTY: 'REWARD_POOL_EMPTY',         // an optional reward had no candidate at all; left unrandomized
+    // Town traders (trades.js) — T-269. Every one is a pool that ran dry, never a broken trade.
+    TRADE_WANTED_POOL_EMPTY: 'TRADE_WANTED_POOL_EMPTY',   // no unused family left to ask for; a repeat was accepted
+    TRADE_OFFER_POOL_EMPTY: 'TRADE_OFFER_POOL_EMPTY',     // no unused family peaks at the wanted mon's tier
+    TRADE_TMS_SHORT: 'TRADE_TMS_SHORT',                   // the offered mon can learn fewer reachable TMs than asked
     // Evolution / mega resolution (modules/utils.js).
     MEGA_NO_BASE_FORM: 'MEGA_NO_BASE_FORM',         // could not find a mega's base form when checking evolutions
     MULTIPLE_PRE_EVOLUTIONS: 'MULTIPLE_PRE_EVOLUTIONS', // ambiguous pre-evolution during devolution
