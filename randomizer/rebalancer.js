@@ -78,7 +78,18 @@ function insertMoveIntoLearnset(learnset, moveId, move, deviation = MOVE_RATING_
     };
 }
 
-const familyTracking = {};
+// Per-RUN state: a family's later members inherit the mutations its earlier members were given, so the
+// whole family stays coherent. B-069 — this MUST be cleared between runs. It used to live for the whole
+// process, so a second generation started with every family already logged from the first: the first
+// member of each family inherited mutations it never earned, took different branches, drew a different
+// number of RNG values and shifted the entire stream. The seed stopped reproducing anything.
+// runPokedexModule calls resetFamilyTracking() before its rebalance pass; keep it that way.
+let familyTracking = {};
+
+/** B-069 — drop all family mutation history. Call once per pokédex build, before rebalancing. */
+function resetFamilyTracking() {
+    familyTracking = {};
+}
 
 function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined, options = {}) {
 
@@ -489,6 +500,7 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined,
 
 module.exports = {
     balancePokemon,
+    resetFamilyTracking,   // B-069 — per-run state; the pipeline clears it before each rebalance pass.
     insertMoveIntoLearnset,
     getLearnLevelBasedOnRating,
     BANNED_ABILITIES,   // T-184 — exported so the unban of Wonder Guard is regression-tested.

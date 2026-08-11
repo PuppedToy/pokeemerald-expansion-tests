@@ -88,6 +88,7 @@ jest.mock('../../rating', () => ({
 
 jest.mock('../../rebalancer', () => ({
     balancePokemon: jest.fn((poke) => poke),
+    resetFamilyTracking: jest.fn(),   // B-069 — cleared before each rebalance pass
 }));
 
 const parser = require('../../parser');

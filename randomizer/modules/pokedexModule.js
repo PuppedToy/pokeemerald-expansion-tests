@@ -7,7 +7,7 @@ const { randomizeTMs, buildTMList, annotateTmNumbers } = require('../tmRandomize
 const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
 const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, assignSupportTiersDoubles } = require('../rating');
-const { balancePokemon } = require('../rebalancer');
+const { balancePokemon, resetFamilyTracking } = require('../rebalancer');
 const { mutateAllMoves } = require('../moveMutator');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -230,6 +230,10 @@ async function runPokedexModule(config, baseData = null) {
 
     // 9. Optional rebalance
     if (config.rebalance) {
+        // B-069 — the rebalancer's family mutation log is per-RUN state that used to live for the whole
+        // process, so a second generation in one process inherited the first's families and stopped
+        // honouring the seed. Clear it before every pass.
+        resetFamilyTracking();
         const abilityKeys = Object.keys(abilities).map(key => key.replace('ABILITY_', ''));
         // T-052 — per-category mutation toggles + probability overrides (default on / defaults).
         const mutationOptions = {
