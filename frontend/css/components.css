@@ -881,6 +881,12 @@ input[type="range"][name="difficulty"]::-moz-range-thumb {
   background: rgba(4, 8, 15, 0.78);
 }
 .modal-overlay[hidden] { display: none; }
+/* B-074 — the auth modal is the only one that can be summoned from on top of another modal (the presets
+   modal's "Log in / Register" CTA). At an equal z-index DOM order decides, and #presets-modal is declared
+   after it in index.html, so the login form ended up behind a full-viewport overlay that also swallowed
+   every click on it. Raising it keeps the form usable while the modal underneath stays open to re-render
+   with the user's data once logged in. */
+#auth-modal { z-index: 1100; }
 .modal {
   position: relative; width: 100%; max-width: 440px;
   display: flex; flex-direction: column; gap: 14px;

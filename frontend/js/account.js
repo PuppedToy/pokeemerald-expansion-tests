@@ -823,7 +823,16 @@ export async function initAccount(opts = {}) {
   if (opts.buildFullZip) buildFullZip = opts.buildFullZip; // T-211 — full-archive builder from app.js
   $('auth-close').addEventListener('click', closeModal);
   $('auth-modal').addEventListener('click', (e) => { if (e.target.id === 'auth-modal') closeModal(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('auth-modal').hidden) closeModal(); });
+  // B-074 — the auth modal is the topmost layer whenever it is open (it can be summoned from inside the
+  // presets modal), so it claims Escape in the CAPTURE phase and stops the event there: the modal
+  // underneath keeps its own bubble-phase handler for when it is topmost again, but never sees this press
+  // and so stays open to re-render with the user's data. Capture-vs-bubble makes that deterministic —
+  // relying on which module registered its listener first is what closed both modals at once.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || $('auth-modal').hidden) return;
+    e.stopPropagation();
+    closeModal();
+  }, true);
 
   document.querySelectorAll('.auth-tab').forEach((t) => t.addEventListener('click', () => {
     document.querySelectorAll('.auth-tab').forEach((x) => x.classList.toggle('active', x === t));

@@ -79,12 +79,18 @@ export function installDomEnv() {
 
   const getEl = (id) => { if (!els.has(id)) els.set(id, makeEl(id)); return els.get(id); };
 
+  // Document-level listeners (the modals' Escape handlers) are recorded so a test can fire them with
+  // env.emitDocument('keydown', { key: 'Escape' }) — the only way to reach a handler that isn't bound
+  // to an element. Nothing fires on its own, so tests that never emit are unaffected.
+  const docListeners = {};
+
   global.document = {
     getElementById: getEl,
     querySelector: () => null,
     querySelectorAll: () => [],
     createElement: () => makeEl('_created'),
-    addEventListener: () => {},
+    addEventListener(ev, fn) { (docListeners[ev] ||= []).push(fn); },
+    removeEventListener() {},
     body: makeEl('body'),
   };
   global.localStorage = {
@@ -106,6 +112,7 @@ export function installDomEnv() {
     getEl,
     setFetch(fn) { fetchHandler = fn; },
     setConfirm(v) { confirmReturn = v; },
+    emitDocument(ev, e = {}) { (docListeners[ev] || []).forEach((f) => f(e)); },
     restore() { Object.assign(global, saved); },
   };
 }

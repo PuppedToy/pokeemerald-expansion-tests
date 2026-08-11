@@ -83,6 +83,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **You can log in from the presets window again.** Opening **Load Preset** while signed out shows a
+  "Log in / Register" link, but the login window used to open *behind* the presets one — invisible and
+  impossible to type into, since every click landed on the presets window instead. It now opens in front,
+  the presets window stays open underneath, and the moment you are logged in it fills itself in with your
+  own presets. Escape now closes one window at a time, too. (B-074)
+
 - **A trade can no longer hand you a Pokémon you already had a claim on.** One run offered a Sandaconda
   at a trade while its pre-evolution was already one of the extra starters. Trades now draw from the same
   without-replacement pool of families as starters, gym rewards, statics and wild encounters — and never
