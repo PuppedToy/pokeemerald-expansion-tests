@@ -222,31 +222,32 @@ function selectTrades({ pokemonList: rawPokemonList, wildArtifact, wildMaps, cap
         const level = capLevels[trader.flag];
 
         // ── what the trader asks for ──────────────────────────────────────────
-        // Preference order, each step a smaller compromise than skipping the trade: the tier the trader
-        // demands and an unused family → that tier, repeating a family → any tier, unused family → any.
+        // The ladder, in the owner's order of preference (2026-08-11): a FRESH family outranks the tier.
+        //   1. the tier this trader demands, family nobody has asked for  ← the normal case
+        //   2. ANY reachable wild mon, family nobody has asked for        ← the tier ran out or is absent
+        //   3. repeat a family (its tier first, then any)                 ← the whole pool is spent
+        // Steps 2 and 3 warn, so a run that had to compromise says so.
         const wantedAt = (families, tier) =>
             wantedCandidates(pokemonList, trader, wildArtifact, wildMaps, families, tier);
         const tierWanted = trader.wantedTier || null;
         let candidates = wantedAt(askedFamilies, tierWanted);
         if (candidates.length === 0 && tierWanted) {
-            candidates = wantedAt(new Set(), tierWanted);
+            candidates = wantedAt(askedFamilies, null);
             if (candidates.length) {
                 warn(DIAGNOSTIC_CODES.TRADE_WANTED_POOL_EMPTY,
-                    `Every ${tierWanted} encounter reachable at ${trader.town} was already asked for; `
-                    + `repeating a family to keep the ${tierWanted} swap.`,
+                    `No unused ${tierWanted} encounter is reachable at ${trader.town}; asked for another `
+                    + `tier rather than repeat a family.`,
                     { town: trader.town, flag: trader.flag, tier: tierWanted });
             }
         }
         if (candidates.length === 0) {
-            // The demanded tier is not in this run's reachable pool at all (or, with no tier demanded,
-            // every family has been asked for): drop the constraint rather than lose the trade.
-            candidates = wantedAt(askedFamilies, null);
+            // Every reachable family has already been asked for: repeat rather than skip the trade,
+            // keeping the demanded tier if that is still possible.
+            candidates = tierWanted ? wantedAt(new Set(), tierWanted) : [];
             if (candidates.length === 0) candidates = wantedAt(new Set(), null);
             if (candidates.length) {
                 warn(DIAGNOSTIC_CODES.TRADE_WANTED_POOL_EMPTY,
-                    tierWanted
-                        ? `No ${tierWanted} encounter is reachable at ${trader.town}; asked for another tier.`
-                        : `Every encounter reachable at ${trader.town} was already asked for; repeating a family.`,
+                    `Every encounter reachable at ${trader.town} was already asked for; repeating a family.`,
                     { town: trader.town, flag: trader.flag, tier: tierWanted });
             }
         }
