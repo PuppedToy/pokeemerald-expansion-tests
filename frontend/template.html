@@ -2002,23 +2002,31 @@
 
     const routesGrid = document.getElementById('wildpokes-cards');
 
-    // T-194 — the town-trade sub-card (3 lines: TRADE caption / location + town / gift + clickable
-    // offered mon + level). Sized to its container's width (the small encounter box on the route cards;
-    // the box-section in the modal). Uses only global helpers (getPokeImg/getIcon/pokes) and the
-    // delegated `.evo-link` handler so it works in both scopes.
-    window.buildTradeCardHTML = function (trade, routeId) {
+    // T-194/T-269 — the town-trade sub-card: TRADE caption / the trader's town / the gift (clickable,
+    // with its level) / the TMs it arrives knowing / how many IVs are perfect. Sized to its container's
+    // width (the small encounter box on the route cards; the box-section in the modal). Uses only global
+    // helpers (getPokeImg/getIcon/pokes) and the delegated `.evo-link` handler so it works in both scopes.
+    // Keyed by the trade id, because a route can carry several traders' cards (T-269).
+    window.buildTradeCardHTML = function (trade) {
       if (!trade || !trade.offeredSpecies) return '';
       const id = trade.offeredSpecies;
       const prettify = s => String(s || '').split('_').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' ');
       const p = (typeof pokes !== 'undefined') ? pokes.find(x => x && x.id === id) : null;
       const offName = (p && p.name) || prettify(id.replace('SPECIES_', ''));
+      const moves = (trade.offeredMoves || []).map(m => prettify(String(m).replace('MOVE_', ''))).join(', ');
+      const ivs = trade.perfectIvs || 0;
+      const extras = []
+        .concat(moves ? ['<div style="font-size:10px;opacity:.85;margin-top:3px">' + getIcon('move', '📘') + ' knows ' + moves + '</div>'] : [])
+        .concat(ivs ? ['<div style="font-size:10px;opacity:.85;margin-top:2px">' + getIcon('star', '⭐') + ' ' + ivs + ' perfect IV' + (ivs > 1 ? 's' : '') + '</div>'] : [])
+        .join('');
       return '<div style="width:100%;box-sizing:border-box;margin-top:6px;padding:7px 6px;background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.40);border-radius:8px;text-align:center">'
         + '<div style="font-weight:800;letter-spacing:1px;font-size:11px;color:#60a5fa">TRADE</div>'
         + '<div style="font-size:11px;opacity:.9;margin-top:2px">' + getIcon('location', '📍') + ' ' + prettify(trade.town) + '</div>'
         + '<div style="margin-top:4px"><span class="evo-link" data-id="' + id + '" style="cursor:pointer;display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px;justify-content:center;font-size:11px">'
         + getIcon('reward', '🎁') + '<img src="' + getPokeImg(id) + '" width="28" height="28" style="object-fit:contain" alt=""><span style="font-weight:700">' + offName + ' Lv. ' + trade.level + '</span></span></div>'
+        + extras
         // T-201 — trade / undo-trade button (no icon); shown + labelled live by applyLocVisuals from the capture state.
-        + '<button class="nz-trade-btn" data-trade-route="' + (routeId || '') + '" style="display:none;margin-top:6px;font-family:var(--obs-font-display);font-size:9px;letter-spacing:1px;background:var(--obs-well);color:var(--obs-text-dim);border:2px solid rgba(96,165,250,0.4);box-shadow:var(--obs-shadow-sm);padding:6px 12px;cursor:pointer"></button>'
+        + '<button class="nz-trade-btn" data-trade-id="' + (trade.ingameTradeId || '') + '" style="display:none;margin-top:6px;font-family:var(--obs-font-display);font-size:9px;letter-spacing:1px;background:var(--obs-well);color:var(--obs-text-dim);border:2px solid rgba(96,165,250,0.4);box-shadow:var(--obs-shadow-sm);padding:6px 12px;cursor:pointer"></button>'
         + '</div>';
     };
 
@@ -2062,7 +2070,9 @@
 
       const encCols = Math.max(1, Math.ceil((encSlots.length + hiddenTiles.length) / 3));
 
-      let tradeRendered = false; // T-194 — the trade sub-card renders once, on its wanted encounter tile.
+      // T-194/T-269 — each trade's sub-card renders once, on the tile of the mon it asks for. A route
+      // can carry several traders' cards, so they are tracked per trade id, not per route.
+      const tradesRendered = {};
       const encountersHTML = encSlots
         .map(({ slot, species, method }) => {
           const pokeId = species;
@@ -2112,10 +2122,15 @@
           // T-194 — the trade sub-card sits in the wanted grass/old-rod pokemon's own encounter box
           // (its width, not the route's). It is a SIBLING of the clickable `.wild-poke` tile (wrapped
           // in a one-cell column) so tapping the offered sprite opens the offered mon, not the tile's.
-          if (!tradeRendered && route.trade && route.trade.wantedSpecies === pokeId
-              && (method === 'land' || method === 'old') && typeof window.buildTradeCardHTML === 'function') {
-            tradeRendered = true;
-            return `<div class="wild-poke-cell" style="display:flex;flex-direction:column">${tileHTML}${window.buildTradeCardHTML(route.trade, route.id)}</div>`;
+          const tradesHere = (route.trades || []).filter(t => t && t.wantedSpecies === pokeId
+              && !tradesRendered[t.ingameTradeId]
+              && (!t.wantedMethod || t.wantedMethod === method));
+          if (tradesHere.length && typeof window.buildTradeCardHTML === 'function') {
+            const cards = tradesHere.map(t => {
+              tradesRendered[t.ingameTradeId] = true;
+              return window.buildTradeCardHTML(t);
+            }).join('');
+            return `<div class="wild-poke-cell" style="display:flex;flex-direction:column">${tileHTML}${cards}</div>`;
           }
           return tileHTML;
         })
@@ -2985,14 +3000,17 @@
         }
       });
 
-      // T-201 — reflect the trade state on this card's trade button: hidden until the wanted mon is captured,
-      // then "trade" (→ receive the offered mon), then "undo trade".
-      const tBtn = card.querySelector('.nz-trade-btn');
-      if (tBtn && typeof window.docTradeState === 'function') {
-        const ts = window.docTradeState(routeId);
-        if (ts.traded)        { tBtn.textContent = 'undo trade'; tBtn.setAttribute('data-trade-act', 'undo'); tBtn.style.display = ''; }
-        else if (ts.captured) { tBtn.textContent = 'trade';      tBtn.removeAttribute('data-trade-act');       tBtn.style.display = ''; }
-        else                  { tBtn.style.display = 'none'; }
+      // T-201 — reflect each trade's state on its own button: hidden until that trade's wanted mon is
+      // captured, then "trade" (→ receive the offered mon), then "undo trade". T-269 — a card can hold
+      // several buttons (several traders want mons from this route), so every one is labelled from its
+      // own trade id.
+      if (typeof window.docTradeState === 'function') {
+        card.querySelectorAll('.nz-trade-btn').forEach(function (tBtn) {
+          const ts = window.docTradeState(tBtn.getAttribute('data-trade-id'));
+          if (ts.traded)        { tBtn.textContent = 'undo trade'; tBtn.setAttribute('data-trade-act', 'undo'); tBtn.style.display = ''; }
+          else if (ts.captured) { tBtn.textContent = 'trade';      tBtn.removeAttribute('data-trade-act');       tBtn.style.display = ''; }
+          else                  { tBtn.style.display = 'none'; }
+        });
       }
     }
 
@@ -3373,29 +3391,38 @@
     // ---------- T-201: town-trade action (docs-only; in-ROM naming is T-202) ----------
     // Trading turns the captured WANTED mon into the trade's OFFERED mon (which carries the trade's own
     // nickname); Undo reverts. State lives in store.trades[encounterKey] and is purged on un-capture.
-    function tradeInfoForRoute(routeId){
+    // T-269 — 15 traders draw from the whole reachable pool, so two of them can want mons from the same
+    // route: every lookup here is by TRADE ID (routes are no longer unique keys).
+    function tradeInfoById(tradeId){
       var ti=(nickData()&&nickData().tradesInfo)||[];
-      for(var i=0;i<ti.length;i++) if(ti[i]&&ti[i].routeMapId===routeId) return ti[i];
+      for(var i=0;i<ti.length;i++) if(ti[i]&&ti[i].ingameTradeId===tradeId) return ti[i];
       return null;
     }
-    // The captured encounter on a route that is (or, once traded, was) the trade's wanted species.
-    function tradeSourceEntry(routeId){
-      var ti=tradeInfoForRoute(routeId); if(!ti) return null;
+    // Every trade whose wanted mon lives on this route, in trader order.
+    function tradesForRoute(routeId){
+      return ((nickData()&&nickData().tradesInfo)||[]).filter(function(t){ return t&&t.wantedMapId===routeId; });
+    }
+    // The captured encounter that is (or, once traded, was) this trade's wanted species.
+    function tradeSourceEntry(tradeId){
+      var ti=tradeInfoById(tradeId); if(!ti) return null;
       return capturedEntries().find(function(e){
-        return e.routeId===routeId && (e.traded || e.baseSpecies===ti.wantedSpecies || e.currentSpecies===ti.wantedSpecies);
+        if(e.routeId!==ti.wantedMapId) return false;
+        // A traded entry no longer shows the wanted species, so match it by the trade it holds.
+        if(e.traded){ var td=store.trades&&store.trades[e.encounterKey]; return !!(td&&td.tradeId===tradeId); }
+        return e.baseSpecies===ti.wantedSpecies || e.currentSpecies===ti.wantedSpecies;
       }) || null;
     }
     function docRefreshNicks(){
       if(typeof window.renderPC==='function') window.renderPC();
       if(typeof window.nzRefreshAll==='function') window.nzRefreshAll();
     }
-    window.docTradeState=function(routeId){ var e=tradeSourceEntry(routeId); return { captured:!!e, traded:!!(e&&e.traded) }; };
-    window.docTrade=function(routeId){
-      var ti=tradeInfoForRoute(routeId), e=tradeSourceEntry(routeId); if(!ti||!e||e.traded) return;
+    window.docTradeState=function(tradeId){ var e=tradeSourceEntry(tradeId); return { captured:!!e, traded:!!(e&&e.traded) }; };
+    window.docTrade=function(tradeId){
+      var ti=tradeInfoById(tradeId), e=tradeSourceEntry(tradeId); if(!ti||!e||e.traded) return;
       store.trades[e.encounterKey]={ tradeId: ti.ingameTradeId, offered: ti.offeredSpecies }; save(); docRefreshNicks();
     };
-    window.docUndoTrade=function(routeId){
-      var e=tradeSourceEntry(routeId); if(!e||!e.traded) return;
+    window.docUndoTrade=function(tradeId){
+      var e=tradeSourceEntry(tradeId); if(!e||!e.traded) return;
       delete store.trades[e.encounterKey]; save(); docRefreshNicks();
     };
     // Species shown for an Encounters tile: traded offered → evolution overlay → base wild species.
@@ -3405,9 +3432,9 @@
     };
     // Click delegation for the trade / undo-trade buttons (Encounters + modal share these classes).
     document.addEventListener('click', function(e){
-      var b=e.target.closest('[data-trade-route]'); if(!b) return; e.stopPropagation();
-      var routeId=b.getAttribute('data-trade-route');
-      if(b.getAttribute('data-trade-act')==='undo') window.docUndoTrade(routeId); else window.docTrade(routeId);
+      var b=e.target.closest('[data-trade-id]'); if(!b) return; e.stopPropagation();
+      var tradeId=b.getAttribute('data-trade-id');
+      if(b.getAttribute('data-trade-act')==='undo') window.docUndoTrade(tradeId); else window.docTrade(tradeId);
       // If the click came from the modal, re-open it so its trade box reflects the new state.
       var sid=b.getAttribute('data-trade-species'); var p=sid&&pokeById[sid];
       if(p&&typeof showPokemonModal==='function') showPokemonModal(p);
@@ -3679,7 +3706,7 @@
     var famComponent = {};
     (typeof pokes!=='undefined'?pokes:[]).forEach(function(p){ if (!p) return; var r=ufFind(p.id); (famComponent[r]=famComponent[r]||[]).push(p.id); });
     function familySet(speciesId){ var s={}; s[speciesId]=1; (famComponent[ufFind(speciesId)]||[]).forEach(function(id){ s[id]=1; }); return s; }
-    function findObtainable(famSet){ var found=null; (typeof wildPokes!=='undefined'?wildPokes:[]).forEach(function(route){ if (found || route.id==='STARTER_EXTRA') return; encounterSlots(route).forEach(function(e){ if (found) return; if (famSet[e.species]) found={ label: route.label || nm(route.id), species: e.species, trade: route.trade }; }); }); return found; } // B-041 (+T-194 trade)
+    function findObtainable(famSet){ var found=null; (typeof wildPokes!=='undefined'?wildPokes:[]).forEach(function(route){ if (found || route.id==='STARTER_EXTRA') return; encounterSlots(route).forEach(function(e){ if (found) return; if (famSet[e.species]) found={ label: route.label || nm(route.id), species: e.species, trades: route.trades }; }); }); return found; } // B-041 (+T-194 trade)
 
     function nextBossLabel(st){ for (var i=0;i<bossCaps.length;i++){ if (!isBossDefeated(bossCaps[i],st)) return bossCaps[i].label; } return 'All cleared'; }
     // Refreshes the whole top bar (level cap / box / deaths / next boss). Name kept for its
@@ -3738,9 +3765,14 @@
         var boxNick = resolveNickname(exact), boxWho = boxNick || nm(speciesId);
         var editBtn = '<button class="box-editnick" data-edit-nick="'+exact.routeId+'|'+exact.slot+'|'+speciesId+'">Edit nickname</button>';
         var faintBtn = '<button class="box-faintbtn" data-tooltip="Mark as fainted" data-box-faint="'+exact.routeId+'|'+exact.slot+'|1|'+speciesId+'">'+icon('fainted','💀')+' Mark fainted</button>';
-        var tradeBtn='', tiEx=tradeInfoForRoute(exact.routeId);
-        if (exact.traded && tiEx) tradeBtn = '<button class="box-tradebtn" data-trade-route="'+exact.routeId+'" data-trade-act="undo" data-trade-species="'+tiEx.wantedSpecies+'">undo trade</button>';
-        else if (tiEx && tiEx.wantedSpecies===speciesId) tradeBtn = '<button class="box-tradebtn" data-trade-route="'+exact.routeId+'" data-trade-species="'+tiEx.offeredSpecies+'">trade</button>';
+        // T-269 — the trade this box entry belongs to: the one it was traded with, else the one on this
+        // route that asks for exactly this species.
+        var tdEx = store.trades && store.trades[exact.encounterKey];
+        var tiEx = (exact.traded && tdEx) ? tradeInfoById(tdEx.tradeId)
+          : tradesForRoute(exact.routeId).find(function(t){ return t.wantedSpecies===speciesId; }) || null;
+        var tradeBtn='';
+        if (exact.traded && tiEx) tradeBtn = '<button class="box-tradebtn" data-trade-id="'+tiEx.ingameTradeId+'" data-trade-act="undo" data-trade-species="'+tiEx.wantedSpecies+'">undo trade</button>';
+        else if (tiEx) tradeBtn = '<button class="box-tradebtn" data-trade-id="'+tiEx.ingameTradeId+'" data-trade-species="'+tiEx.offeredSpecies+'">trade</button>';
         return wrap('<div class="box-tag-row"><span class="box-tag">'+icon('pc','📦')+' '+boxWho+' is in box</span>'+editBtn+tradeBtn+faintBtn+'</div>'+inner);
       }
       var alive = caps.find(function(e){ return !e.fainted && famSet[e.currentSpecies]; });
@@ -3753,16 +3785,16 @@
         return wrap('<div class="box-tag-row"><span class="box-fainted">'+icon('fainted','💀')+' <span class="evo-link" data-id="'+fainted.currentSpecies+'">'+sprite(fainted.currentSpecies,32)+'</span> '+fWho+' is fainted</span><button class="box-faintbtn box-undo" data-box-faint="'+fainted.routeId+'|'+fainted.slot+'|0|'+speciesId+'">Undo</button></div>'); }
       var obt = findObtainable(famSet);
       if (obt){
-        // T-194 — below "Obtainable in …", in the same box, the town-trade sub-card — but ONLY on the
-        // exact grass/old-rod species the trade wants (one pokemon per route), not every family member.
-        var tr = null, trRoute = null;
-        if (typeof wildPokes !== 'undefined') {
-          for (var ri = 0; ri < wildPokes.length; ri++) {
-            var rt = wildPokes[ri];
-            if (rt && rt.trade && rt.trade.wantedSpecies === speciesId) { tr = rt.trade; trRoute = rt.id; break; }
-          }
+        // T-194/T-269 — below "Obtainable in …", in the same box, a town-trade sub-card for EVERY trader
+        // that wants exactly this species (not every family member, and no longer just one per route).
+        var tradeHTML = '';
+        if (typeof wildPokes !== 'undefined' && typeof window.buildTradeCardHTML === 'function') {
+          wildPokes.forEach(function (rt) {
+            (rt && rt.trades || []).forEach(function (t) {
+              if (t && t.wantedSpecies === speciesId) tradeHTML += window.buildTradeCardHTML(t);
+            });
+          });
         }
-        var tradeHTML = (tr && typeof window.buildTradeCardHTML === 'function') ? window.buildTradeCardHTML(tr, trRoute) : '';
         return wrap('<span class="box-obtainable">'+icon('location','📍')+' Obtainable in '+obt.label+' <span class="evo-link" data-id="'+obt.species+'">'+sprite(obt.species,32)+'</span></span>'+tradeHTML);
       }
       return '';

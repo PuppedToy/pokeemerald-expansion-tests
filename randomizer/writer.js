@@ -34,7 +34,7 @@ const { savePokemonData } = require('./pokemonWriter.js');
 const { saveMoveData } = require('./moveWriter.js');   // T-187 — persists move mutation to moves_info.h
 const { writeEvoLevels } = require('./evoLevelWriter.js');
 const { stoneUnlockLevel } = require('./bossCaps');   // B-067 — stone availability, from the caps SSOT
-const { applyDocMapOrder } = require('./docsMapOrder.js');   // T-268 — docs encounter order (SSOT)
+const { applyDocMapOrder, attachTradesToMaps } = require('./docsMapOrder.js');   // T-268/T-269 — docs encounter list (SSOT)
 const { writeTrades } = require('./tradeWriter.js');   // T-194 — per-ROM town-trade data → src/data/trade.h
 const { applyStarterChoose } = require('./starterNameWriter.js');
 
@@ -782,13 +782,10 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     // T-268 — progression order (boss rewards, statics, legendaries): docsMapOrder.js is its
     // only home, shared with the bundle path in writerDocs.js.
     applyDocMapOrder(maps, pokeRewardReplacements);
-    // T-194 — attach each town trade to its route entry for the analyze path (docs=null → inline maps).
-    // The maker path reuses the bundle's docs.wildPokes, which already carries `.trade` from writerDocs.
-    for (const t of (trades || [])) {
-        if (!t || !t.offeredSpecies) continue;
-        const entry = maps.find(m => m.id === t.routeMapId);
-        if (entry) entry.trade = { town: t.town, tier: t.tier, level: t.level, offeredSpecies: t.offeredSpecies, wantedSpecies: t.wantedSpecies };
-    }
+    // T-194/T-269 — attach the town trades to their wanted encounters for the analyze path (docs=null →
+    // inline maps). The maker path reuses the bundle's docs.wildPokes, which already carries `.trades`
+    // from writerDocs. One home for the rule: docsMapOrder.attachTradesToMaps.
+    attachTradesToMaps(maps, trades);
 
     // T-163 — use the docs-visibility-redacted encounter maps from the bundle's docs when present
     // (hidden statics/rewards/zones removed, per-method species behind placeholders); the analyze.js

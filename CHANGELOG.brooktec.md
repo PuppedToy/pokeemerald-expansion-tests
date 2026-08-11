@@ -9,6 +9,22 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Fifteen traders, one in every Pokémon Center, and each trade is a real choice.** The four town
+  traders became **fifteen** — Rustboro, Dewford, Slateport, Mauville, Verdanturf, Lavaridge, Fallarbor,
+  Petalburg, Fortree, Lilycove, Mossdeep, Pacifidlog, Sootopolis, Ever Grande and one in the Pokémon
+  League lobby — each standing on the same spot inside its city's healing building. A trade is now a
+  **lateral swap**: the trader asks for a wild Pokémon **you could already have caught at that point of
+  the run** (grass and the Old Rod at first; the Good Rod, Surf and the Super Rod join in as the world
+  hands them over) and gives back one whose **fully-evolved quality is exactly the same**. No two traders
+  want the same family, so each one is a fresh decision.
+
+  What you get is not just a swap, though. Every gift arrives **already knowing TMs you could have found
+  by then** (1 early, up to 3 at the end) and with **perfect 31 IVs** in some of its stats (1 early, 4
+  from the League's trader), and its family now generates its **Mega Stone** in the world just like a wild
+  Pokémon would. The generated documentation shows all of it on the tile of the mon each trader wants: the
+  town, the gift and its level, the moves it comes with and how many of its IVs are perfect — and the
+  nuzlocke tracker's *trade* button works per trader. (T-269, T-270, T-271)
+
 - **The site has real addresses now.** Every part of the page lives at its own URL — `/features`,
   `/randomizer`, `/feedback`, `/settings` — and so does each list inside Features
   (`/features/randomizer`, `/features/docs`) and Feedback (`/feedback/bugs`). That means the browser
@@ -64,6 +80,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   always does exactly what you tell it to. (T-267)
 
 ### Fixed
+
+- **A trade can no longer hand you a Pokémon you already had a claim on.** One run offered a Sandaconda
+  at a trade while its pre-evolution was already one of the extra starters. Trades now draw from the same
+  without-replacement pool of families as starters, gym rewards, statics and wild encounters — and never
+  give back a member of the family they are asking for. (B-073)
 
 - **Route 116 is listed where you actually reach it.** In the docs' encounter list the route appeared
   before the Roxanne reward — a place you cannot walk into until you have beaten her. It now comes right

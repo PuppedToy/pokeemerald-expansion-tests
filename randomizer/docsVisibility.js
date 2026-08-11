@@ -85,8 +85,10 @@ function redactWildPokes(maps, dv, { wildPlan } = {}) {
         // hold several species (Classic mode, B-041) surface the FULL distinct list under
         // `methodSpecies` so the viewer can show every one (route[method] stays the representative).
         const redacted = { ...entry };
-        // T-194 — the town-trade sub-card is baked onto the route entry (writerDocs); drop it when off.
-        if (!dv.showTrades && redacted.trade) delete redacted.trade;
+        // T-194/T-269 — the town-trade sub-cards are baked onto the route entry of each trade's WANTED
+        // encounter (docsMapOrder.attachTradesToMaps); drop them when the toggle is off. A route can hold
+        // several, so this is a list.
+        if (!dv.showTrades && redacted.trades) delete redacted.trades;
         let hiddenMethods = null;
         let methodSpecies = null;
         for (const [method, toggle] of Object.entries(WILD_METHOD_TOGGLE)) {

@@ -21,9 +21,9 @@ const src = fs.readFileSync(path.join(__dirname, '..', 'js', 'config-form.js'), 
 
 const require = createRequire(import.meta.url);
 const { WILD_ROUTE_LOCATIONS, STATIC_LOCATIONS, GIFT_LOCATIONS } = require('../../randomizer/data/encounterLocations.js');
-const { TOWN_TRADES } = require('../../randomizer/trades.js');
+const { TRADERS } = require('../../randomizer/trades.js');
 const LOC = WILD_ROUTE_LOCATIONS.length + STATIC_LOCATIONS.length; // autoLocation bucket
-const TG = GIFT_LOCATIONS.length + TOWN_TRADES.length;             // autoTradesGifts bucket
+const TG = GIFT_LOCATIONS.length + TRADERS.length;             // autoTradesGifts bucket
 
 const names = (n) => Array.from({ length: n }, (_, i) => `N${i}`);
 const nick = (over = {}) => ({

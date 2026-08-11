@@ -498,4 +498,8 @@ async function runGeneration(cfg, mcfg, sessionId, hooks = {}) {
     }
 }
 
-module.exports = { runGeneration, generateDefault, generateNuzlocke, generateSoullink, bundle, attachStarterNaming, attachLocationNaming, attachTradeNaming, attachAutoNaming };
+// `computeTrades` is exported so any caller that assembles a ROM's artifacts outside runGeneration
+// (the visual-test docs fixture) decides the trades — and grows the mega pool — the SAME way,
+// instead of re-deriving the call and drifting (T-269: its copy forgot the move database, so the
+// fixture's gifts arrived with no TMs).
+module.exports = { runGeneration, generateDefault, generateNuzlocke, generateSoullink, bundle, computeTrades, attachStarterNaming, attachLocationNaming, attachTradeNaming, attachAutoNaming };
