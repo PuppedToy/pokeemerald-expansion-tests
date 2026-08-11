@@ -79,11 +79,13 @@ verifiable with `cd randomizer && npm test`.
    `encounterPoolAt(flag, wildMaps, wildArtifact)` (species, via the run's `wildPlan`). Guard tests:
    every `wild.js` map is classified exactly once (statics excluded on purpose), every flag exists in
    `bossCaps`, and the order matches `caps.c`.
-2. **`randomizer/data/bagCascade.js`** — move the world's item/TM bag cascade out of `trainers.js`
-   into one declarative table keyed by cap flag, with two derivations from that one home:
-   `buildBags()` (what `trainers.js` uses today — same entries, same RNG call order, so bundles stay
-   byte-identical) and `tmPoolAt(flag, tmList)` (every TM reachable by that milestone, pick options
-   expanded, HMs dropped). Guarded by the existing determinism/snapshot suites.
+2. **TM reachability** — "one TM out of that boss's bag" derived in `progression.js` from the TM
+   table's **Location column** (`randomizer/docs/tms.md`, already the SSOT for where each TM slot
+   lives, reaching the pipeline as each move's `tmLocation`) joined with the map table: a gym reward
+   resolves to its badge, a pick/item to the milestone that opens its route, and three named places
+   resolve explicitly. Pick groups count as all their options (owner's decision) and HMs carry no TM
+   slot, so they drop out on their own. See the 2026-08-11 log entry for why this replaced the
+   planned `bagCascade.js` refactor.
 3. **`randomizer/trades.js`** — rewrite the selection around a 15-row `TRADERS` table (city, trade
    id, milestone flag, TM count, IV count):
    - level = that milestone's cap level;
@@ -109,8 +111,9 @@ Acceptance criteria:
       new map is added without a milestone.
 - [ ] Each trader's request pool equals "every land/old-rod (+good/surf/super once unlocked)
       encounter reachable before its boss" — asserted per trader against the owner's table.
-- [ ] The TM bag cascade lives in exactly one place; `tmPoolAt('FLAG_BADGE01_GET')` is Roxanne's
-      reachable TMs and trainer bags are unchanged (determinism suites green).
+- [ ] The TM pool is derived, not restated: every row of the real TM table resolves to a milestone
+      (an unclassified location throws), and the pool at Roxanne is exactly the TMs `roxanneBag()`
+      holds. Trainer bags are untouched (determinism suites green).
 - [ ] `offeredSpecies.rating.bestEvoTier === wantedSpecies.rating.bestEvoTier` for all 15 trades.
 - [ ] **B-073**: no offered family repeats a starter / extra starter / gym reward / static / wild
       family, nor another trade's — regression test named for B-073.
@@ -129,6 +132,29 @@ Acceptance criteria:
   the four "bag" concepts the owner referred to are `trainers.js`'s cascade (`roxanneBag()`,
   `brawlyBag()`, …), which is the only existing description of what the player holds at each
   milestone. Owner answered the four open questions (see the table above).
+
+- **2026-08-11** — `randomizer/data/progression.js` + 35 tests green: the milestone spine (one entry
+  per `caps.c` flag, in its order), the maps each milestone opens, the retroactive method unlocks
+  (good rod → Flannery, Surf → Winona, super rod → Tate & Liza) and `encounterPoolAt()`.
+  Two findings while placing the maps:
+  - **Route 119** first sat on Winona's entry; moved to the Weather Institute's, so
+    "everything up to Norman" (the Petalburg trader) excludes it as the owner specified. The rule the
+    table follows is now explicit: a map the player only walks into *as a consequence* of a fight
+    belongs to the NEXT milestone (that is also why Route 116 is the Rusturf grunt's, not Roxanne's).
+  - **Ever Grande City** sits on Wally-VR's entry and **Victory Road B1F** on the Ever Grande rival's,
+    so the Ever Grande trader may ask for the city's encounters but only the League trader reaches
+    the cave's.
+- **2026-08-11** — **Dead end avoided (approach changed, step 2).** The plan was to lift
+  `trainers.js`'s bag cascade into a declarative `bagCascade.js` and derive the TM pool from it. Read
+  the cascade first: every trainer's bag is `getSampleItemsFromArray(xBag(), n)`, which draws from the
+  *assembled array*, so its exact content, order and length feed the RNG for every trainer in the
+  game — restructuring it risks re-rolling every bag in every bundle for zero user-visible gain.
+  Derived the pool from `docs/tms.md`'s Location column + the map table instead (two SSOTs joined, no
+  new copy of anything). Cross-checked: the derived pool at Roxanne is `[1, 5, 6, 7, 8, 9, 10, 71]`
+  — exactly the TMs `roxanneBag()` holds — and Brawly's, Steven's and the museum grunts' match their
+  bags too. Only divergence found: the Route 118 picks (TM20-22) enter the cascade one milestone
+  before Route 118 opens, so the Mauville trader does not offer them. Kept the reachability answer;
+  noted in `randomizer/docs/trades.md`.
 
 ## Outcome
 
