@@ -1,7 +1,7 @@
 ---
 id: T-269
 title: Rework the town traders — 15 quality-for-quality trades chosen from the progression pool
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-08-11
 updated: 2026-08-11
@@ -177,6 +177,38 @@ Acceptance criteria:
 - **2026-08-11** — The observation above became a change: the owner pinned the late traders' quality.
   See [T-272](T-272-late-trader-tier-floor.md) — Lilycove onward is UU ↔ UU, the League's is OU ↔ OU.
 
+- **2026-08-11** — Owner validated the reworked trades on the pipeline evidence (the 15-trade dump plus
+  the docs) and asked for the task to be closed. Closing.
+
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+**Shipped.** The 15 traders decide themselves entirely in the pipeline:
+
+- `randomizer/data/progression.js` — the new single home of what the player has reached at each `caps.c`
+  milestone (maps opened, methods unlocked retroactively) and, joined with the TM table's Location
+  column, which TMs they can hold. Guarded so a new wild map or TM location cannot be added without
+  being classified.
+- `randomizer/trades.js` — a 15-row `TRADERS` table; the wanted mon rolled from the milestone's
+  reachable pool (fresh family per trader), the gift matched on **final** quality, handed over at the
+  most evolved stage legal at the trade's level, with its TMs and 31-IVs from the owner's table.
+- `wildModule.megaEvoEntries` / `addTradeMegaEvos` — the mega pool's rule lifted out of a closure so a
+  traded family generates its stone exactly like a wild one.
+- B-073 fixed: the traders draw from the run's one without-replacement pool of families.
+- `randomizer/docs/trades.md` is the design reference, linked from `CLAUDE.md`.
+
+**Deviations from the plan.**
+
+1. Step 2 was going to lift `trainers.js`'s bag cascade into a declarative module. Reading it first
+   showed every trainer's bag is `getSampleItemsFromArray(xBag(), n)` — the assembled array feeds the
+   RNG for every trainer in the game — so restructuring it risked re-rolling every bag in every bundle
+   for no user-visible gain. Derived the TM pool from `docs/tms.md` + the map table instead (two SSOTs
+   joined, no new copy), cross-checked against the cascade: Roxanne's pool is exactly the TMs
+   `roxanneBag()` holds. One deliberate divergence is documented (the Route 118 picks).
+2. The quality rule had to read the FORM's own ceiling, not its family's: a family can peak through a
+   mega (Mega Slowbro, UU) whose ordinary form is a tier lower, which shipped an RU Slowbro for a UU
+   request. Found by running the real pipeline, not by the fixtures — worth remembering.
+3. `TRADE_NICKNAME_CAPACITY` 8 → 16 came along, since 15 traders can all be auto-nicknamed.
+
+**Follow-ups.** [T-270](T-270-trader-rework-rom-side.md) (ROM side — still open for the base rebuild),
+[T-271](T-271-trader-rework-docs-viewer.md) (docs/viewer, done), [T-272](T-272-late-trader-tier-floor.md)
+(the late-game UU/OU floor the closing observation produced, done).

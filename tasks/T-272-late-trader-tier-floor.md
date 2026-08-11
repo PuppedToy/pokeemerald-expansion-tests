@@ -1,7 +1,7 @@
 ---
 id: T-272
 title: Pin the late traders to UU, and the League's to OU
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-08-11
 updated: 2026-08-11
@@ -52,6 +52,8 @@ Acceptance criteria:
   synthetic map now carries `land`+`old` and the mid-game ones `good`+`surf` — rather than relaxing the
   assertion.
 
+- **2026-08-11** — Owner validated and asked to close. Closing.
+
 - **2026-08-11** — Owner asked what happens when there is not enough UU, and settled the order: it must
   fall back to **any wild Pokémon**. The first version preferred repeating a UU family over changing
   tier; inverted, so the ladder is now tier+fresh → any+fresh → repeat. Two tests cover it (a short UU
@@ -59,4 +61,15 @@ Acceptance criteria:
 
 ## Outcome
 
-<!-- Filled when closing. -->
+**Shipped.** A `wantedTier` on six `TRADERS` rows: Lilycove, Mossdeep, Pacifidlog, Sootopolis and Ever
+Grande ask for (and therefore give) **UU**; the League **OU**. The nine earlier traders keep taking
+whatever their pool offers.
+
+**Deviation from the plan.** The fallback order was inverted after the owner's question "what if there
+is not enough UU?": a family nobody has asked for now outranks the tier, so a short pool produces a
+*different* late trade rather than the same family twice. Uniqueness was the original rule; the floor
+yields to it. Ladder: demanded tier + fresh family → any reachable wild mon + fresh family → repeat a
+family (its tier first), the last two warning through `TRADE_WANTED_POOL_EMPTY`.
+
+Verified on seed 20260811: the six late trades are UU ↔ UU and OU ↔ OU with no diagnostics, and the two
+thin-pool cases are covered by tests.

@@ -101,6 +101,11 @@ Acceptance criteria:
   hashes by design). Until then the ROM builder cannot build: the artifact names 15 trade ids the
   current base does not define.
 
+- **2026-08-11** — T-269/271/272 closed on the owner's validation; this one stays **in-progress** on
+  purpose. Everything buildable here is done and green, but its last plan step is the owner's: rebuild
+  the base on the box, re-derive the offsets, re-snapshot the corpus, and play-test that a traded mon
+  really arrives with its TMs and IVs. Those are its three unticked criteria.
+
 ## Outcome
 
 <!-- Filled when closing. -->
