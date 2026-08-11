@@ -31,11 +31,17 @@ const { deriveSeed } = require('./seeds');
 const { encounterSourcesAt, tmMovesAvailableAt } = require('./data/progression');
 const { DIAGNOSTIC_CODES } = require('./diagnostics');
 const { BANNED_SPECIES_FOR_PICKING } = require('./modules/wildModule');
+const { TIER_UU, TIER_OU } = require('./constants');
 
 // The 15 traders, in progression order. `flag` is the boss milestone that gates the trader: it fixes
 // the level of the gift, the encounters it may ask for and the TMs it may have taught them. `mapId` is
 // the healing building it stands in — every one at the same tile (T-270). `tms` / `perfectIvs` are the
 // owner's per-trader table (see the task).
+//
+// `wantedTier` (T-272) raises the stakes late. Without it a trader rolls freely from its pool, which is
+// CUMULATIVE — so a late trader kept asking for an early-game RU mon and handing an RU one back. From
+// Lilycove on the swap must be **UU for UU**, and the League's is **OU for OU** (owner, 2026-08-11).
+// Both sides always share the tier, so pinning what is asked for pins the gift too.
 const TRADERS = [
     { town: 'RUSTBORO',    ingameTradeId: 'INGAME_TRADE_RUSTBORO',    mapId: 'MAP_RUSTBORO_CITY_POKEMON_CENTER_1F',    flag: 'FLAG_BADGE01_GET',                    tms: 1, perfectIvs: 1 },
     { town: 'DEWFORD',     ingameTradeId: 'INGAME_TRADE_DEWFORD',     mapId: 'MAP_DEWFORD_TOWN_POKEMON_CENTER_1F',     flag: 'FLAG_BADGE02_GET',                    tms: 1, perfectIvs: 1 },
@@ -46,13 +52,13 @@ const TRADERS = [
     { town: 'FALLARBOR',   ingameTradeId: 'INGAME_TRADE_FALLARBOR',   mapId: 'MAP_FALLARBOR_TOWN_POKEMON_CENTER_1F',   flag: 'FLAG_BADGE04_GET',                    tms: 1, perfectIvs: 2 },
     { town: 'PETALBURG',   ingameTradeId: 'INGAME_TRADE_PETALBURG',   mapId: 'MAP_PETALBURG_CITY_POKEMON_CENTER_1F',   flag: 'FLAG_BADGE05_GET',                    tms: 2, perfectIvs: 2 },
     { town: 'FORTREE',     ingameTradeId: 'INGAME_TRADE_FORTREE',     mapId: 'MAP_FORTREE_CITY_POKEMON_CENTER_1F',     flag: 'FLAG_BADGE06_GET',                    tms: 2, perfectIvs: 2 },
-    { town: 'LILYCOVE',    ingameTradeId: 'INGAME_TRADE_LILYCOVE',    mapId: 'MAP_LILYCOVE_CITY_POKEMON_CENTER_1F',    flag: 'FLAG_MET_RIVAL_LILYCOVE',             tms: 2, perfectIvs: 2 },
-    { town: 'MOSSDEEP',    ingameTradeId: 'INGAME_TRADE_MOSSDEEP',    mapId: 'MAP_MOSSDEEP_CITY_POKEMON_CENTER_1F',    flag: 'FLAG_BADGE07_GET',                    tms: 2, perfectIvs: 3 },
-    { town: 'PACIFIDLOG',  ingameTradeId: 'INGAME_TRADE_PACIFIDLOG',  mapId: 'MAP_PACIFIDLOG_TOWN_POKEMON_CENTER_1F',  flag: 'FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN', tms: 2, perfectIvs: 3 },
-    { town: 'SOOTOPOLIS',  ingameTradeId: 'INGAME_TRADE_SOOTOPOLIS',  mapId: 'MAP_SOOTOPOLIS_CITY_POKEMON_CENTER_1F',  flag: 'FLAG_BADGE08_GET',                    tms: 3, perfectIvs: 3 },
-    { town: 'EVER_GRANDE', ingameTradeId: 'INGAME_TRADE_EVER_GRANDE', mapId: 'MAP_EVER_GRANDE_CITY_POKEMON_CENTER_1F', flag: 'FLAG_DEFEATED_WALLY_VICTORY_ROAD',    tms: 3, perfectIvs: 3 },
+    { town: 'LILYCOVE',    ingameTradeId: 'INGAME_TRADE_LILYCOVE',    mapId: 'MAP_LILYCOVE_CITY_POKEMON_CENTER_1F',    flag: 'FLAG_MET_RIVAL_LILYCOVE',             tms: 2, perfectIvs: 2, wantedTier: TIER_UU },
+    { town: 'MOSSDEEP',    ingameTradeId: 'INGAME_TRADE_MOSSDEEP',    mapId: 'MAP_MOSSDEEP_CITY_POKEMON_CENTER_1F',    flag: 'FLAG_BADGE07_GET',                    tms: 2, perfectIvs: 3, wantedTier: TIER_UU },
+    { town: 'PACIFIDLOG',  ingameTradeId: 'INGAME_TRADE_PACIFIDLOG',  mapId: 'MAP_PACIFIDLOG_TOWN_POKEMON_CENTER_1F',  flag: 'FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN', tms: 2, perfectIvs: 3, wantedTier: TIER_UU },
+    { town: 'SOOTOPOLIS',  ingameTradeId: 'INGAME_TRADE_SOOTOPOLIS',  mapId: 'MAP_SOOTOPOLIS_CITY_POKEMON_CENTER_1F',  flag: 'FLAG_BADGE08_GET',                    tms: 3, perfectIvs: 3, wantedTier: TIER_UU },
+    { town: 'EVER_GRANDE', ingameTradeId: 'INGAME_TRADE_EVER_GRANDE', mapId: 'MAP_EVER_GRANDE_CITY_POKEMON_CENTER_1F', flag: 'FLAG_DEFEATED_WALLY_VICTORY_ROAD',    tms: 3, perfectIvs: 3, wantedTier: TIER_UU },
     // The League trader lives at the League's own healing counter and sees the whole game.
-    { town: 'LEAGUE',      ingameTradeId: 'INGAME_TRADE_LEAGUE',      mapId: 'MAP_EVER_GRANDE_CITY_POKEMON_LEAGUE_1F', flag: 'FLAG_IS_CHAMPION',                    tms: 3, perfectIvs: 4 },
+    { town: 'LEAGUE',      ingameTradeId: 'INGAME_TRADE_LEAGUE',      mapId: 'MAP_EVER_GRANDE_CITY_POKEMON_LEAGUE_1F', flag: 'FLAG_IS_CHAMPION',                    tms: 3, perfectIvs: 4, wantedTier: TIER_OU },
 ];
 
 // struct InGameTrade.ivs order (src/trade.c → MON_DATA_*_IV): HP, Attack, Defense, Speed, SpAtk, SpDef.
@@ -162,8 +168,12 @@ function offeredCandidates(pokemonList, tier, capLevel, usedFamilies) {
 /**
  * The encounters a trader may ask for: everything reachable at its milestone, minus the families
  * earlier traders already asked for, in a stable order with where each one is caught.
+ *
+ * @param {Set} askedFamilies family groups earlier traders already asked for
+ * @param {string|null} tier  T-272 — when set, only families that PEAK at this tier qualify (the late
+ *                            traders' UU/OU floor); null lets the pool decide, as the early ones do
  */
-function wantedCandidates(pokemonList, trader, wildArtifact, wildMaps, askedFamilies) {
+function wantedCandidates(pokemonList, trader, wildArtifact, wildMaps, askedFamilies, tier = null) {
     const byId = new Map(pokemonList.map(p => [p.id, p]));
     const seen = new Set();
     const out = [];
@@ -172,6 +182,7 @@ function wantedCandidates(pokemonList, trader, wildArtifact, wildMaps, askedFami
         if (!poke || !poke.rating) continue;
         if (seen.has(poke.id)) continue;                                  // first source wins (earliest)
         if (askedFamilies.has(getFamilyGroup(poke.family))) continue;
+        if (tier && poke.rating.bestEvoTier !== tier) continue;
         seen.add(poke.id);
         out.push({ poke, mapId: source.mapId, method: source.method });
     }
@@ -211,14 +222,32 @@ function selectTrades({ pokemonList: rawPokemonList, wildArtifact, wildMaps, cap
         const level = capLevels[trader.flag];
 
         // ── what the trader asks for ──────────────────────────────────────────
-        let candidates = wantedCandidates(pokemonList, trader, wildArtifact, wildMaps, askedFamilies);
-        if (candidates.length === 0) {
-            // Every reachable family has already been asked for: repeat rather than skip the trade.
-            candidates = wantedCandidates(pokemonList, trader, wildArtifact, wildMaps, new Set());
+        // Preference order, each step a smaller compromise than skipping the trade: the tier the trader
+        // demands and an unused family → that tier, repeating a family → any tier, unused family → any.
+        const wantedAt = (families, tier) =>
+            wantedCandidates(pokemonList, trader, wildArtifact, wildMaps, families, tier);
+        const tierWanted = trader.wantedTier || null;
+        let candidates = wantedAt(askedFamilies, tierWanted);
+        if (candidates.length === 0 && tierWanted) {
+            candidates = wantedAt(new Set(), tierWanted);
             if (candidates.length) {
                 warn(DIAGNOSTIC_CODES.TRADE_WANTED_POOL_EMPTY,
-                    `Every encounter reachable at ${trader.town} was already asked for; repeating a family.`,
-                    { town: trader.town, flag: trader.flag });
+                    `Every ${tierWanted} encounter reachable at ${trader.town} was already asked for; `
+                    + `repeating a family to keep the ${tierWanted} swap.`,
+                    { town: trader.town, flag: trader.flag, tier: tierWanted });
+            }
+        }
+        if (candidates.length === 0) {
+            // The demanded tier is not in this run's reachable pool at all (or, with no tier demanded,
+            // every family has been asked for): drop the constraint rather than lose the trade.
+            candidates = wantedAt(askedFamilies, null);
+            if (candidates.length === 0) candidates = wantedAt(new Set(), null);
+            if (candidates.length) {
+                warn(DIAGNOSTIC_CODES.TRADE_WANTED_POOL_EMPTY,
+                    tierWanted
+                        ? `No ${tierWanted} encounter is reachable at ${trader.town}; asked for another tier.`
+                        : `Every encounter reachable at ${trader.town} was already asked for; repeating a family.`,
+                    { town: trader.town, flag: trader.flag, tier: tierWanted });
             }
         }
         const wantedEntry = candidates.length ? pick(candidates, rand) : null;

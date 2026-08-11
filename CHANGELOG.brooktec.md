@@ -16,14 +16,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   **lateral swap**: the trader asks for a wild Pokémon **you could already have caught at that point of
   the run** (grass and the Old Rod at first; the Good Rod, Surf and the Super Rod join in as the world
   hands them over) and gives back one whose **fully-evolved quality is exactly the same**. No two traders
-  want the same family, so each one is a fresh decision.
+  want the same family, so each one is a fresh decision. And the late trades mean something: **from
+  Lilycove onwards the swap is UU for UU**, and the **Pokémon League's is OU for OU** — no more
+  level-67 trades over a Route 102 catch.
 
   What you get is not just a swap, though. Every gift arrives **already knowing TMs you could have found
   by then** (1 early, up to 3 at the end) and with **perfect 31 IVs** in some of its stats (1 early, 4
   from the League's trader), and its family now generates its **Mega Stone** in the world just like a wild
   Pokémon would. The generated documentation shows all of it on the tile of the mon each trader wants: the
   town, the gift and its level, the moves it comes with and how many of its IVs are perfect — and the
-  nuzlocke tracker's *trade* button works per trader. (T-269, T-270, T-271)
+  nuzlocke tracker's *trade* button works per trader. (T-269, T-270, T-271, T-272)
 
 - **The site has real addresses now.** Every part of the page lives at its own URL — `/features`,
   `/randomizer`, `/feedback`, `/settings` — and so does each list inside Features

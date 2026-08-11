@@ -1,0 +1,54 @@
+---
+id: T-272
+title: Pin the late traders to UU, and the League's to OU
+status: in-progress     # proposed | in-progress | done | abandoned
+type: feature           # feature | fix | refactor | docs | chore
+created: 2026-08-11
+updated: 2026-08-11
+target-version: 0.9.0
+links: [T-269]
+blocked-by: []
+---
+
+# T-272 — Pin the late traders to UU, and the League's to OU
+
+## Context
+
+[T-269](T-269-trader-rework-pipeline.md) left every trader rolling freely from its milestone's pool.
+That pool is **cumulative**, so the late traders kept asking for an early-game RU mon and handing an RU
+one back — a level-67 trade over a Route 102 catch (flagged to the owner in T-269's log with the seed
+20260811 run: the League's trade was Nidorina → Corsola-Galar at level 78).
+
+Owner's call (2026-08-11): **from Lilycove on the swap is UU for UU, and the League's is OU for OU.**
+The first nine traders stay as they are.
+
+## Plan
+
+A `wantedTier` on the six affected `TRADERS` rows, applied to the roll of what the trader ASKS FOR.
+Both sides of a trade already share the family's final quality, so pinning the request pins the gift —
+this is a filter on the pool, not a second pairing rule.
+
+Fallback ladder, so a thin run bends instead of losing a trade (all `TRADE_WANTED_POOL_EMPTY`):
+that tier + an unused family → that tier, repeating a family → any tier.
+
+Acceptance criteria:
+- [x] Lilycove, Mossdeep, Pacifidlog, Sootopolis and Ever Grande ask for and give **UU**; the League
+      **OU**; the other nine are untouched.
+- [x] Offered and wanted still share their tier for all 15 trades.
+- [x] A run whose reachable pool holds no UU/OU still produces every trade, with a diagnostic.
+- [x] `randomizer/docs/trades.md` carries the rule; `cd randomizer && npm test` green.
+
+## Progress log
+
+- **2026-08-11** — Done; suite green (2444). Verified on the seed 20260811 run: Lilycove → Ever Grande
+  are all UU ↔ UU (Seedot → Dudunsparce, Kabuto → Excadrill, Serperior → Moltres, Binacle → Snorlax,
+  Gurdurr → Torkoal) and the League is Gholdengo → Celesteela, OU ↔ OU. No family collisions, no
+  diagnostics.
+  While writing the tests the trades fixture turned out too thin for the new constraint (five UU traders
+  against three reachable UU families, so the fallback fired and hid the rule). Widened it — every
+  synthetic map now carries `land`+`old` and the mid-game ones `good`+`surf` — rather than relaxing the
+  assertion.
+
+## Outcome
+
+<!-- Filled when closing. -->

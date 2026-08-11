@@ -52,40 +52,37 @@ function family(name, tier, { teachables = [], learnset = [] } = {}) {
 // Every TM in the fixtures is learnable by every mon, so TM counts are about the pool, not the mon.
 const ALL_TMS = ['MOVE_TM_A', 'MOVE_TM_B', 'MOVE_TM_C', 'MOVE_TM_D', 'MOVE_TM_E', 'MOVE_TM_F'];
 
+const FAMILIES_PER_TIER = 8;
+
 function mkPokedex({ teachables = ALL_TMS, learnset = [] } = {}) {
     const list = [];
-    TIERS.forEach((tier, t) => {
-        for (let i = 0; i < 8; i++) list.push(...family(`${tier}_${i}`, tier, { teachables, learnset }));
+    TIERS.forEach((tier) => {
+        for (let i = 0; i < FAMILIES_PER_TIER; i++) list.push(...family(`${tier}_${i}`, tier, { teachables, learnset }));
     });
     return list;
 }
 
-// One wild map per milestone-opened route we care about, keyed to a fixture family's BASE form so a
-// wanted mon is always a catchable early stage.
+// One wild map per milestone-opened route we care about. Every map carries `land` + `old` (available
+// from the first milestone) and the mid-game ones also `good` + `surf`, so that by the late traders the
+// reachable pool is wide enough to hold several distinct families PER TIER — which is what T-272's
+// UU/OU floor needs in order to be tested without the fallback masking it.
+const EARLY_MAPS = ['MAP_ROUTE101', 'MAP_ROUTE102', 'MAP_ROUTE116', 'MAP_ROUTE106', 'MAP_ROUTE109', 'MAP_ROUTE110'];
+const MID_MAPS = ['MAP_ROUTE117', 'MAP_ROUTE114', 'MAP_ROUTE120', 'MAP_ROUTE121'];
+const LATE_MAPS = ['MAP_ROUTE124', 'MAP_ROUTE126', 'EVER_GRANDE_CITY', 'MAP_VICTORY_ROAD_B1F'];
 const WILD_MAPS = [
-    { id: 'MAP_ROUTE101', land: 'T_101_LAND' },
-    { id: 'MAP_ROUTE102', land: 'T_102_LAND', old: 'T_102_OLD', good: 'T_102_GOOD', surf: 'T_102_SURF', super: 'T_102_SUPER' },
-    { id: 'MAP_ROUTE116', land: 'T_116_LAND' },
-    { id: 'MAP_ROUTE106', land: 'T_106_LAND' },
-    { id: 'MAP_ROUTE109', land: 'T_109_LAND' },
-    { id: 'MAP_ROUTE110', land: 'T_110_LAND' },
-    { id: 'MAP_ROUTE117', land: 'T_117_LAND' },
-    { id: 'MAP_ROUTE114', land: 'T_114_LAND' },
-    { id: 'MAP_ROUTE120', land: 'T_120_LAND' },
-    { id: 'MAP_ROUTE121', land: 'T_121_LAND' },
-    { id: 'MAP_ROUTE124', land: 'T_124_LAND' },
-    { id: 'MAP_ROUTE126', land: 'T_126_LAND' },
-    { id: 'EVER_GRANDE_CITY', land: 'T_EG_LAND' },
-    { id: 'MAP_VICTORY_ROAD_B1F', land: 'T_VR_LAND' },
+    ...EARLY_MAPS.map(id => ({ id, land: `T_${id}_LAND`, old: `T_${id}_OLD`, good: `T_${id}_GOOD`, surf: `T_${id}_SURF` })),
+    ...MID_MAPS.map(id => ({ id, land: `T_${id}_LAND`, old: `T_${id}_OLD`, good: `T_${id}_GOOD`, surf: `T_${id}_SURF` })),
+    ...LATE_MAPS.map(id => ({ id, land: `T_${id}_LAND`, old: `T_${id}_OLD`, super: `T_${id}_SUPER` })),
 ];
 
-// Spread the fixture families across those slots: each template resolves to a distinct family's base.
-function mkWildArtifact({ alreadyChosenFamilies = [] } = {}) {
+// Spread the fixture families across those slots: each template resolves to a distinct family's base,
+// cycling tier-by-tier so every tier is represented on the early maps as well as the late ones.
+function mkWildArtifact({ alreadyChosenFamilies = [], tiers = TIERS } = {}) {
     const templates = WILD_MAPS.flatMap(m => ['land', 'old', 'good', 'surf', 'super'].filter(k => m[k]).map(k => m[k]));
     const replacementLog = {};
     templates.forEach((tpl, i) => {
-        const tier = TIERS[i % TIERS.length];
-        const slot = Math.floor(i / TIERS.length) % 8;
+        const tier = tiers[i % tiers.length];
+        const slot = Math.floor(i / tiers.length) % FAMILIES_PER_TIER;
         replacementLog[tpl] = `SPECIES_${tier}_${slot}_BASE`;
     });
     return { replacementLog, wildPlan: {}, alreadyChosenFamilies };
@@ -389,5 +386,77 @@ describe('helpers', () => {
 
     test('sampleDistinct returns at most what it was given', () => {
         expect(__test.sampleDistinct(['a', 'b'], 5, __test.makeRng(3)).sort()).toEqual(['a', 'b']);
+    });
+});
+
+// ── T-272: the late traders' tier floor ───────────────────────────────────────
+
+describe('T-272 — from Lilycove on the swap is UU for UU, and the League\'s is OU for OU', () => {
+    const expected = { LILYCOVE: 'UU', MOSSDEEP: 'UU', PACIFIDLOG: 'UU', SOOTOPOLIS: 'UU', EVER_GRANDE: 'UU', LEAGUE: 'OU' };
+
+    test('the table demands a tier exactly for those six traders and no others', () => {
+        const demanded = Object.fromEntries(TRADERS.filter(t => t.wantedTier).map(t => [t.town, t.wantedTier]));
+        expect(demanded).toEqual(expected);
+    });
+
+    test('every one of them asks for — and therefore gives — that tier', () => {
+        const pokes = mkPokedex();
+        const byId = new Map(pokes.map(p => [p.id, p]));
+        for (const t of run({ pokemonList: pokes })) {
+            if (!expected[t.town]) continue;
+            expect(byId.get(t.wantedSpecies).rating.bestEvoTier).toBe(expected[t.town]);
+            expect(byId.get(t.offeredSpecies).rating.bestEvoTier).toBe(expected[t.town]);
+            expect(t.tier).toBe(expected[t.town]);
+        }
+    });
+
+    test('the traders before Lilycove still take whatever their pool offers', () => {
+        // Nothing pins them, so across the nine early traders more than one tier shows up.
+        const early = run().filter(t => !expected[t.town]).map(t => t.tier);
+        expect(early).toHaveLength(9);
+        expect(new Set(early).size).toBeGreaterThan(1);
+    });
+
+    test('the floor is a filter on the pool, not a new pairing rule — both sides still match', () => {
+        const pokes = mkPokedex();
+        const byId = new Map(pokes.map(p => [p.id, p]));
+        for (const t of run({ pokemonList: pokes })) {
+            expect(byId.get(t.offeredSpecies).rating.bestEvoTier)
+                .toBe(byId.get(t.wantedSpecies).rating.bestEvoTier);
+        }
+    });
+
+    test('a run whose reachable pool has no UU at all still gets a trade, loudly', () => {
+        const warn = jest.fn();
+        // Only RU families exist, so the UU/OU demand cannot be met by any encounter.
+        const pokes = [];
+        for (let i = 0; i < 8; i++) pokes.push(...family(`RU_${i}`, 'RU', { teachables: ALL_TMS }));
+        const trades = run({
+            pokemonList: pokes,
+            wildArtifact: mkWildArtifact({ tiers: ['RU'] }),
+            diagnostics: { warn },
+        });
+        expect(trades.every(t => t.offeredSpecies && t.wantedSpecies)).toBe(true);
+        expect(trades.find(t => t.town === 'LILYCOVE').tier).toBe('RU');
+        const dropped = warn.mock.calls.filter(c => c[0] === 'TRADE_WANTED_POOL_EMPTY'
+            && /No UU encounter is reachable/.test(c[1]));
+        expect(dropped.length).toBeGreaterThan(0);
+    });
+
+    test('when the tier is present but every one of its families is taken, it repeats rather than drop the tier', () => {
+        const warn = jest.fn();
+        // Two UU families for five UU traders: three of them must repeat a family, all still UU.
+        const pokes = [];
+        for (let i = 0; i < 2; i++) pokes.push(...family(`UU_${i}`, 'UU', { teachables: ALL_TMS }));
+        for (let i = 0; i < 8; i++) pokes.push(...family(`OU_${i}`, 'OU', { teachables: ALL_TMS }));
+        const trades = run({
+            pokemonList: pokes,
+            wildArtifact: mkWildArtifact({ tiers: ['UU', 'OU'] }),
+            diagnostics: { warn },
+        });
+        const late = trades.filter(t => expected[t.town] === 'UU');
+        expect(late).toHaveLength(5);
+        for (const t of late) expect(t.tier).toBe('UU');
+        expect(warn.mock.calls.some(c => c[0] === 'TRADE_WANTED_POOL_EMPTY' && /keep the UU swap/.test(c[1]))).toBe(true);
     });
 });

@@ -273,3 +273,4 @@
 | [T-269](T-269-trader-rework-pipeline.md) | Rework the town traders — 15 quality-for-quality trades chosen from the progression pool | in-progress | 0.9.0 | 2026-08-11 |
 | [T-270](T-270-trader-rework-rom-side.md) | Put the 15 traders in the game — engine fields, trade slots, Pokémon Center placement, injector | in-progress | 0.9.0 | 2026-08-11 |
 | [T-271](T-271-trader-rework-docs-viewer.md) | Show the 15 traders in the docs — several trades per route, learned TMs and perfect IVs | in-progress | 0.9.0 | 2026-08-11 |
+| [T-272](T-272-late-trader-tier-floor.md) | Pin the late traders to UU, and the League's to OU | in-progress | 0.9.0 | 2026-08-11 |

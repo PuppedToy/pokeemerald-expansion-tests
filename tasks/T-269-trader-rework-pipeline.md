@@ -174,6 +174,9 @@ Acceptance criteria:
   dump was Nidorina → Corsola-Galar at level 78). That is exactly what the spec says; if late traders
   should lean toward the species that only just entered the pool, that is a follow-up decision.
 
+- **2026-08-11** — The observation above became a change: the owner pinned the late traders' quality.
+  See [T-272](T-272-late-trader-tier-floor.md) — Lilycove onward is UU ↔ UU, the League's is OU ↔ OU.
+
 ## Outcome
 
 <!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->

@@ -14,23 +14,23 @@ and the built ROM can never disagree.
 `randomizer/trades.js` → `TRADERS`. Each row is a town, its `INGAME_TRADE_*` slot, the map it stands
 in, the **milestone** that gates it, and how much it gives away.
 
-| # | Town | Milestone (boss) | TMs | 31-IVs |
-|---|---|---|---|---|
-| 1 | Rustboro | Roxanne | 1 | 1 |
-| 2 | Dewford | Brawly | 1 | 1 |
-| 3 | Slateport | Oceanic Museum grunts | 1 | 2 |
-| 4 | Mauville | Wally (Mauville) | 1 | 2 |
-| 5 | Verdanturf | Wattson | 1 | 2 |
-| 6 | Lavaridge | Flannery | 1 | 2 |
-| 7 | Fallarbor | Flannery | 1 | 2 |
-| 8 | Petalburg | Norman | 2 | 2 |
-| 9 | Fortree | Winona | 2 | 2 |
-| 10 | Lilycove | Wally (Lilycove) | 2 | 2 |
-| 11 | Mossdeep | Tate & Liza | 2 | 3 |
-| 12 | Pacifidlog | Archie | 2 | 3 |
-| 13 | Sootopolis | Juan | 3 | 3 |
-| 14 | Ever Grande | Wally (Victory Road) | 3 | 3 |
-| 15 | Pokémon League | the whole game | 3 | 4 |
+| # | Town | Milestone (boss) | TMs | 31-IVs | Quality |
+|---|---|---|---|---|---|
+| 1 | Rustboro | Roxanne | 1 | 1 | whatever the pool offers |
+| 2 | Dewford | Brawly | 1 | 1 | " |
+| 3 | Slateport | Oceanic Museum grunts | 1 | 2 | " |
+| 4 | Mauville | Wally (Mauville) | 1 | 2 | " |
+| 5 | Verdanturf | Wattson | 1 | 2 | " |
+| 6 | Lavaridge | Flannery | 1 | 2 | " |
+| 7 | Fallarbor | Flannery | 1 | 2 | " |
+| 8 | Petalburg | Norman | 2 | 2 | " |
+| 9 | Fortree | Winona | 2 | 2 | " |
+| 10 | Lilycove | Wally (Lilycove) | 2 | 2 | **UU ↔ UU** |
+| 11 | Mossdeep | Tate & Liza | 2 | 3 | **UU ↔ UU** |
+| 12 | Pacifidlog | Archie | 2 | 3 | **UU ↔ UU** |
+| 13 | Sootopolis | Juan | 3 | 3 | **UU ↔ UU** |
+| 14 | Ever Grande | Wally (Victory Road) | 3 | 3 | **UU ↔ UU** |
+| 15 | Pokémon League | the whole game | 3 | 4 | **OU ↔ OU** |
 
 The milestone fixes everything else: the **level** of the gift is that milestone's level cap
 (`caps.c` → `pokedex.capLevels`), the **encounters** the trader may ask for are the ones reachable by
@@ -58,6 +58,18 @@ slots at all, and `bossCaps.STATIC_UNLOCKS` owns when the player may reach them.
 
 No two traders ask for the same **family**, and the family the player hands over is spent — no later
 trader gives it back.
+
+### The late-game floor (T-272)
+
+The pool is **cumulative**, so left alone a late trader keeps rolling an early-game RU mon and handing
+an RU one back — a level-67 trade over a Route 102 catch. From **Lilycove** on, a trader's `wantedTier`
+pins the roll to families that peak at **UU**, and the **League's** to **OU**. Both sides always share
+the tier, so pinning what is asked for pins the gift too. The first nine traders stay unpinned: early
+pools are thin and forcing a tier there would only produce fallbacks.
+
+When the demanded tier runs out the trade bends before it breaks, loudly
+(`TRADE_WANTED_POOL_EMPTY`): first it repeats a family **at that tier**, and only if the run's reachable
+pool holds no such family at all does it ask for another tier.
 
 ## What a trader gives
 
