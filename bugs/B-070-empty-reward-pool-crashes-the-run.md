@@ -1,12 +1,12 @@
 ---
 id: B-070
 title: An exhausted gym/static reward pool crashes the run with a null dereference
-status: fixing          # open | fixing | fixed | wont-fix
+status: fixed           # open | fixing | fixed | wont-fix
 severity: major         # critical | major | minor
 created: 2026-08-11
 updated: 2026-08-11
 found-in: 0.5.0         # version where the bug was observed
-fixed-in:               # version that ships the fix (set when fixed)
+fixed-in: 0.9.0         # version that ships the fix (set when fixed)
 regression-test: randomizer/__tests__/unit/wildModule.test.js
 links: [T-264, B-068]
 ---

@@ -1,13 +1,13 @@
 ---
 id: B-067
 title: Stone evolutions are legal at any level above 28, ignoring their randomized IF_MIN_LEVEL
-status: fixing          # open | fixing | fixed | wont-fix
+status: fixed           # open | fixing | fixed | wont-fix
 severity: major         # critical | major | minor
 created: 2026-08-11
 updated: 2026-08-11
 found-in: 0.5.0         # version where the bug was observed
-fixed-in:               # version that ships the fix (set when fixed)
-regression-test: randomizer/__tests__/unit/stoneEvoMinLevel.test.js, randomizer/__tests__/unit/stoneUnlockFloor.test.js
+fixed-in: 0.9.0         # version that ships the fix (set when fixed)
+regression-test: randomizer/__tests__/unit/stoneEvoMinLevel.test.js # + stoneUnlockFloor.test.js (the availability floor)
 links: [T-264, B-068]
 ---
 
@@ -38,8 +38,6 @@ Expected: a trainer only fields a stone evolution once its `IF_MIN_LEVEL` is met
 for level evolutions.
 
 ## Root cause
-
-<!-- Filled during the fix. The real cause, not the patch. -->
 
 `isValidEvolution` in `randomizer/modules/utils.js:83` never reads `evo.minLevel`:
 

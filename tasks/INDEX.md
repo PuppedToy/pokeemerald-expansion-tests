@@ -265,4 +265,5 @@
 | [T-261](T-261-teleport-slow-pivot-value.md) | Value Teleport as a slow pivot and stop the role injector forcing dead-weight moves | done | 0.9.0 | 2026-08-09 |
 | [T-262](T-262-route121-item-rebalance.md) | Give Route 121 a real item ball and stop starving the berry picks | done | 0.9.0 | 2026-08-11 |
 | [T-263](T-263-status-tm-reclassification.md) | Reclassify the status TM pools by real effect strength | done | 0.9.0 | 2026-08-11 |
-| [T-264](T-264-stone-evo-min-level-legality.md) | Honour a stone evolution's min level in the trainer legality check | in-progress | 0.9.0 | 2026-08-11 |
+| [T-264](T-264-stone-evo-min-level-legality.md) | Honour a stone evolution's min level in the trainer legality check | done | 0.9.0 | 2026-08-11 |
+| [T-265](T-265-analyze-path-ignores-run-evo-config.md) | Make the analyze/randomize path honour the run's evolution config | proposed | 0.9.0 | 2026-08-11 |

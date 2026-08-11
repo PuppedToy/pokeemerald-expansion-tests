@@ -1,13 +1,13 @@
 ---
 id: B-068
 title: Trainers can still field a mon below its evolution level through paths checkValidEvo does not cover
-status: fixing          # open | fixing | fixed | wont-fix
+status: fixed           # open | fixing | fixed | wont-fix
 severity: minor         # critical | major | minor
 created: 2026-08-11
 updated: 2026-08-11
 found-in: 0.5.0         # version where the bug was observed
-fixed-in:               # version that ships the fix (set when fixed)
-regression-test: randomizer/__tests__/unit/evoCheckClassification.test.js, randomizer/__tests__/unit/favouriteEvoLegality.test.js
+fixed-in: 0.9.0         # version that ships the fix (set when fixed)
+regression-test: randomizer/__tests__/unit/evoCheckClassification.test.js # + favouriteEvoLegality.test.js (the forced-species slots)
 links: [B-067, T-264]
 ---
 

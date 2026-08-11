@@ -1,12 +1,12 @@
 ---
 id: T-264
 title: Honour a stone evolution's min level in the trainer legality check
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-08-11
 updated: 2026-08-11
 target-version: 0.9.0
-links: [B-067, B-068, B-069, B-070]
+links: [B-067, B-068, B-069, B-070, T-265]
 blocked-by: []
 ---
 
@@ -60,7 +60,7 @@ Acceptance criteria:
       level.
 - [x] [B-070](../bugs/B-070-empty-reward-pool-crashes-the-run.md) fixed: an exhausted reward pool
       degrades instead of dying on a null dereference, and a healthy run stays byte-identical.
-- [ ] Owner manual-tests a ROM built from a fixed run and confirms it is OK.
+- [x] Owner manual-tests a ROM built from a fixed run and confirms it is OK. (2026-08-11: "Valido todo".)
 
 ## Progress log
 
@@ -212,6 +212,55 @@ Acceptance criteria:
   starving gym1 means removing both NU solos; and starving a pool via `alreadyChosenFamilies` (rather than
   by deleting mons) is what exercises rung 2.
 
+- **2026-08-11** — Owner validated the whole batch ("Valido todo"). All acceptance criteria met, suite
+  green. B-067, B-068, B-069 and B-070 closed as `fixed` in 0.9.0; [T-265](T-265-analyze-path-ignores-run-evo-config.md)
+  spun out for the one gap left open. Task closed and merged into master.
+
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Shipped five fixes across four bugs, all TDD, on `feature/T-264-stone-evo-min-level-legality`.
+
+**[B-067](../bugs/B-067-stone-evolutions-ignore-their-min-level.md) — the reported bug, in two halves.**
+`isValidEvolution` decided by evolution METHOD (`method === 'ITEM' && level > 28`) instead of by level, so
+every stone evolution was legal from a hardcoded 29 up whatever `IF_MIN_LEVEL` the run had rolled — Wally
+at Route 110 (29) with a Basculegion gated at 49. It now reads the level via a new `evolutionMinLevel`
+helper, and stone gates are floored at the level the player first holds a stone (the Rustboro rival cap,
+derived from `src/caps.c`, not hardcoded), applied where the gate is decided so the ROM clause, the docs
+and the check carry one number.
+
+**[B-068](../bugs/B-068-evolution-check-skipped-on-some-team-paths.md)** — three paths reached a team
+without the evolution check: `checkValidEvo`'s `EVO_TYPE_SOLO` shortcut (a cross-family branch evolution
+makes the label lie), a named favourite (resolves to a `specific` slot → the strict list, which the check
+never filtered), and the one `TRAINER_REPEAT_ID` echo slot missing `devolveToLevel`.
+
+**[B-069](../bugs/B-069-same-seed-diverges-on-a-second-generation-in-one-process.md)** — the rebalancer's
+family mutation log was module-scoped and never cleared, so a second generation in one process ignored the
+seed. Now reset per pokédex build.
+
+**[B-070](../bugs/B-070-empty-reward-pool-crashes-the-run.md)** — all 21 gym/static reward picks
+dereferenced `sampleAndRemove`'s result unchecked, and the pools were being emptied by the one clause that
+should yield first (the one-family-per-run dedup). Replaced with an explicit degradation ladder.
+
+**Deviations from the plan.** The plan covered B-067 only; the owner folded in B-068, B-069, the deferred
+stone-availability floor and then B-070, so scope grew three times (each logged above). Two plan decisions
+were resolved as written (the `DEFAULT_EVOLUTION_LEVEL` fallback; wildModule in scope). Two things the plan
+did not anticipate: `isValidEvolution` existed as a **verbatim duplicate** in `trainerSelector.js`, so the
+same bug lived in two places, and the availability floor turned out to belong in `applyEvoLevels` rather
+than in the check — which removed the need to thread ambient run state and was the reason the plan had
+deferred it in the first place.
+
+**Corrections made along the way**, both recorded in the bug files: the owner's `min(18, gate)` is a
+`max` (as written it would have reintroduced B-067), and my first B-068 root cause mis-attributed the
+`PARTNER_STEVEN` case by matching a result-team index against the template array.
+
+**Verification.** Suite green (196 suites, 2330 tests) with five new test files plus a structural
+invariant over the trainer templates. The reported world was reproduced exactly by replaying seed
+`2231547897`'s stored config at `2193b400ab`, and with the fixes Wally's slot becomes
+`SPECIES_BASCULIN_WHITE_STRIPED` with the other five byte-identical. Seven-seed sweep: 0 mons below their
+evolution level, 0 stone gates below the unlock level. B-070's refactor was proved byte-identical for
+healthy runs by fingerprinting the full ROM output across three seeds. Owner manual-tested the batch and
+confirmed it on 2026-08-11.
+
+**Follow-ups spawned.** [T-265](T-265-analyze-path-ignores-run-evo-config.md) — `writer.js`'s recompute
+path never receives the run's `evoLevels` config, so `node analyze.js` levels are not representative. Left
+alone here rather than half-fixed while threading the stone floor through the same call.
