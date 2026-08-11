@@ -65,6 +65,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Route 116 is listed where you actually reach it.** In the docs' encounter list the route appeared
+  before the Roxanne reward — a place you cannot walk into until you have beaten her. It now comes right
+  after her: Route 115 → Roxanne → Route 116. (T-268)
+
 - **One TM no longer arms half a team.** A trainer's bag holds a single copy of each TM, and teaching it
   is supposed to use it up — but if the move happened to sit somewhere higher in that Pokémon's own
   learnset, the game forgot to spend it. So **Roxanne fielded three Water Pulses off one TM**, Steven three

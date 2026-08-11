@@ -16,6 +16,7 @@ const { applyLeadLogic } = require('./modules/trainerTeamOrder');
 const { typeMainColors } = require('./trainerColors');
 const { noopDiagnostics } = require('./diagnostics');
 const { normalizeDocsVisibility, redactWildPokes } = require('./docsVisibility');
+const { applyDocMapOrder } = require('./docsMapOrder.js');   // T-268 — docs encounter order (SSOT)
 
 const CONTEXTUAL_TIER_SEQ = ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU', 'UBERS', 'LEGEND', 'AG'];
 
@@ -333,41 +334,9 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
         special3: starters[2],
     });
 
-    const extractMap = (id, extra = {}) => {
-        const idx = maps.findIndex(m => m.id === id);
-        return idx !== -1 ? Object.assign(maps.splice(idx, 1)[0], extra) : null;
-    };
-    const desertRuinsEntry = extractMap('MAP_DESERT_RUINS',   { label: 'Desert Ruins',   staticEncounter: true });
-    const islandCaveEntry  = extractMap('MAP_ISLAND_CAVE',    { label: 'Island Cave',    staticEncounter: true });
-    const newMauvilleEntry = extractMap('MAP_NEW_MAUVILLE',   { label: 'New Mauville',   staticEncounter: true });
-    const ancientTombEntry = extractMap('MAP_ANCIENT_TOMB',   { label: 'Ancient Tomb',   staticEncounter: true });
-    const skyPillarEntry   = extractMap('MAP_SKY_PILLAR_TOP', { label: 'Sky Pillar Top', legendaryEncounter: true });
-    const route123Entry    = extractMap('MAP_ROUTE123');
-
-    const insertions = [
-        { afterMap: 'MAP_ROUTE116', entry: { id: 'BOSS_ROXANNE_REWARD',          label: 'Roxanne Reward',          boss: true, special1: pokeRewardReplacements[0].id } },
-        { afterMap: 'MAP_ROUTE106', entry: { id: 'BOSS_BRAWLY_REWARD',           label: 'Brawly Reward',           boss: true, special1: pokeRewardReplacements[1].id } },
-        { afterMap: 'MAP_ROUTE109', entry: { id: 'BOSS_SLATEPORT_GRUNTS_REWARD', label: 'Slateport Grunts Reward', boss: true, special1: pokeRewardReplacements[8].id } },
-        { afterMap: 'MAP_ROUTE118', entry: { id: 'BOSS_WATTSON_REWARD',          label: 'Wattson Reward',          boss: true, special1: pokeRewardReplacements[2].id } },
-        { afterMap: 'MAP_ROUTE114', entry: islandCaveEntry },
-        { afterMap: 'MAP_ROUTE114', entry: { id: 'BOSS_NORMAN_REWARD',           label: 'Norman Reward',           boss: true, special1: pokeRewardReplacements[4].id } },
-        { afterMap: 'MAP_ROUTE114', entry: desertRuinsEntry },
-        { afterMap: 'MAP_ROUTE114', entry: { id: 'BOSS_FLANNERY_REWARD',         label: 'Flannery Reward',         boss: true, special1: pokeRewardReplacements[3].id } },
-        { afterMap: 'MAP_ISLAND_CAVE', entry: newMauvilleEntry },
-        { afterMap: 'MAP_ROUTE119', entry: { id: 'BOSS_SHELLY_REWARD',           label: 'Shelly Reward',           boss: true, special1: pokeRewardReplacements[9].id } },
-        { afterMap: 'MAP_ROUTE120', entry: ancientTombEntry },
-        { afterMap: 'MAP_ROUTE120', entry: { id: 'BOSS_WINONA_REWARD',           label: 'Winona Reward',           boss: true, special1: pokeRewardReplacements[5].id } },
-        { afterMap: 'MAP_ROUTE121', entry: { id: 'BOSS_WALLY_LILYCOVE',          label: 'Wally Lilycove Reward',   boss: true, special1: pokeRewardReplacements[10].id } },
-        { afterMap: 'MAP_ROUTE124', entry: { id: 'BOSS_TATE_LIZA_REWARD',        label: 'Tate & Liza Reward',      boss: true, special1: pokeRewardReplacements[6].id } },
-        { afterMap: 'MAP_ROUTE129', entry: route123Entry },
-        { afterMap: 'MAP_ROUTE129', entry: { id: 'BOSS_JUAN_REWARD',             label: 'Juan Reward',             boss: true, special1: pokeRewardReplacements[7].id } },
-        { afterMap: 'MAP_ROUTE129', entry: skyPillarEntry },
-    ];
-    for (const { afterMap, entry } of insertions) {
-        const idx = maps.findIndex(m => m.id === afterMap);
-        if (idx !== -1) maps.splice(idx + 1, 0, entry);
-        else maps.push(entry);
-    }
+    // T-268 — progression order (boss rewards, statics, legendaries): docsMapOrder.js is its
+    // only home, shared with the analyze path in writer.js.
+    applyDocMapOrder(maps, pokeRewardReplacements);
 
     // T-194 — attach each town trade to its route's encounter entry (routes 101/102/103/104). The
     // viewer renders the trade sub-card from `entry.trade` (in the grass/old-rod cards and in the
