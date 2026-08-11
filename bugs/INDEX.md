@@ -69,4 +69,4 @@
 | [B-063](B-063-hidden-nav-tab-visible-on-mobile.md) | A hidden top-nav entry is still shown in the mobile drawer | fixed | minor | 0.8.0 | 0.9.0 | frontend/__tests__/responsive.test.js |
 | [B-064](B-064-teleport-forced-onto-fast-attackers.md) | Teleport is forced onto fast attackers by the archetype role-move injector | fixed | major | 0.5.0 | 0.9.0 | randomizer/__tests__/unit/teleportSlowPivot.test.js |
 | [B-065](B-065-route121-berry-pick-has-two-options.md) | The Route 121 berry pick only ever offers 2 options | fixing | minor | 0.5.0 | 0.9.0 | randomizer/__tests__/unit/berryPickSizes.test.js |
-| [B-066](B-066-terrain-tms-cluster-in-one-pick.md) | The 4 terrain moves are unvetted TM-pool members and can fill one pick entirely | open | minor | 0.5.0 |  |  |
+| [B-066](B-066-terrain-tms-cluster-in-one-pick.md) | The 4 terrain moves are unvetted TM-pool members and can fill one pick entirely | fixing | minor | 0.5.0 | 0.9.0 | randomizer/__tests__/unit/tmPoolHygiene.test.js |

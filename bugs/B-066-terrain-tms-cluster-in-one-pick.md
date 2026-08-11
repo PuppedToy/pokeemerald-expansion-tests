@@ -1,14 +1,14 @@
 ---
 id: B-066
 title: The 4 terrain moves are unvetted TM-pool members and can fill one pick entirely
-status: open            # open | fixing | fixed | wont-fix
+status: fixing          # open | fixing | fixed | wont-fix
 severity: minor         # critical | major | minor
 created: 2026-08-10
 updated: 2026-08-10
 found-in: 0.5.0         # version where the bug was observed
-fixed-in:               # version that ships the fix (set when fixed)
-regression-test:        # REQUIRED to mark as fixed: path/to/test (named or annotated with this id)
-links: []
+fixed-in: 0.9.0         # version that ships the fix (set when fixed)
+regression-test: randomizer/__tests__/unit/tmPoolHygiene.test.js
+links: [T-263]
 ---
 
 # B-066 — The 4 terrain moves are unvetted TM-pool members and can fill one pick entirely
@@ -56,5 +56,26 @@ only (it degrades, it does not break — the B-036/B-030 reachability gate alrea
 
 ## Fix
 
-<!-- Pending an owner decision on whether terrain moves leave the TM pools and what backfills the
-     goodStatus tier. Not part of T-262. -->
+T-263, by reclassification rather than by a spread constraint. Grassy/Psychic/Misty Terrain moved to
+`averageStatusMoves` and **only Electric Terrain** stayed in `goodStatusMoves`, so the reported pick
+can no longer hold two terrains at all. Six moves were promoted to keep the good tier at 21
+candidates for its 13 slots (deleting the terrains outright would have left 14 — the same TMs every
+singles run).
+
+Measured over 400k simulated runs per tier, with the real pool sizes and the real pick groups:
+
+| | before | after |
+|---|---|---|
+| a good-tier pick holds ≥2 terrains | 28.4 % | impossible (one terrain left in the tier) |
+| an average-tier pick holds ≥2 terrains | — | 3.4 % |
+| a pick holds all three | 1.0 % | 0.03 % |
+
+**Not fully eliminated, on purpose:** two of the three average-tier terrains can still share a pick
+3.4 % of the time. No per-pick family-spread constraint was implemented — that would need the TM pick
+groups (which live in `src/randomizer_picks.c`) mirrored in JS. If the owner wants 0 %, that option is
+still on the table.
+
+Regression test `randomizer/__tests__/unit/tmPoolHygiene.test.js` pins the classification (and the
+rest of the pool invariants) against the real `src/data/moves_info.h`. Verified red before the fix on
+the terrain-tier assertions, green after. Status stays `fixing` until the owner confirms the manual
+test.
