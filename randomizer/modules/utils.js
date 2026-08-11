@@ -8,6 +8,7 @@ const {
     EVO_TYPE_SOLO,
     NATURE_STRATEGY_MIN_LEVEL,
     ABILITY_STRATEGY_MIN_LEVEL,
+    DEFAULT_EVOLUTION_LEVEL,
 } = require('../constants');
 const { activeDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
 
@@ -80,9 +81,24 @@ function devolveToBase(pokemonList, pokemon) {
     return pokemonList.find(p => p.id === baseForm);
 }
 
-function isValidEvolution(level, { param, method }) {
+// B-067 — the level at which an evolution becomes reachable. A LEVEL evolution carries it in `param`;
+// a stone evolution keeps the ITEM there and carries its level in `minLevel` — the
+// `CONDITIONS({IF_MIN_LEVEL, N})` clause that evoLevelWriter re-rolls on every run. Same precedence
+// rule as wildModule's megaBaseFormLevel (B-062): first the param, then minLevel, then the default.
+function evolutionMinLevel({ param, minLevel }) {
+    return [param, minLevel, DEFAULT_EVOLUTION_LEVEL]
+        .map(Number)
+        .find(value => Number.isFinite(value) && value > 0);
+}
+
+// B-067 — a stone evolution used to be legal from a hardcoded level 29 up (`method === 'ITEM' &&
+// level > 28`), which ignored its own IF_MIN_LEVEL entirely: Wally at Route 110 (level 29) fielded a
+// Basculegion M whose Dawn Stone gate was 49. Read the level instead of the method.
+function isValidEvolution(level, evolution) {
+    const { param, method } = evolution;
+    if (method === 'ITEM') return level >= evolutionMinLevel(evolution);
     return (!isNaN(parseInt(param)) && parseInt(param) <= level && parseInt(param) > 4)
-        || ((method === 'ITEM' || param === '0') && level > 28);
+        || (param === '0' && level > 28);
 }
 
 // T-106 — the inverse of tryEvolve: given a (possibly mega, possibly final) mon, return the
@@ -187,6 +203,8 @@ module.exports = {
     hasValidMega,
     devolveToBase,
     devolveToLevel,
+    evolutionMinLevel,
+    isValidEvolution,
     checkValidEvo,
     canLearnMove,
     usesStrategicNature,

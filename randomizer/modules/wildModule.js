@@ -29,7 +29,12 @@ const {
     hasValidMega,
     devolveToBase,
     checkValidEvo,
+    evolutionMinLevel,
 } = require('./utils');
+
+// The gym-2 reward is a two-stage mon handed over at level 19; to be worth anything it has to reach
+// its second stage inside the early game, so its evolution may not be gated above this level.
+const GYM2_REWARD_MAX_EVO_LEVEL = 25;
 
 // Form variants that must never be selected as team/encounter pokemon.
 const BANNED_SPECIES_FOR_PICKING = [
@@ -162,18 +167,11 @@ function wildFoundLevel(map, method) {
 // `JSON.stringify` (it becomes `null`), so the browser that wrote the docs and the builder that read
 // the bundle back sorted different values and handed out different stones. The level must always be a
 // finite number; a non-level evolution carries the level it becomes reachable at in `minLevel`.
-const DEFAULT_EVOLUTION_LEVEL = 25;
+// B-067 moved that precedence rule into utils.evolutionMinLevel, which is now its only home.
 function megaBaseFormLevel(levelFound, evolution) {
     const found = Number.isFinite(Number(levelFound)) ? Number(levelFound) : 0;
     if (!evolution) return found;                       // the base form has no pre-evolution
-
-    // `param` is the level for a LEVEL evolution and an item/constant for every other method; a
-    // non-level evolution keeps its reachable level in `minLevel`. Falsy and non-numeric alike fall
-    // through to the default, which is what the pre-B-062 `param || 25` did for a missing param.
-    const evolveLevel = [evolution.param, evolution.minLevel, DEFAULT_EVOLUTION_LEVEL]
-        .map(Number)
-        .find(value => Number.isFinite(value) && value > 0);
-    return Math.max(found, evolveLevel);
+    return Math.max(found, evolutionMinLevel(evolution));
 }
 
 /**
@@ -549,9 +547,10 @@ function runWildModule(rawPokemonList, startersArtifact, wildConfig, moduleConfi
         && poke.rating.tier === TIER_NU
         && poke.evolutionData.type === EVO_TYPE_LC_OF_2
         && poke.rating.bestEvoTier === TIER_RU
-        && (poke.evolutions || []).some(
-            evo => evo.method === 'ITEM' || (evo.method === 'LEVEL' && parseInt(evo.param) <= 25)
-        )
+        // B-067 — the gym-2 reward must still evolve within the early game. This used to admit ANY
+        // `method === 'ITEM'` evolution unconditionally, which is the same defect one level up: a
+        // stone gated at 55 read as "evolves early". Read the evolution's own level instead.
+        && (poke.evolutions || []).some(evo => evolutionMinLevel(evo) <= GYM2_REWARD_MAX_EVO_LEVEL)
     );
     const gym2Replacement = sampleAndRemove(gym2ReplacementList);
     alreadyChosenFamilySet.add(getFamilyGroup(gym2Replacement.family));
