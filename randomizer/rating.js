@@ -2529,8 +2529,12 @@ function chooseMoveset(poke, moves, level = 100, startingMoveset = [], ability =
         }
     }
 
+    // B-071 — mirror the level filter the move pool above was built with. A learnset move the mon cannot
+    // reach at `level` can ONLY have entered the set through the TM branch, so it is a real teach and must
+    // be reported — otherwise the caller never spends the TM nor activates its pick-pack link, and one bag
+    // unit teaches the same move to a whole team. A move reachable by level-up is still never charged.
     moveset.forEach(move => {
-        if (!poke.learnset.some(ls => ls.move === move.id)
+        if (!poke.learnset.some(ls => ls.move === move.id && ls.level <= level)
             && tms.includes(move.id))
         {
             tmsUsed.push(move.id);
