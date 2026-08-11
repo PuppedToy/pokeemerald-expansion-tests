@@ -6,7 +6,7 @@ type: fix               # feature | fix | refactor | docs | chore
 created: 2026-08-11
 updated: 2026-08-11
 target-version: 0.9.0
-links: [B-067, B-068, B-069]
+links: [B-067, B-068, B-069, B-070]
 blocked-by: []
 ---
 
@@ -58,6 +58,8 @@ Acceptance criteria:
       seed reproduces on repeat generations in one process.
 - [x] A seven-seed sweep reports 0 mons below their evolution level and 0 stone gates below the unlock
       level.
+- [x] [B-070](../bugs/B-070-empty-reward-pool-crashes-the-run.md) fixed: an exhausted reward pool
+      degrades instead of dying on a null dereference, and a healthy run stays byte-identical.
 - [ ] Owner manual-tests a ROM built from a fixed run and confirms it is OK.
 
 ## Progress log
@@ -178,6 +180,37 @@ Acceptance criteria:
   — `trainers.js` had to be patched slot-only, since T-262 changed it): Wally's slot is
   `SPECIES_BASCULIN_WHITE_STRIPED`, the other five byte-identical, 0 mons below their evolution level.
   Seven-seed sweep: 0 below evolution level, 0 stone gates below the unlock level, in every seed.
+
+- **2026-08-11** — Scope grew once more: owner asked for the empty-reward-pool crash too, registered as
+  [B-070](../bugs/B-070-empty-reward-pool-crashes-the-run.md). Five fixes in this task now.
+
+  All 21 gym/static reward picks in `wildModule` dereferenced `sampleAndRemove`'s result without checking
+  it, so an exhausted pool ended the run with `Cannot read properties of null (reading 'family')`. The
+  interesting half was *why* a pool empties: every filter leads with the one-family-per-run dedup, the set
+  it consults grows with each reward handed out, and unlike the tier/shape constraints that clause is a
+  *preference* — a repeated family is cosmetic, an invalid reward is not. So the pool was being emptied by
+  the one constraint that should yield first.
+
+  Each reward now declares its filter once (no dedup clause) and a `takeReward` helper walks a ladder:
+  deduped list → same filter without dedup → (required only) a species another reward already got →
+  throw naming the reward / null + diagnostic. The required/optional split follows what downstream takes:
+  the eleven gym rewards are required because `writer.js` reads `.id` off all of them for `gGymRewards[]`;
+  the statics are optional because `writer.js` already falls back to the vanilla species.
+
+  **Design point worth recording:** rung 3 (reuse a species) exists because required and optional rewards
+  share pools and the required one is not always drawn first — `wallyLilycove` comes last out of the same
+  pool as the three regis, so without it a thin pool would kill the run on its final draw. Found by
+  writing the test for the static-degradation case and watching it throw.
+
+  **Zero-risk verification:** rung 1 is the old code verbatim and the later rungs build nothing and draw
+  no RNG until it comes back empty, so a healthy run must be unchanged. Confirmed by fingerprinting the
+  full ROM output (artifacts + docs, timestamps stripped) for three seeds before and after: identical.
+
+  Regression tests went into `wildModule.test.js` rather than a new file, to reuse its existing reward
+  fixture instead of duplicating a 100-line pokémon list — that fixture is the single home of that shape.
+  Two test-authoring corrections along the way: `SPECIES_NU_SOLO` also satisfies gym1's filter, so
+  starving gym1 means removing both NU solos; and starving a pool via `alreadyChosenFamilies` (rather than
+  by deleting mons) is what exercises rung 2.
 
 ## Outcome
 

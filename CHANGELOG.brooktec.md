@@ -76,6 +76,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   forms reached by a branch evolution (Weezing-Galar and friends) were exempt from every level check
   because the game files file them under their own family. (T-264, B-068)
 
+- **A narrow Pokémon pool no longer aborts the run.** If the pool ran out of candidates for a gym or
+  static reward — because every remaining match belonged to a family already used elsewhere — generation
+  died outright with an internal error. Rewards now accept a repeated family rather than being lost, the
+  optional ones (the Regis, Mew, the Sky Pillar legendaries) quietly keep their original Pokémon, and if a
+  gym reward really cannot be filled the error names it instead of pointing at nothing. Runs that were
+  already working are unaffected, down to the byte. (T-264, B-070)
+
 - **The same seed builds the same world, every time.** Generating twice without reloading the page could
   produce a different world from the identical seed, because one piece of the rebalancer's bookkeeping
   survived from the previous run. Seeds are reproducible again. In practice the site already started each
