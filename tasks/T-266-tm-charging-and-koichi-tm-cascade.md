@@ -1,7 +1,7 @@
 ---
 id: T-266
 title: Charge TM teaches correctly and cascade the Route 104 south TM pick
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: fix               # feature | fix | refactor | docs | chore
 created: 2026-08-11
 updated: 2026-08-11
@@ -38,7 +38,7 @@ Acceptance criteria:
 - [x] A guard test fails if any future pick group is declared in `trainers.js` without a bag home.
 - [x] `randomizer/docs/items.md` § Trainer Bag Cascade matches the code.
 - [x] `cd randomizer && npm test` green.
-- [ ] Owner manually verifies a fresh run: the Petalburg Woods trainers can roll Koichi's TMs, and no
+- [x] Owner manually verifies a fresh run: the Petalburg Woods trainers can roll Koichi's TMs, and no
       trainer teaches one bag unit of a TM to several Pokémon.
 
 ## Progress log
@@ -62,7 +62,26 @@ Acceptance criteria:
   surfaced: a single mon can still hold two moves from one pick-pack (Roxanne's Clamperl has Water Pulse
   *and* Chilling Water), because T-133 locks a mon's moveset before consuming the link so it can never
   self-block. That is documented, deliberate, and out of scope here.
+- **2026-08-11** — Owner manually validated a fresh run. Closed; merged into `master`.
 
 ## Outcome
 
-<!-- Filled when closing. -->
+Two one-line production changes, each with its own regression test, both shipping in 0.9.0:
+
+- `randomizer/rating.js` — `chooseMoveset`'s `tmsUsed` accounting now carries the same `ls.level <= level`
+  filter its candidate pool is built with, so a teach that could only have come from the bag is reported
+  and the caller spends the TM (and activates its pick-pack link).
+- `randomizer/trainers.js` — `petalwoodGruntBag()` adds `linkedChoiceSample([...choice104TMs2])`, putting
+  the TM08-10 pick into the cascade at its geographic position.
+
+Also shipped: the orphaned-pick guard in `tmPickCascade.test.js` (a structural test over `trainers.js`, so
+the *class* of mistake behind B-072 cannot recur silently), the `docs/items.md` cascade row, and two
+`CHANGELOG.brooktec.md` entries. Full suite 2338 passing; the browser worker bundle was rebuilt via
+`node build.js` (its artifacts are gitignored).
+
+No deviations from the plan. Both bugs' regression tests were verified red before the fix and green after.
+
+Follow-ups: none spawned. One deliberate non-goal is recorded in the log above (the T-133 self-block
+exception that lets one mon hold two moves from a single pick-pack — documented, deliberate behaviour).
+Pending, not blocking: a `verify-corpus` run on the build box to capture the new baseline, since B-071
+changes trainer teams in every run.
