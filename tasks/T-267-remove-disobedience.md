@@ -1,7 +1,7 @@
 ---
 id: T-267
 title: Remove the over-level disobedience mechanic entirely
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-08-11
 updated: 2026-08-11
@@ -45,8 +45,9 @@ Acceptance criteria:
       Badges).
 - [x] No in-game text still tells the player that Badges gate obedience.
 - [x] `cd randomizer && npm test` green (nothing pipeline-side should move).
-- [ ] Owner manually verifies in a ROM built from a rebuilt base: an over-level / traded mon with few
-      Badges always executes the chosen move.
+- [ ] ~~Owner manually verifies in a ROM built from a rebuilt base: an over-level / traded mon with few
+      Badges always executes the chosen move.~~ Waived at close by the owner — the base ROM has not been
+      rebuilt yet, so there was nothing to play-test. See Outcome.
 
 ## Progress log
 
@@ -76,7 +77,39 @@ Acceptance criteria:
   against the width the originals already used (≤38 chars) so no box overflows, and confirmed the
   randomizer's map writers key off script labels and TM-name texts, not these blocks. Suite re-run after
   the edit: 2338 passing.
+- **2026-08-11** — Owner ordered the close with the ROM play-test still outstanding (the base ROM has not
+  been rebuilt, so there is nothing to play yet). Randomizer suite re-run at close: 2338 passing, 3 suites
+  skipped (pre-existing). Merged into `master`. Two verifications remain owner-side and are recorded in the
+  Outcome rather than silently dropped: the C compile (`make check`, CI/builder — no GBA toolchain here) and
+  the in-game behaviour once the base is rebuilt.
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+The disobedience mechanic is gone from the engine, shipping in 0.9.0:
+
+- `include/config/battle.h` — `B_OBEDIENCE_DISABLED TRUE`, next to `B_OBEDIENCE_MECHANICS`, which it
+  overrides.
+- `src/battle_util.c` — `GetAttackerObedienceForAction()` returns `OBEYS` as its first act, before every
+  Badge/level/OT comparison and before `Random()` is called, so no battle RNG stream shifts. None of the
+  five `enum Obedience` failure outcomes is reachable any more.
+- `test/obedience.c` — a plain `TEST()` (64 iterations, level-100 outsider, no Badges).
+- Four map-script texts stripped of their obedience claims: Feather (`FortreeCity_Gym`), Heat
+  (`LavaridgeTown_Gym_1F`), Rain (`SootopolisCity_Gym_1F`) and `RustboroCity`'s trade NPC.
+- One `CHANGELOG.brooktec.md` line under `[Unreleased] / Removed`.
+
+Deviations from the plan: none in approach. One rejected alternative is logged above (deleting the
+canceller, scripts and string ids — `HITMARKER_OBEYS` and Battle Palace's `B_MSG_INCAPABLE_OF_POWER` both
+depend on them staying). The in-game text edits were not in the original plan; they were added mid-task on
+the owner's call once the greps showed four dialogues still describing the removed rule.
+
+Closed with two verifications outstanding, both owner-side and neither blocking the code:
+
+1. **The C never compiled here.** There is no GBA toolchain on this machine, so `make check` — including
+   `test/obedience.c` — runs in CI (`build.yml`) or on the builder. If it fails there, it fails on this
+   test file or on nothing.
+2. **No ROM was play-tested.** This is an engine change, so it reaches players only after the base ROM is
+   rebuilt (`base/pokeemerald.{gba,map,sym}`, `randomizer/docs/injection.md`). A `verify-corpus` run after
+   that rebuild will report changed hashes for every ROM — that is the intended consequence of this task,
+   not a regression, and it is the moment to capture a fresh baseline.
+
+Follow-ups: none spawned.
