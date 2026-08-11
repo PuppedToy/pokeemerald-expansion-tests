@@ -269,4 +269,4 @@
 | [T-265](T-265-analyze-path-ignores-run-evo-config.md) | Make the analyze/randomize path honour the run's evolution config | proposed | 0.9.0 | 2026-08-11 |
 | [T-266](T-266-tm-charging-and-koichi-tm-cascade.md) | Charge TM teaches correctly and cascade the Route 104 south TM pick | done | 0.9.0 | 2026-08-11 |
 | [T-267](T-267-remove-disobedience.md) | Remove the over-level disobedience mechanic entirely | done | 0.9.0 | 2026-08-11 |
-| [T-268](T-268-route116-docs-order-after-roxanne.md) | List Route 116 after the Roxanne reward in the docs | in-progress | 0.9.0 | 2026-08-11 |
+| [T-268](T-268-route116-docs-order-after-roxanne.md) | List Route 116 after the Roxanne reward in the docs | done | 0.9.0 | 2026-08-11 |
