@@ -41,6 +41,8 @@ if [ -z "$SKIP_TESTS" ]; then
   (cd backend && npm test) >/tmp/ec-pre-back.log 2>&1 || { echo "  ✗ backend tests FAILED — aborting"; tail -8 /tmp/ec-pre-back.log; exit 1; }
   echo "==> preflight: frontend tests"
   (cd frontend && npm test) >/tmp/ec-pre-front.log 2>&1 || { echo "  ✗ frontend tests FAILED — aborting"; tail -8 /tmp/ec-pre-front.log; exit 1; }
+  echo "==> preflight: deploy tooling tests"
+  node --test scripts/__tests__/*.test.mjs >/tmp/ec-pre-scripts.log 2>&1 || { echo "  ✗ deploy tooling tests FAILED — aborting"; tail -8 /tmp/ec-pre-scripts.log; exit 1; }
   echo "==> preflight: tracker consistency"
   node scripts/check-tracker.mjs >/dev/null || { echo "  ✗ tracker stale — run: node scripts/check-tracker.mjs --write"; exit 1; }
   echo "    preflight OK ✓"
@@ -51,13 +53,25 @@ fi
 # The app already refuses to start its worker in that state; catching it here means the owner learns it at
 # deploy time instead of from the first user's stuck request. Warn, don't abort: a docs/frontend-only
 # deploy to a box awaiting its first base build is legitimate.
-echo "==> checking the box's base ROM"
-BASE_OK=$(${SSH} "${TARGET}" "cd ${DEPLOY_PATH} 2>/dev/null && for f in base/pokeemerald.gba base/pokeemerald.map base/pokeemerald.sym; do [ -s \"\$f\" ] || { echo missing; exit 0; }; done; echo ok" 2>/dev/null || echo unknown)
-if [ "$BASE_OK" != "ok" ]; then
-  echo "    ⚠ the box has no usable base ROM (${BASE_OK}) — builds will stay queued until you run:"
-  echo "        deploy/build-base.sh"
+# T-273 — presence is not enough: a base built from OTHER sources than the ones being deployed makes the
+# injector refuse every build (or ship a ROM without what the docs promise). base-state.mjs answers both
+# questions from the base's own provenance stamp, so this is a real check and not the mtime guesswork it
+# replaced. Still a warning, not an abort: deploying the app to a box whose base is stale is legitimate —
+# what is not legitimate is not knowing. (The deploy skill branches on this and chains build-base.sh.)
+echo "==> checking the box's base ROM (presence + provenance)"
+if node scripts/base-state.mjs; then
+  BASE_STALE=""
 else
-  echo "    base present ✓"
+  RC=$?
+  case $RC in
+    10) BASE_STALE=1
+        echo "    ⚠ ROM builds will fail or miss these changes until you run:"
+        echo "        deploy/build-base.sh        # after this deploy finishes"
+        ;;
+    *)  BASE_STALE=""
+        echo "    ⚠ could not determine the base's state (see above) — continuing with the app deploy"
+        ;;
+  esac
 fi
 
 # --- build the browser frontend ---------------------------------------------------
@@ -102,4 +116,20 @@ ${SSH} "${TARGET}" "cd ${DEPLOY_PATH} \
   && docker compose -f deploy/docker-compose.yml up -d --force-recreate app \
   && sleep 5 \
   && docker compose -f deploy/docker-compose.yml exec -T app node -e \"fetch('http://localhost:3000/api/me').then(r=>console.log('   health /api/me:',r.status)).catch(e=>console.log('   ERR',e.message))\" </dev/null"
+
+# T-273 — record WHICH tree the box is now holding. build-base.sh refuses to stamp a base unless this
+# matches the tree it is being run from, so a base can never be labelled with sources it was not built
+# from. It lives in backend/data/ because that directory is rsync-excluded and box-persistent.
+echo "==> recording the deployed tree fingerprint (backend/data/deployed.json)"
+FP=$(node scripts/base-state.mjs --print-fingerprint)
+# shellcheck disable=SC2029
+${SSH} "${TARGET}" "cd ${DEPLOY_PATH} && mkdir -p backend/data && printf '{\n  \"fingerprint\": \"%s\",\n  \"commit\": \"%s\",\n  \"deployedAt\": \"%s\"\n}\n' '${FP}' '$(git rev-parse HEAD 2>/dev/null || echo unknown)' \"\$(date -u +%Y-%m-%dT%H:%M:%SZ)\" > backend/data/deployed.json && chown 1000:1000 backend/data/deployed.json" </dev/null
+
 echo "==> deployed ✓  (https://pokemon-emerald-cut.com)"
+if [ -n "${BASE_STALE:-}" ]; then
+  echo
+  echo "⚠ THE APP IS UPDATED BUT THE BASE ROM IS NOT: every ROM built now is injected into a base compiled"
+  echo "  from other sources, so builds fail (or silently lack these changes). Finish the job:"
+  echo "      deploy/build-base.sh"
+  echo "  (details: node scripts/base-state.mjs)"
+fi

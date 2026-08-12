@@ -14,6 +14,7 @@ Stack: Node.js pipeline (`randomizer/`, Jest tests) + Express backend/frontend (
 - `node analyze.js` — run the randomizer pipeline (analysis only; never compiles a ROM). See **Randomizer pipeline** below for flags.
 - `node make.js --bundle=./path/to/bundle.json` — build ROM(s) from a bundle (ROM-builder machine only)
 - `node scripts/check-tracker.mjs` — validate tasks/bugs/changelog consistency (`--write` regenerates indexes)
+- `node scripts/base-state.mjs` — does the box's base ROM match these sources? exit 0 in-sync / 10 rebuild-required (`--json`, `--print-fingerprint`). Decides whether a deploy also needs `deploy/build-base.sh` — see `docs/dev-deploy-workflow.md`
 - `cd backend && node scripts/export-feedback.mjs [--csv]` — dump all submitted user feedback (JSON, or `--csv`) for manual analysis
 
 ## Single Source of Truth (SSOT)
@@ -140,7 +141,7 @@ These are regenerated from source on every run; committing them pollutes history
 - Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`…), one logical change per commit, reference the task/bug ID in the body.
 - Definition of done: acceptance criteria met, `cd randomizer && npm test` green, task log updated, `CHANGELOG.brooktec.md` line added (if user-visible), no SSOT violations introduced.
 - After two failed attempts at the same fix, stop, log the dead end in the task, and reassess the plan.
-- **Deploys are owner-gated.** The agent has **no push permission**: to deploy a change, the **owner runs `git push`** and then **explicitly gives the go-ahead**, and only then does the agent run `deploy/update.sh`. The agent never pushes and never deploys un-pushed or un-greenlit code. (DNS / docs / changelog-only changes need no deploy — `update.sh` is for code.) Full loop: `docs/dev-deploy-workflow.md`.
+- **Deploys are owner-gated.** The agent has **no push permission**: to deploy a change, the **owner runs `git push`** and then **explicitly gives the go-ahead**, and only then does the agent deploy. The agent never pushes and never deploys un-pushed or un-greenlit code. (DNS / docs / changelog-only changes need no deploy — `update.sh` is for code.) Use the `/deploy` skill: it decides from the base ROM's provenance stamp whether the deploy is app-only (`deploy/update.sh`) or also needs `deploy/build-base.sh`, so nobody has to remember. Full loop: `docs/dev-deploy-workflow.md`.
 
 ## Do NOT
 

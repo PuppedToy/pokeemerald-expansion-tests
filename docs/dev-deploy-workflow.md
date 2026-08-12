@@ -66,20 +66,47 @@ DEPLOY_PATH=/opt/emerald
 DEPLOY_KEY=~/.ssh/emerald_box
 ```
 
-### The base ROM — a second, much rarer step
+### The base ROM — the second step, and how the deploy knows it needs it
 
 Since T-244 every delivered artifact is **injected** into `base/pokeemerald.{gba,map,sym}`. Those are
 gitignored build artifacts that `update.sh` deliberately does **not** carry, so they are installed
 separately and then survive every deploy:
 
 ```bash
-deploy/build-base.sh          # build on the box + install + restart (~4 min warm, ~20 min cold)
+deploy/build-base.sh          # build on the box + install + stamp + restart (~10-20 min: starts from `make tidy`)
 ```
 
-Run it on the **first** bring-up and after **any** change to the C sources, `include/` or `data/maps/` — not
-on a normal code deploy. Full rules (including the all-three-from-one-build invariant) in
+**Nobody has to remember when** (T-273). A base is *stamped* at build time with the fingerprint of the
+sources it came from — `base/BASE_BUILD.json`, a sha256 over the git blob ids of every path `make` reads —
+and `update.sh` records which tree the box holds in `backend/data/deployed.json`. Comparing the two is a
+command, and the deploy branches on it:
+
+```bash
+node scripts/base-state.mjs          # exit 0 = in-sync · 10 = rebuild-required · 2 = cannot tell
+node scripts/base-state.mjs --json   # same, machine-readable (what the deploy skill reads)
+```
+
+| verdict | what it means | path |
+|---|---|---|
+| `in-sync` | the base was built from exactly these sources | `deploy/update.sh` and you are done |
+| `rebuild-required` | different sources, no stamp, no base, or uncommitted base-relevant changes | `deploy/update.sh` **then** `deploy/build-base.sh` |
+
+Which paths count as "base-relevant" is decided **by exclusion** in `scripts/base-state.mjs` (an
+unrecognised path counts as base-relevant, so the worst case is one needless rebuild rather than a base that
+silently disagrees with its sources); the classifier is covered by `scripts/__tests__/base-state.test.mjs`,
+which runs in the deploy's own preflight.
+
+Two guards worth knowing: `update.sh` prints a loud warning (and repeats it at the end) when it deploys onto
+a stale base, and `build-base.sh` **refuses** to stamp a base unless the box is holding the tree it is being
+run from — otherwise the stamp would label a base with sources it was not built from, which is the exact
+drift the stamp exists to catch. `--force` overrides it (first bring-up, whose deploy predates the stamp).
+
+Full rules (including the all-three-artifacts-from-one-build invariant) in
 [base-rom-provisioning.md](base-rom-provisioning.md). If the base is missing, the app starts but holds the
 build worker: requests queue instead of failing, the boot log says so, and the admin panel shows a warning.
+
+> The whole sequence — verdict, in-flight-build check, one of the two paths, verification against the live
+> site — is the `/deploy` skill (`.claude/skills/deploy/SKILL.md`).
 
 ## 5. Verify
 
