@@ -125,12 +125,12 @@ BUFF, nerfed = all NERF, else adjusted (so any type/category change ⇒ adjusted
 the pokedex. Threads `config-form.js` → both `toModuleConfig`s → `runPokedexModule`; CLI `--mutate-moves`.
 
 ### Evolution levels
-Enable + tuning (SoT: `randomizer/evoLevelWriter.js` + `constants.js` `EVO_LEVEL_*`; gated in
-`generate.js makePokedex`).
+Tuning only — the adjustment itself is **unconditional** (T-275 removed the on/off toggle; a legacy
+config's `enabled` key is ignored). SoT: `randomizer/evoLevelWriter.js` + `constants.js` `EVO_LEVEL_*`;
+applied in `generate.js makePokedex`.
 
 | Config key (`evoLevels.*`) | Default | Effect |
 |---|---|---|
-| `enabled` | true | off = keep base-game evolution levels untouched. |
 | `min` / `max` | 5 / 65 | hard clamps on the computed level. |
 | `deviation` | 0.05 | ± random spread. |
 | `stageAdjustments.{lcOf2,lcOf3,nfeOf3}` | 0 / −0.10 / +0.10 | per-stage spacing (fraction). |

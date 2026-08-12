@@ -15,8 +15,12 @@ const appSrc = fs.readFileSync(path.resolve(__dirname, '../js/app.js'), 'utf8');
 // Ultra-granular tuning knobs deliberately summarised by a headline row rather than shown
 // individually: the per-category move-mutation chances (under "Move mutation") and the per-stat
 // mutation probabilities (under "Rebalance"/"Mutate").
+// T-275 — `evoLevels` joined them: its on/off switch is gone (the adjustment is unconditional), so the
+// headline "Evolution levels — Adjusted" row states the rule and its remaining knobs (min/max,
+// deviation, stage spacing, the per-tier tables) are not itemised.
 const INTENTIONALLY_SUMMARISED = new Set([
     'movePowerChance', 'moveAccuracyChance', 'moveTypeChance', 'moveCategoryChance', 'mutationProbs',
+    'evoLevels',
 ]);
 
 function baseConfigKeys(src) {

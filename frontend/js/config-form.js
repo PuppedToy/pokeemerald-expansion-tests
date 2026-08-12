@@ -81,7 +81,7 @@ const EVO_PREEVO_MOD_TIERS = [
     ['RU', 0.01, 0.05], ['UU', 0.06, 0.10], ['OU', 0.11, 0.20], ['UBERS', 0.21, 0.40], ['AG', 0.41, 0.60],
 ];
 const EVO_LEVELS_DEFAULT = {
-    enabled: true, min: 5, max: 65, deviation: 0.05,
+    min: 5, max: 65, deviation: 0.05,
     stageAdjustments: { lcOf2: 0, lcOf3: -0.10, nfeOf3: 0.10 },
     baseRanges: Object.fromEntries(EVO_BASE_RANGE_TIERS.map(([t, a, b]) => [t, [a, b]])),
     preEvoModifiers: Object.fromEntries(EVO_PREEVO_MOD_TIERS.map(([t, a, b]) => [t, [a, b]])),
@@ -994,7 +994,6 @@ export class ConfigForm {
         const evoMin = clamp(num('#evo-min', 5), 1, 100);
         const evoMax = Math.max(evoMin, clamp(num('#evo-max', 65), 1, 100));
         return {
-            enabled: this._q('#evo-enabled').checked,
             min: evoMin,
             max: evoMax,
             deviation: clamp(num('#evo-deviation', 0.05), 0, 1),
@@ -1012,7 +1011,7 @@ export class ConfigForm {
     _setEvoLevels(evo) {
         evo = evo || EVO_LEVELS_DEFAULT;
         const set = (sel, v) => { const el = this._q(sel); if (el) el.value = v; };
-        this._q('#evo-enabled').checked = evo.enabled !== false;
+        // T-275 — a legacy config's `enabled` key is ignored: the adjustment is always on.
         set('#evo-min', evo.min ?? 5);
         set('#evo-max', evo.max ?? 65);
         set('#evo-deviation', evo.deviation ?? 0.05);
@@ -1581,13 +1580,8 @@ export class ConfigForm {
   </button>
   <div class="config-cat-body hidden" id="cat-body-evolution">
     <div class="card-glass" style="display:flex;flex-direction:column;gap:20px;padding:20px">
-      <div class="toggle-wrap">
-        <div>
-          <div class="toggle-label">Adjust evolution levels</div>
-          <div class="toggle-desc">Pokémon always need to meet level criteria to evolve. You can use these settings to tweak how they do so.</div>
-        </div>
-        <label class="toggle"><input type="checkbox" id="evo-enabled" checked><span class="toggle-track"></span></label>
-      </div>
+      <!-- T-275 — the adjustment is unconditional (no on/off toggle); only its tuning is configurable. -->
+      <div class="toggle-desc">Pokémon always need to meet level criteria to evolve. You can use these settings to tweak how they do so.</div>
       <div id="evo-tuning" style="display:flex;flex-direction:column;gap:16px">
         <div class="evo-scalars">
           <div class="field"><label for="evo-min">Min level</label><input type="number" id="evo-min" class="input" min="1" max="100" value="5" style="width:88px"></div>
@@ -2071,10 +2065,6 @@ export class ConfigForm {
         const mmVal = this._q('#move-mutation-chance-val');
         if (mmVal) mmVal.textContent = (this._q('#move-mutation-chance')?.value ?? '10') + '%';
 
-        const evoOn = this._q('#evo-enabled')?.checked;
-        const evoTuning = this._q('#evo-tuning');
-        if (evoTuning) evoTuning.style.display = evoOn ? 'flex' : 'none'; // T-227 — keep flex + gap
-
         const diffLevel = parseInt(this._q('#difficultySlider')?.value ?? '7', 10);
         const descEl = this._q('#difficultyDesc');
         if (descEl) descEl.textContent = getDifficultyDesc(diffLevel);
@@ -2362,9 +2352,9 @@ export class ConfigForm {
             this._q(sel)?.addEventListener('input', onChange);
         }
         // Evolution levels: scalars, stage spacing, and every per-tier table input.
-        for (const sel of ['#evo-enabled', '#evo-min', '#evo-max', '#evo-deviation',
+        for (const sel of ['#evo-min', '#evo-max', '#evo-deviation',
             '#evo-stage-lcOf2', '#evo-stage-lcOf3', '#evo-stage-nfeOf3']) {
-            this._q(sel)?.addEventListener(sel === '#evo-enabled' ? 'change' : 'input', onChange);
+            this._q(sel)?.addEventListener('input', onChange);
         }
         for (const [prefix, tiers] of [['evo-base', EVO_BASE_RANGE_TIERS], ['evo-mod', EVO_PREEVO_MOD_TIERS]]) {
             for (const [t] of tiers) {

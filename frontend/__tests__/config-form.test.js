@@ -172,9 +172,13 @@ test('Pokémon mutations expose four category toggles (Step 5)', () => {
   assert.match(src, /#mutation-categories/, 'toggles must be grouped for show/hide with rebalance');
 });
 
-test('Evolution levels category: enable + scalars + Advanced tier tables (Steps 7–8)', () => {
+test('Evolution levels category: scalars + Advanced tier tables (Steps 7–8)', () => {
   assert.match(src, /data-cat="evolution"/, 'Evolution category must exist');
-  for (const id of ['evo-enabled', 'evo-min', 'evo-max', 'evo-deviation', 'evo-stage-lcOf2', 'evo-stage-lcOf3', 'evo-stage-nfeOf3']) {
+  // T-275 — SPEC CHANGE: the on/off toggle is gone (the adjustment is always applied); only the
+  // tuning controls remain, and they are always visible (no #evo-tuning show/hide).
+  assert.doesNotMatch(src, /id="evo-enabled"/, 'the on/off toggle must not come back');
+  assert.doesNotMatch(src, /evoLevels[\s\S]{0,80}enabled/, 'no code may read/write evoLevels.enabled');
+  for (const id of ['evo-min', 'evo-max', 'evo-deviation', 'evo-stage-lcOf2', 'evo-stage-lcOf3', 'evo-stage-nfeOf3']) {
     assert.match(src, new RegExp(`id="${id}"`), `missing evolution control #${id}`);
   }
   assert.match(src, /id="evolution-advanced-body"/, 'Evolution must have a scoped Advanced panel');

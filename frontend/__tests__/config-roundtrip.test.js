@@ -34,7 +34,8 @@ const FULL_CONFIG = {
         changeTypeMoveFromOtherChance: 0.1, moveInsertChance: 0.6, moveRatingDeviation: 0.3,
     },
     evoLevels: {
-        enabled: true, min: 8, max: 60, deviation: 0.1,
+        // T-275 — no `enabled` key any more: the adjustment is unconditional, only tuning travels.
+        min: 8, max: 60, deviation: 0.1,
         stageAdjustments: { lcOf2: 0.05, lcOf3: -0.2, nfeOf3: 0.2 },
         baseRanges: { MAGIKARP: [6, 8], OU: [40, 50] },
         preEvoModifiers: { NU: [-0.04, 0.02] },
