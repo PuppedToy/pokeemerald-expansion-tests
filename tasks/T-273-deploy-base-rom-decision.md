@@ -76,6 +76,19 @@ Acceptance criteria:
   second one for the base rebuild alone would have been a wrapper around a single command, which the deploy
   skill already documents.
 
+- **2026-08-12** — First real path-2 run. `update.sh` shipped clean (marker written, the new end-of-run
+  stale-base warning fired), and `build-base.sh` then **failed at the assembler**: the 15-trader rework had
+  never compiled (B-075, duplicate `MauvilleCity_PokemonCenter_1F_EventScript_Trader`). So the very first use
+  of this task's machinery surfaced a critical defect that had been invisible for a day — the base could not
+  be rebuilt, which is why injection kept refusing.
+  Two corrections came out of it: the skill now runs the long scripts under `set -o pipefail` (a `| tee |
+  tail` pipeline reported the failed build as "exit code 0"), and the new
+  `scripts/__tests__/asm-duplicate-labels.test.mjs` guard runs in `update.sh`'s preflight, so a tree that
+  cannot assemble is now caught in a second rather than 20 minutes into a base build. §4's "base-state MUST
+  print in-sync" is what would have caught the bogus success anyway; the pipefail fix just makes the failure
+  loud at the right moment.
+  The base rebuild is blocked on the B-075 fix reaching the box, i.e. on the owner's push (the deploy gate).
+
 ## Outcome
 
 <!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->

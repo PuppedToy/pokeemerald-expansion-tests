@@ -5,7 +5,7 @@ MauvilleCity_PokemonCenter_1F_MapScripts::
 
 @ T-269 — town trader. All the per-run data (offer, level, TMs, IVs, what it wants) lives in
 @ gIngameTrades[INGAME_TRADE_MAUVILLE]; the flow is shared (data/scripts/town_traders.inc).
-MauvilleCity_PokemonCenter_1F_EventScript_Trader::
+MauvilleCity_PokemonCenter_1F_EventScript_TownTrader::
 	setvar VAR_0x8008, INGAME_TRADE_MAUVILLE
 	goto Common_EventScript_TownTrader
 	end
