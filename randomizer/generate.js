@@ -38,14 +38,12 @@ const { noopTeamAudit } = require('./teamAudit');
 // levels the bundle didn't keep — yielding illegal evolved mons and divergent shared teams.
 async function makePokedex(mcfg, baseData) {
     const pokedex = await runPokedexModule(mcfg, baseData);
-    // T-052 — evolution-level adjustment is now optional + tunable. When disabled, base-game
-    // evolution levels are left untouched; when enabled (default) the config tunes the algorithm.
+    // T-052 — the adjustment is tunable through `evoLevels`; T-275 — it is NOT optional: every run
+    // rebalances the levels, so a legacy config still carrying `enabled: false` is simply ignored.
     const evoConfig = mcfg.evoLevels || {};
     // B-067 — clamp every stone gate to the level the player first holds a stone at, derived from the
     // caps SSOT (src/caps.c → pokedex.capLevels) rather than hardcoded here.
-    if (evoConfig.enabled !== false) {
-        applyEvoLevels(pokedex.pokes, evoConfig, { stoneUnlockLevel: stoneUnlockLevel(pokedex.capLevels) });
-    }
+    applyEvoLevels(pokedex.pokes, evoConfig, { stoneUnlockLevel: stoneUnlockLevel(pokedex.capLevels) });
     return pokedex;
 }
 
@@ -502,4 +500,6 @@ async function runGeneration(cfg, mcfg, sessionId, hooks = {}) {
 // (the visual-test docs fixture) decides the trades — and grows the mega pool — the SAME way,
 // instead of re-deriving the call and drifting (T-269: its copy forgot the move database, so the
 // fixture's gifts arrived with no TMs).
-module.exports = { runGeneration, generateDefault, generateNuzlocke, generateSoullink, bundle, computeTrades, attachStarterNaming, attachLocationNaming, attachTradeNaming, attachAutoNaming };
+// `makePokedex` is exported as the seam that pins the one thing every run must do to a fresh pokédex:
+// roll its evolution levels (T-275 — no longer optional, so the wiring itself is what needs a test).
+module.exports = { runGeneration, generateDefault, generateNuzlocke, generateSoullink, bundle, computeTrades, makePokedex, attachStarterNaming, attachLocationNaming, attachTradeNaming, attachAutoNaming };

@@ -22,9 +22,10 @@ test('inline-flex containers declare their flex + gap inline', () => {
 test('their show/hide toggles restore display:"flex", never "" (which would wipe flex+gap)', () => {
   assert.match(src, /#mutation-categories'\)\.style\.display = rebalanceOn \? 'flex'/, 'mutations categories → flex');
   assert.match(src, /mmCategories\.style\.display = mutateMovesOn \? 'flex'/, 'move-mutation categories → flex');
-  assert.match(src, /evoTuning\.style\.display = evoOn \? 'flex'/, 'evolution tuning → flex');
-  // none of the three toggle to '' (the bug)
+  // T-275 — `#evo-tuning` is no longer toggled at all (the adjustment is unconditional, so its controls
+  // are always visible); nothing may hide it again, which is what this guard now pins.
+  assert.doesNotMatch(src, /evoTuning\.style\.display/, 'evolution tuning is never shown/hidden');
+  // neither of the two toggle to '' (the bug)
   assert.doesNotMatch(src, /#mutation-categories'\)\.style\.display = rebalanceOn \? '' :/);
   assert.doesNotMatch(src, /mmCategories\.style\.display = mutateMovesOn \? '' :/);
-  assert.doesNotMatch(src, /evoTuning\.style\.display = evoOn \? '' :/);
 });

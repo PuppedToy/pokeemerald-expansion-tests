@@ -757,7 +757,8 @@ function reviewRowsHtml(cfg) {
     rows.push(['Wild encounters', cfg.wildEncounterType === 'classic'
         ? `Classic (${cfg.pokemonPerZone ?? 5} per zone)`
         : 'Deterministic (1 per zone)']);
-    rows.push(['Evolution levels', cfg.evoLevels && cfg.evoLevels.enabled === false ? 'Base game' : 'Adjusted']);
+    // T-275 — the adjustment is unconditional now, so the row states the rule rather than a setting.
+    rows.push(['Evolution levels', 'Adjusted']);
     const money = cfg.money || {};
     rows.push(['Reward money', `$${money.normal ?? 250} / $${money.boss ?? 3000} / $${money.gym ?? 5000}`]);
     rows.push(['Extra starters', String((cfg.extraStarters || []).length)]);

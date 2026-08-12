@@ -96,6 +96,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   for good — at any level, with any number of Badges, traded or caught, gift or starter. Every Pokémon
   always does exactly what you tell it to. (T-267)
 
+- **The "adjust evolution levels" switch is gone — it is always on.** Every run rebalances the level each
+  Pokémon evolves at from the quality of what it evolves into; there is no longer a way to fall back to the
+  base game's levels. What stays yours is *how* it does it: the minimum and maximum level, the randomness,
+  the stage spacing, and the whole per-tier tables under Advanced — all still in the *Evolution levels*
+  panel, now always visible. (T-275)
+
 ### Fixed
 
 - **The fifteen traders can actually be built into the game.** The Mauville trader shared its internal name
