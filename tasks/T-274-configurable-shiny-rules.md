@@ -1,7 +1,7 @@
 ---
 id: T-274
 title: Make the shiny rule configurable (quality or classic luck) and add starter IV floors
-status: in-progress     # proposed | in-progress | done | abandoned
+status: done            # proposed | in-progress | done | abandoned
 type: feature           # feature | fix | refactor | docs | chore
 created: 2026-08-12
 updated: 2026-08-12
@@ -60,9 +60,9 @@ Acceptance criteria:
       **150**, applied to the chosen starter only (owner decision).
 - [x] The five values reach the ROM on both paths: `shinyWriter` patches the initializers and the
       injector writes the same bytes at the struct's offsets (injector test asserts the layout).
-- [ ] Engine: quality mode unchanged from today at the defaults; classic mode restores PID/OT-id
-      shininess. *(Restored at the read seam only — see the 2026-08-12 log. Needs the builder/CI compile
-      and a play-test; no GBA toolchain locally.)*
+- [x] Engine: quality mode unchanged from today at the defaults; classic mode restores PID/OT-id
+      shininess. *(Restored at the read seam only — see the 2026-08-12 log. Owner-validated manually; the
+      C compile itself is CI/builder-only, there is no GBA toolchain locally.)*
 - [x] Docs viewer tint follows the run's rule (threshold in quality mode, no tint in classic).
 - [x] `cd randomizer && npm test` and `cd frontend && npm test` green; `node build.js` re-bundled
       (injector layout changed); `randomization-options.md` + `CHANGELOG.brooktec.md` updated.
@@ -104,6 +104,41 @@ Acceptance criteria:
   - `scripts/base-state.mjs` correctly reports **rebuild-required (path 2)** for these C changes, so the
     deploy will know to run `build-base.sh` as well.
 
+- **2026-08-12** — Previewed the two panels in Chromium at 1440 and 375 px, in both modes and with the
+  threshold moved to 170: the toggle swaps the right control, the "1 in N" line follows the active number
+  and the starter note flips between guaranteed-shiny and not. Two polish changes came out of looking at
+  it: the starter note gets its own line, and it turns the docs' shiny gold (`#FFD43B`) when the floors
+  clear the run's threshold, so the config panel and the generated documentation agree at a glance. Also
+  wired the shiny rule into `visual-tests/fixtures/build-doc-sample.cjs` — the third copy of
+  `buildDocHtml`, which has to stay in lock-step with app.js — with a `SHINY_JSON` env override so a
+  classic-mode fixture can prove the viewer stops tinting. Both fixtures rebuilt; `npm run shoot` reports
+  no horizontal overflow at any viewport.
+
+- **2026-08-12** — Owner validated manually and asked to close. Closing.
+
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+The run decides what "shiny" means. A new **Shiny Pokémon** config section carries the toggle
+(`shinyByQuality`, default on), the IV-total slider (0–186, default 150) and the classic percentage field
+(default 0.0122% ⇒ exactly 8/65536 ⇒ gen 3's 1 in 8192), with a line under them that states what the
+active number actually works out to ("About 1 in 205 wild Pokémon will be shiny") in **both** modes. Two
+sliders under *Starter quality* set the chosen starter's forced perfect IVs (0–6, default 3) and its
+minimum IV total (0–186, default 150), with a note that says whether those floors clear the run's shiny
+bar — gold when they do.
+
+All five values live in `gRandomizerSettings` and reach the ROM on both paths (`randomizer/shinyWriter.js`
+for the compile path, the `dataDrivenAndToggles` injector module for the inject path; the struct grew
+20 → 28 bytes with every earlier offset unchanged). The engine reads them at its one shiny seam,
+`GetBoxMonData(MON_DATA_IS_SHINY)` → `IsBoxMonShinyByRule` (`src/pokemon.c`), and in `CB2_GiveStarter`.
+`randomizer/shinyRules.js` is the single home of the maths, mirrored as ESM for the browser and pinned by
+a parity test that sweeps every threshold through both implementations. The generated docs carry the rule
+and tint an IV line gold only when that total really means shiny — never in classic mode.
+
+Deviations from the plan, both logged above with their reasoning: **classic mode is restored at the read
+seam only** (the deleted `CreateBoxMon` re-roll block stays deleted — charm, lure, fishing chain, DexNav
+and the force flags are all unreachable in this hack), and **`P_SHINY_IV_THRESHOLD` was removed** rather
+than kept as the seed for the struct's default, so "150" has exactly one home.
+
+Two follow-ups belong to the owner, not to a new task: the deploy must take **path 2**
+(`update.sh` + `build-base.sh`, which `scripts/base-state.mjs` already reports), and the golden-master
+corpus baseline has to be **recaptured** on the build box — the ROM changed on purpose.
