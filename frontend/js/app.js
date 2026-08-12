@@ -7,6 +7,7 @@ import { initPresets } from './presets.js';
 import { initAdmin } from './admin.js';
 import { parsePath, pathFor, titleFor } from './router.js';
 import { shinyChanceText, docsShinyRule } from './shinyRules.js';
+import { createProgressDisplay } from './gen-progress.js';
 
 // ── Routing (T-259) ───────────────────────────────────────────────────────────
 // Every destination has its own path; router.js owns the map from path to { tab, subtab }. The nav is
@@ -484,8 +485,7 @@ document.getElementById('btn-save-preset')?.addEventListener('click', () => {
 
 function startWorker(config) {
     terminateWorker();
-    _realPct = 0;
-    _displayPct = 0;
+    genProgress.reset('Starting…');
     startCrawl();
 
     const worker = new Worker('/js/randomizer.bundle.js');
@@ -566,21 +566,23 @@ function reportDiagnostics(data) {
     } catch { /* never let telemetry break generation */ }
 }
 
-// ── Progress crawl animation ──────────────────────────────────────────────────
+// ── Progress bar ──────────────────────────────────────────────────────────────
+// The percentages are the worker's (weighted by real cost — randomizer/progress.js); gen-progress.js
+// owns keeping them monotonic and easing between reports. T-276.
+
+const genProgress = createProgressDisplay({
+    render: ({ pct, label }) => {
+        document.getElementById('gen-progress-fill').style.width = `${pct}%`;
+        document.getElementById('gen-progress-pct').textContent  = `${pct}%`;
+        if (label) document.getElementById('gen-step-label').textContent = label;
+    },
+});
 
 let _crawlInterval = null;
-let _realPct = 0;
-let _displayPct = 0;
 
 function startCrawl() {
     stopCrawl();
-    _crawlInterval = setInterval(() => {
-        const ceiling = Math.min(_realPct + 18, 95);
-        if (_displayPct < ceiling) {
-            _displayPct = Math.min(_displayPct + 0.25, ceiling);
-            _setBarUI(Math.round(_displayPct));
-        }
-    }, 250);
+    _crawlInterval = setInterval(() => genProgress.tick(), 250);
 }
 
 function stopCrawl() {
@@ -590,25 +592,14 @@ function stopCrawl() {
 // ── Step 3 UI states ──────────────────────────────────────────────────────────
 
 function resetGenerateUI() {
-    _realPct = 0;
-    _displayPct = 0;
     document.getElementById('gen-running').style.display = '';
     document.getElementById('gen-done').style.display    = 'none';
     document.getElementById('gen-error').style.display   = 'none';
-    _setBarUI(0);
-    document.getElementById('gen-step-label').textContent = 'Starting…';
-}
-
-function _setBarUI(pct) {
-    document.getElementById('gen-progress-fill').style.width = `${pct}%`;
-    document.getElementById('gen-progress-pct').textContent  = `${pct}%`;
+    genProgress.reset('Starting…');
 }
 
 function updateProgressUI(pct, step) {
-    _realPct = pct;
-    if (pct > _displayPct) _displayPct = pct;
-    _setBarUI(Math.round(_displayPct));
-    document.getElementById('gen-step-label').textContent = step;
+    genProgress.report(pct, step);
 }
 
 function showGenDone() {

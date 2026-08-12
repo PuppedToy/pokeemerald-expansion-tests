@@ -28,6 +28,7 @@ const { buildLocationNaming, buildTradeNaming } = require('./modules/locationNam
 const { WILD_ROUTE_LOCATIONS, STATIC_LOCATIONS, GIFT_LOCATIONS } = require('./data/encounterLocations');
 const { noopDiagnostics, setActiveDiagnostics, clearActiveDiagnostics } = require('./diagnostics');
 const { noopTeamAudit } = require('./teamAudit');
+const { createProgressTracker } = require('./progress');   // T-276 — the weighted progress model
 
 // Create a pokedex and roll its dynamic evolution levels EXACTLY ONCE, here, when the
 // pokedex is born. applyEvoLevels mutates each evo.param in place, so the levels become a
@@ -36,8 +37,9 @@ const { noopTeamAudit } = require('./teamAudit');
 // them per ROM inside writerDocs (under the per-ROM rng.seed) was B-017: a shared pokedex got
 // re-rolled every ROM but serialized only once (last roll), so teams were validated against
 // levels the bundle didn't keep — yielding illegal evolved mons and divergent shared teams.
-async function makePokedex(mcfg, baseData) {
-    const pokedex = await runPokedexModule(mcfg, baseData);
+async function makePokedex(mcfg, baseData, hooks = {}) {
+    // T-276 — `onProgress` (optional) reports the pokédex's own long passes, which are ~68% of a run.
+    const pokedex = await runPokedexModule(mcfg, baseData, { onProgress: hooks.onProgress });
     // T-052 — the adjustment is tunable through `evoLevels`; T-275 — it is NOT optional: every run
     // rebalances the levels, so a legacy config still carrying `enabled: false` is simply ignored.
     const evoConfig = mcfg.evoLevels || {};
@@ -136,12 +138,21 @@ function resolveContext(hooks) {
         diagnostics: hooks.diagnostics || noopDiagnostics(),
         // T-117 — team-decision audit collector; same sibling pattern as diagnostics. Defaults to no-op.
         audit: hooks.audit || noopTeamAudit(),
+        // T-276 — percentage already spent before generation began (the browser's base-data download);
+        // the run's own scale starts there instead of rewinding the bar to 0.
+        progressFloor: hooks.progressFloor || 0,
     };
+}
+
+// T-276 — one tracker per run: the weights live in progress.js, the per-kind counts come from the
+// run type's own shape (which is exactly what used to feed the equal-weight `totalSteps`).
+function trackerFor(ctx, counts) {
+    return createProgressTracker({ emit: ctx.progress, flush: ctx.flush, counts, floor: ctx.progressFloor });
 }
 
 // Resolve one ROM's docs. Seeds the RNG to romSeed (wild placeholders + evo levels),
 // then defers to writerDocs. showExactPositions flows from the module config.
-async function computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, diag, audit, trades) {
+async function computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, diag, audit, trades, onProgress) {
     rng.seed(romSeed);
     return writerDocs(pokedex, trainers, starters, wild, trainingBaseSeed, {
         // T-163 — full docs-visibility object (writerDocs normalizes + derives showExactPositions).
@@ -150,6 +161,7 @@ async function computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, 
         diag,
         audit,
         trades,   // T-194 — town trades, attached to the route encounter cards.
+        onProgress,   // T-276 — per-trainer progress; resolving the teams is ~32% of a run.
     });
 }
 
@@ -172,23 +184,24 @@ function computeTrades(pokedex, wild, romSeed, diag) {
 }
 
 async function generateDefault(cfg, mcfg, sessionId, ctx) {
-    const { progress, flush, baseData } = ctx;
-    const totalSteps = 5; // 4 modules + 1 docs
-    let done = 0;
-    const tick = (step) => progress(Math.round((++done / totalSteps) * 100), step);
+    const { baseData } = ctx;
+    const prog = trackerFor(ctx, { pokedex: 1, trainers: 1, starters: 1, wild: 1, docs: 1 });
 
-    progress(0, 'Generating Pokédex...');
-    const pokedex  = await makePokedex(mcfg, baseData); tick('Generating trainer teams...'); await flush();
-    const trainers = runTrainersModule(pokedex, mcfg);       tick('Generating starters...'); await flush();
-    const starters = runStartersModule(pokedex.pokes, { quality: mcfg.starterQuality });       tick('Generating wild encounters...'); await flush();
-    const wild     = runWildModule(pokedex.pokes, starters, wildData, mcfg); tick('Building docs...'); await flush();
+    const pokedex  = await prog.run('pokedex',  'Generating Pokédex...',         (onProgress) => makePokedex(mcfg, baseData, { onProgress }));
+    const trainers = await prog.run('trainers', 'Generating trainer teams...',   async () => runTrainersModule(pokedex, mcfg));
+    const starters = await prog.run('starters', 'Generating starters...',        async () => runStartersModule(pokedex.pokes, { quality: mcfg.starterQuality }));
+    const wild     = await prog.run('wild',     'Generating wild encounters...', async () => runWildModule(pokedex.pokes, starters, wildData, mcfg));
 
     // Base seed policy differs per caller (worker: cfg.seed; backend: null). romSeed is
     // cfg.seed for the single ROM; computeRomDocs reseeds it before writerDocs.
     const baseSeed = ctx.defaultBaseSeed !== undefined ? ctx.defaultBaseSeed : cfg.seed;
-    const trades = computeTrades(pokedex, wild, cfg.seed, ctx.diagnostics);
-    const docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, cfg.seed, baseSeed, ctx.diagnostics, ctx.audit, trades);
-    tick('Done'); await flush();
+    // The trades belong to this unit of work: they are decided from the wild plan and then read by
+    // the docs, so they share the docs slice of the bar.
+    const { trades, docs } = await prog.run('docs', 'Building docs...', async (onProgress) => {
+        const trades = computeTrades(pokedex, wild, cfg.seed, ctx.diagnostics);
+        const docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, cfg.seed, baseSeed, ctx.diagnostics, ctx.audit, trades, onProgress);
+        return { trades, docs };
+    });
 
     const roms = [{
         romIndex: 0,
@@ -196,19 +209,23 @@ async function generateDefault(cfg, mcfg, sessionId, ctx) {
         docs,
     }];
     attachAutoNaming(cfg, mcfg, roms, [{ player: 0, run: 0 }]);
+    prog.finish('Done');
     return bundle(sessionId, cfg, {}, roms, ctx.generatedAt);
 }
 
 async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
-    const { progress, flush, baseData, unsharedTrainingBaseSeed, runSeed, universeSeed } = ctx;
+    const { baseData, unsharedTrainingBaseSeed, runSeed, universeSeed } = ctx;
     const { numROMs, shared } = cfg;
-    const sharedSteps = (shared.pokedex ? 1 : 0) + (shared.trainers ? 1 : 0) + (shared.starters ? 1 : 0);
-    const perRomSteps = 1 + (shared.pokedex ? 0 : 1) + (shared.trainers ? 0 : 1) + (shared.starters ? 0 : 1);
-    const totalSteps = sharedSteps + numROMs * perRomSteps + numROMs; // +numROMs for docs
-    let done = 0;
-    const tick = (step) => progress(Math.round((++done / totalSteps) * 100), step);
-
-    progress(0, 'Starting generation...');
+    // T-276 — how many units of each kind this run will really do. A shared subsystem runs once and
+    // is amortized over every ROM; an unshared one runs per ROM. `shared.trainers`/`shared.starters`
+    // only take effect when the pokédex is shared too (that is what the loops below branch on).
+    const prog = trackerFor(ctx, {
+        pokedex:  shared.pokedex ? 1 : numROMs,
+        trainers: shared.trainers && shared.pokedex ? 1 : numROMs,
+        starters: shared.starters && shared.pokedex ? 1 : numROMs,
+        wild: numROMs,
+        docs: numROMs,
+    });
 
     let sharedPokedex  = null;
     let sharedTrainers = null;
@@ -217,16 +234,13 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
     // T-189 — the shared block is a pure function of universeSeed.
     rng.seed(universeSeed);
     if (shared.pokedex) {
-        progress(Math.round((done / totalSteps) * 100), 'Generating shared Pokédex...');
-        sharedPokedex = await makePokedex(mcfg, baseData); tick('Pokédex ready'); await flush();
+        sharedPokedex = await prog.run('pokedex', 'Generating shared Pokédex...', (onProgress) => makePokedex(mcfg, baseData, { onProgress }));
     }
     if (shared.trainers && sharedPokedex) {
-        progress(Math.round((done / totalSteps) * 100), 'Generating shared trainer teams...');
-        sharedTrainers = runTrainersModule(sharedPokedex, mcfg); tick('Trainer teams ready'); await flush();
+        sharedTrainers = await prog.run('trainers', 'Generating shared trainer teams...', async () => runTrainersModule(sharedPokedex, mcfg));
     }
     if (shared.starters && sharedPokedex) {
-        progress(Math.round((done / totalSteps) * 100), 'Generating shared starters...');
-        sharedStarters = runStartersModule(sharedPokedex.pokes, { quality: mcfg.starterQuality }); tick('Starters ready'); await flush();
+        sharedStarters = await prog.run('starters', 'Generating shared starters...', async () => runStartersModule(sharedPokedex.pokes, { quality: mcfg.starterQuality }));
     }
 
     const sharedData = {};
@@ -249,24 +263,20 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
 
         let pokedex = sharedPokedex;
         if (!pokedex) {
-            progress(Math.round((done / totalSteps) * 100), `Generating Pokédex${label}...`);
-            pokedex = await makePokedex(mcfg, baseData); tick(`Pokédex${label} ready`); await flush();
+            pokedex = await prog.run('pokedex', `Generating Pokédex${label}...`, (onProgress) => makePokedex(mcfg, baseData, { onProgress }));
         }
 
         let trainers = sharedTrainers;
         if (!trainers) {
-            progress(Math.round((done / totalSteps) * 100), `Generating trainer teams${label}...`);
-            trainers = runTrainersModule(pokedex, mcfg); tick(`Trainer teams${label} ready`); await flush();
+            trainers = await prog.run('trainers', `Generating trainer teams${label}...`, async () => runTrainersModule(pokedex, mcfg));
         }
 
         let starters = sharedStarters;
         if (!starters) {
-            progress(Math.round((done / totalSteps) * 100), `Generating starters${label}...`);
-            starters = runStartersModule(pokedex.pokes, { quality: mcfg.starterQuality }); tick(`Starters${label} ready`); await flush();
+            starters = await prog.run('starters', `Generating starters${label}...`, async () => runStartersModule(pokedex.pokes, { quality: mcfg.starterQuality }));
         }
 
-        progress(Math.round((done / totalSteps) * 100), `Generating wild encounters${label}...`);
-        const wild = runWildModule(pokedex.pokes, starters, wildData, mcfg); tick(`Wild encounters${label} ready`); await flush();
+        const wild = await prog.run('wild', `Generating wild encounters${label}...`, async () => runWildModule(pokedex.pokes, starters, wildData, mcfg));
 
         romArtifacts.push({ pokedex, trainers, starters, wild });
         roms.push({
@@ -282,26 +292,29 @@ async function generateNuzlocke(cfg, mcfg, sessionId, ctx) {
 
     for (let i = 0; i < numROMs; i++) {
         const label = numROMs > 1 ? ` (ROM ${i + 1}/${numROMs})` : '';
-        progress(Math.round((done / totalSteps) * 100), `Building viewer${label}...`);
         const { pokedex, trainers, starters, wild } = romArtifacts[i];
         const romSeed = deriveRomSeed(runSeed, i);
         const trainingBaseSeed = shared.trainers ? universeSeed : unsharedTrainingBaseSeed(romSeed);
-        const trades = computeTrades(pokedex, wild, romSeed, ctx.diagnostics);
-        roms[i].artifacts.trades = trades;
-        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics, ctx.audit, trades);
-        tick(`Viewer ready${label}`); await flush();
+        await prog.run('docs', `Building viewer${label}...`, async (onProgress) => {
+            const trades = computeTrades(pokedex, wild, romSeed, ctx.diagnostics);
+            roms[i].artifacts.trades = trades;
+            roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics, ctx.audit, trades, onProgress);
+        });
     }
 
     attachAutoNaming(cfg, mcfg, roms, romDescriptors);
+    prog.finish('Done');
     return bundle(sessionId, cfg, sharedData, roms, ctx.generatedAt);
 }
 
 async function generateSoullink(cfg, mcfg, sessionId, ctx) {
-    const { progress, flush, baseData, unsharedTrainingBaseSeed, runSeed, universeSeed } = ctx;
+    const { baseData, unsharedTrainingBaseSeed, runSeed, universeSeed } = ctx;
     const { numPlayers, romsPerPlayer, playerShared, romShared } = cfg;
     const totalROMs = numPlayers * romsPerPlayer;
 
-    // Count total module calls for the progress denominator.
+    // How many times each subsystem will run: once globally, once per player, or once per ROM,
+    // exactly as the three levels of sharing below decide. T-276 weights each of those counts by
+    // what the subsystem costs (progress.js), so the bar tracks the run's real shape.
     const globalPdxSteps  = playerShared.pokedex  ? 1 : 0;
     const globalTrSteps   = playerShared.trainers  ? 1 : 0;
     const globalStSteps   = playerShared.starters  ? 1 : 0;
@@ -311,18 +324,14 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
     const perRomPdxSteps  = !playerShared.pokedex  && !romShared.pokedex  ? totalROMs : 0;
     const perRomTrSteps   = !playerShared.trainers && !romShared.trainers ? totalROMs : 0;
     const perRomStSteps   = !playerShared.starters && !romShared.starters ? totalROMs : 0;
-    const wildSteps = totalROMs; // always per-ROM
 
-    const totalSteps = globalPdxSteps + globalTrSteps + globalStSteps
-        + perPlayerPdxSteps + perPlayerTrSteps + perPlayerStSteps
-        + perRomPdxSteps + perRomTrSteps + perRomStSteps
-        + wildSteps
-        + totalROMs; // +totalROMs for docs
-
-    let done = 0;
-    const tick = (step) => progress(Math.round((++done / totalSteps) * 100), step);
-
-    progress(0, 'Starting Soul-Link generation...');
+    const prog = trackerFor(ctx, {
+        pokedex:  globalPdxSteps + perPlayerPdxSteps + perRomPdxSteps,
+        trainers: globalTrSteps  + perPlayerTrSteps  + perRomTrSteps,
+        starters: globalStSteps  + perPlayerStSteps  + perRomStSteps,
+        wild: totalROMs,   // always per-ROM
+        docs: totalROMs,
+    });
 
     // Global shared modules (across all players).
     let globalPokedex  = null;
@@ -332,16 +341,13 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
     // T-189 — the global shared block (across all players) is a pure function of universeSeed.
     rng.seed(universeSeed);
     if (playerShared.pokedex) {
-        progress(Math.round((done / totalSteps) * 100), 'Generating shared Pokédex (all players)...');
-        globalPokedex = await makePokedex(mcfg, baseData); tick('Shared Pokédex ready'); await flush();
+        globalPokedex = await prog.run('pokedex', 'Generating shared Pokédex (all players)...', (onProgress) => makePokedex(mcfg, baseData, { onProgress }));
     }
     if (playerShared.trainers && globalPokedex) {
-        progress(Math.round((done / totalSteps) * 100), 'Generating shared trainer teams (all players)...');
-        globalTrainers = runTrainersModule(globalPokedex, mcfg); tick('Shared trainer teams ready'); await flush();
+        globalTrainers = await prog.run('trainers', 'Generating shared trainer teams (all players)...', async () => runTrainersModule(globalPokedex, mcfg));
     }
     if (playerShared.starters && globalPokedex) {
-        progress(Math.round((done / totalSteps) * 100), 'Generating shared starters (all players)...');
-        globalStarters = runStartersModule(globalPokedex.pokes, { quality: mcfg.starterQuality }); tick('Shared starters ready'); await flush();
+        globalStarters = await prog.run('starters', 'Generating shared starters (all players)...', async () => runStartersModule(globalPokedex.pokes, { quality: mcfg.starterQuality }));
     }
 
     const sharedData = {};
@@ -368,18 +374,15 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
         // scoped per player.
         rng.seed(deriveSeed(universeSeed, p));
         if (!playerShared.pokedex && romShared.pokedex) {
-            progress(Math.round((done / totalSteps) * 100), `Generating Pokédex for ${pl}...`);
-            playerPokedex = await makePokedex(mcfg, baseData); tick(`Pokédex for ${pl} ready`); await flush();
+            playerPokedex = await prog.run('pokedex', `Generating Pokédex for ${pl}...`, (onProgress) => makePokedex(mcfg, baseData, { onProgress }));
             playerEntry.pokedex = playerPokedex;
         }
         if (!playerShared.trainers && romShared.trainers && playerPokedex) {
-            progress(Math.round((done / totalSteps) * 100), `Generating trainer teams for ${pl}...`);
-            playerTrainers = runTrainersModule(playerPokedex, mcfg); tick(`Trainer teams for ${pl} ready`); await flush();
+            playerTrainers = await prog.run('trainers', `Generating trainer teams for ${pl}...`, async () => runTrainersModule(playerPokedex, mcfg));
             playerEntry.trainers = playerTrainers;
         }
         if (!playerShared.starters && romShared.starters && playerPokedex) {
-            progress(Math.round((done / totalSteps) * 100), `Generating starters for ${pl}...`);
-            playerStarters = runStartersModule(playerPokedex.pokes, { quality: mcfg.starterQuality }); tick(`Starters for ${pl} ready`); await flush();
+            playerStarters = await prog.run('starters', `Generating starters for ${pl}...`, async () => runStartersModule(playerPokedex.pokes, { quality: mcfg.starterQuality }));
             playerEntry.starters = playerStarters;
         }
 
@@ -397,20 +400,16 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
             let starters = playerStarters;
 
             if (!playerShared.pokedex && !romShared.pokedex) {
-                progress(Math.round((done / totalSteps) * 100), `Generating Pokédex for ${pl} ${rl}...`);
-                pokedex = await makePokedex(mcfg, baseData); tick(`Pokédex ready`); await flush();
+                pokedex = await prog.run('pokedex', `Generating Pokédex for ${pl} ${rl}...`, (onProgress) => makePokedex(mcfg, baseData, { onProgress }));
             }
             if (!playerShared.trainers && !romShared.trainers && pokedex) {
-                progress(Math.round((done / totalSteps) * 100), `Generating trainer teams for ${pl} ${rl}...`);
-                trainers = runTrainersModule(pokedex, mcfg); tick(`Trainer teams ready`); await flush();
+                trainers = await prog.run('trainers', `Generating trainer teams for ${pl} ${rl}...`, async () => runTrainersModule(pokedex, mcfg));
             }
             if (!playerShared.starters && !romShared.starters && pokedex) {
-                progress(Math.round((done / totalSteps) * 100), `Generating starters for ${pl} ${rl}...`);
-                starters = runStartersModule(pokedex.pokes, { quality: mcfg.starterQuality }); tick(`Starters ready`); await flush();
+                starters = await prog.run('starters', `Generating starters for ${pl} ${rl}...`, async () => runStartersModule(pokedex.pokes, { quality: mcfg.starterQuality }));
             }
 
-            progress(Math.round((done / totalSteps) * 100), `Generating wild encounters for ${pl} ${rl}...`);
-            const wild = runWildModule(pokedex.pokes, starters, wildData, mcfg); tick(`Wild encounters ready`); await flush();
+            const wild = await prog.run('wild', `Generating wild encounters for ${pl} ${rl}...`, async () => runWildModule(pokedex.pokes, starters, wildData, mcfg));
 
             const resolveArtifact = (artifact, key) => {
                 if (playerShared[key]) return 'global';
@@ -446,20 +445,21 @@ async function generateSoullink(cfg, mcfg, sessionId, ctx) {
     for (let i = 0; i < roms.length; i++) {
         const rom = roms[i];
         const label = `player ${(rom.playerIndex ?? 0) + 1} ROM ${rom.romIndex + 1}`;
-        progress(Math.round((done / totalSteps) * 100), `Building viewer for ${label}...`);
         const { pokedex, trainers, starters, wild } = romArtifacts[i];
         const romSeed = deriveRomSeed(runSeed, i);
         const trainingBaseSeed = trainerBaseSeed(rom.artifacts.trainers, {
             universeSeed,
             unshared: unsharedTrainingBaseSeed(romSeed),
         });
-        const trades = computeTrades(pokedex, wild, romSeed, ctx.diagnostics);
-        roms[i].artifacts.trades = trades;
-        roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics, ctx.audit, trades);
-        tick(`Viewer ready (${label})`); await flush();
+        await prog.run('docs', `Building viewer for ${label}...`, async (onProgress) => {
+            const trades = computeTrades(pokedex, wild, romSeed, ctx.diagnostics);
+            roms[i].artifacts.trades = trades;
+            roms[i].docs = await computeRomDocs(mcfg, pokedex, trainers, starters, wild, romSeed, trainingBaseSeed, ctx.diagnostics, ctx.audit, trades, onProgress);
+        });
     }
 
     attachAutoNaming(cfg, mcfg, roms, romDescriptors);
+    prog.finish('Done');
     return bundle(sessionId, cfg, sharedData, roms, ctx.generatedAt);
 }
 

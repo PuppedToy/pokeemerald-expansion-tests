@@ -17,6 +17,7 @@ const { typeMainColors } = require('./trainerColors');
 const { noopDiagnostics } = require('./diagnostics');
 const { normalizeDocsVisibility, redactWildPokes } = require('./docsVisibility');
 const { applyDocMapOrder, attachTradesToMaps } = require('./docsMapOrder.js');   // T-268/T-269 — docs encounter list (SSOT)
+const { DOCS_TRAINERS_SHARE, passReporter } = require('./progress');   // T-276 — sub-progress cost model
 
 const CONTEXTUAL_TIER_SEQ = ['MAGIKARP', 'ZU', 'PU', 'NU', 'RU', 'UU', 'OU', 'UBERS', 'LEGEND', 'AG'];
 
@@ -273,12 +274,22 @@ async function writerDocs(pokedexArtifact, trainersArtifact, startersArtifact, w
     // T-132 — a TAG partner (abusePartnerWeather) must resolve AFTER its ally, so it can read the ally's
     // committed weather and abuse it. Defer such trainers to a second pass (villains aren't continuity
     // groups, so their build order is unconstrained). One level of dependency is enough here.
+    //
+    // T-276 — this loop is the whole cost of the docs (~45 ms per trainer, ~32% of a run), so it reports
+    // progress as it goes. Both passes count against the same total: what the user waits for is the
+    // roster, whichever pass a trainer lands in.
+    const reportResolved = passReporter(options.onProgress, { total: trainersData.length, span: DOCS_TRAINERS_SHARE });
+    let resolved = 0;
     const deferredPartners = [];
     trainersData.forEach(trainer => {
         if (trainer.abusePartnerWeather && !trainersResults[trainer.abusePartnerWeather]) { deferredPartners.push(trainer); return; }
         processTrainer(trainer);
+        reportResolved(resolved++);
     });
-    deferredPartners.forEach(processTrainer);
+    deferredPartners.forEach(trainer => {
+        processTrainer(trainer);
+        reportResolved(resolved++);
+    });
 
     // T-106 — resolution ran in the hoisted BUILD order (each recurring character's authoritative
     // appearance + every `copy:` target resolve before their dependents), but the docs must list
