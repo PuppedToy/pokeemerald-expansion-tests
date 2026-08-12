@@ -44,8 +44,28 @@ function collisionGrid(layoutId) {
     return grid;
 }
 
-const traderOf = (map, trader) =>
-    (map.object_events || []).filter(o => o.script === `${mapDirs.get(trader.mapId)}_EventScript_Trader`);
+/**
+ * The trader's script label, found by what the script DOES rather than by its name.
+ *
+ * T-270 derived it as `<MapDir>_EventScript_Trader`. B-075 forced that convention to break in exactly one
+ * map: vanilla's Mauville Man decoration trader already owns that symbol in Mauville's Pokémon Center, and
+ * two global labels with one name means the ROM does not assemble at all. So identify the NPC by the pair
+ * that actually defines a town trader — it arms this town's trade id and jumps into the shared flow — which
+ * is both immune to the naming and a stronger claim than the old one.
+ */
+function traderScriptLabel(dir, trader) {
+    const text = fs.readFileSync(path.join(MAPS_DIR, dir, 'scripts.inc'), 'utf8');
+    const armsThisTrade = new RegExp(`setvar\\s+VAR_0x8008,\\s*${trader.ingameTradeId}\\b`);
+    const block = text
+        .split(/^(?=[A-Za-z_]\w*::)/m)
+        .find(b => armsThisTrade.test(b) && /goto\s+Common_EventScript_TownTrader\b/.test(b));
+    return block ? /^([A-Za-z_]\w*)::/.exec(block)[1] : null;
+}
+
+const traderOf = (map, trader) => {
+    const label = traderScriptLabel(mapDirs.get(trader.mapId), trader);
+    return label ? (map.object_events || []).filter(o => o.script === label) : [];
+};
 
 describe('the 15 traders stand in their healing buildings', () => {
     test.each(TRADERS.map(t => [t.town, t]))('%s: exactly one trader NPC, in the map its row names', (_town, trader) => {

@@ -82,7 +82,22 @@ deploy/build-base.sh                   # tidy → make -j all syms → install �
 Order is not cosmetic: `build-base.sh` refuses to run unless the box's `backend/data/deployed.json`
 fingerprint matches this tree, precisely so a base can never be stamped with sources it was not built from.
 
-Run each in the background (the base build is long) and poll. Watch for:
+Run each in the background (the base build is long) and poll — and **capture the script's own exit status**,
+not the pipeline's:
+
+```sh
+set -o pipefail; deploy/build-base.sh 2>&1 | tee /tmp/ec-basebuild.log
+```
+
+Without `pipefail`, `| tee | tail` reports the *tail's* status and a failed build is announced as "exit code
+0" (that happened on 2026-08-12, over the compile error that turned out to be B-075). Read the log's tail
+regardless of the status; §4 is what actually decides.
+
+Watch for:
+
+- `Error: symbol ... is already defined` / `make: *** [...] Error 1` → the tree does not assemble. **Stop**,
+  register the bug, and fix it with a guard in `scripts/__tests__/asm-duplicate-labels.test.mjs`-style so the
+  next occurrence costs a second in preflight instead of 20 minutes here.
 
 - `✗ INJECTION FAILED against the freshly built base` → the base was **moved aside**
   (`base-rejected-<ts>`) and the app now holds the queue instead of failing requests. **Stop** and report

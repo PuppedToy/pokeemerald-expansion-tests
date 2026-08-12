@@ -83,6 +83,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **The fifteen traders can actually be built into the game.** The Mauville trader shared its internal name
+  with the Pokémon Center's old decoration trader, and two things cannot answer to one name: the game refused
+  to build at all, so the whole feature had never made it into a ROM. Renamed, and the build now checks for
+  that class of clash before it starts. (B-075)
+
 - **You can log in from the presets window again.** Opening **Load Preset** while signed out shows a
   "Log in / Register" link, but the login window used to open *behind* the presets one — invisible and
   impossible to type into, since every click landed on the presets window instead. It now opens in front,
