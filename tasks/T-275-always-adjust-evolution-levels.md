@@ -1,7 +1,7 @@
 ---
 id: T-275
 title: Make evolution-level adjustment unconditional (drop the on/off toggle)
-status: in-progress    # proposed | in-progress | done | abandoned
+status: done           # proposed | in-progress | done | abandoned
 type: refactor         # feature | fix | refactor | docs | chore
 created: 2026-08-12
 updated: 2026-08-12
@@ -78,7 +78,29 @@ Acceptance criteria:
   panel render and open with the toggle gone, the saved config's `evoLevels` keys are
   `min/max/deviation/stageAdjustments/baseRanges/preEvoModifiers` (no `enabled`), an edited min survives to
   storage, and the console is clean — so nothing was left querying `#evo-enabled`.
+- **2026-08-12** — Owner asked to close and merge. Suite re-verified green (randomizer 2486 passed / 23
+  skipped) on the final tree; closed and merged into `master`. Push stays with the owner.
 
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Shipped in one commit (`feat: always adjust evolution levels, drop the on/off toggle`). The *Evolution
+levels* on/off switch is gone from the config panel; every run rebalances the levels and only the tuning
+(min/max, deviation, stage spacing, the Advanced per-tier tables) remains configurable — always visible
+now. The config a run produces no longer carries `evoLevels.enabled`, and `generate.js makePokedex`
+applies `applyEvoLevels` unconditionally, so a legacy config still holding `enabled: false` is inert
+instead of switching the feature off. No user-facing copy was rewritten and the algorithm itself
+(`evoLevelWriter.js`) was not touched.
+
+Deviations from the plan, both to keep the surface honest rather than merely smaller:
+- The toggle's description line survived as the category's intro copy (removing the `toggle-wrap`
+  wholesale would have deleted useful text the owner asked not to change).
+- The run-summary row stayed, as the constant `Adjusted`, instead of being dropped; `evoLevels` joined
+  T-213's `INTENTIONALLY_SUMMARISED` set, the same bucket `mutationProbs` sits in, because a headline row
+  now stands for the remaining knobs.
+
+Two extra tests followed the spec change beyond the ones the plan foresaw: T-227's `#evo-tuning`
+show/hide guard (`flex-gap-toggle.test.js`), which now pins that *nothing* hides the tuning, and T-213's
+summary drift guard. `makePokedex` is exported from `generate.js` as the seam the new unit test drives.
+
+No follow-ups spawned. Note for whoever reads T-052 or T-214: their Step 7 / validation-table entries for
+`evoLevels.enabled` and `#evo-enabled` describe the surface as it was then — this task is the later word.
