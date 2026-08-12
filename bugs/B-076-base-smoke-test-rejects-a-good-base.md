@@ -8,7 +8,7 @@ updated: 2026-08-12
 found-in: 0.9.0
 fixed-in:               # version that ships the fix (set when fixed)
 regression-test:        # REQUIRED to mark as fixed: path/to/test (named or annotated with this id)
-links: [T-246, T-273, B-075, backend/build/golden-corpus/, .claude/skills/verify-corpus]
+links: [T-246, T-273, T-274, B-075, backend/build/golden-corpus/, .claude/skills/verify-corpus]
 ---
 
 # B-076 — The base smoke test rejects a good base and takes the box's working base down with it
@@ -45,6 +45,31 @@ A third thing, found while validating by hand: generating a bundle **mutates** `
 (`include/constants/tms_hms.h`, `src/randomizer_picks.c`), and injection then refuses because the base's own
 sources are modified. Any smoke step that generates its own bundle must `git checkout -- src/ include/
 data/maps/` before injecting.
+
+### Second occurrence — 2026-08-12, the T-274 deploy
+
+It happened again, the same way, because the fix below is not implemented yet. `deploy/build-base.sh`
+compiled a correct base for T-274 (`gRandomizerSettings` came out **28 B** — the five new fields at their
+offsets), wrote its offset map and client artifacts, and then the smoke test failed on the same stale
+`INGAME_TRADE_SEEDOT` and moved the whole thing to `base-rejected-20260812-103029`. Production went from
+"app newer than base" to **no base at all** for ~6 minutes.
+
+Recovery, for the record (it is the manual version of the fix below):
+
+1. `generate.mjs baseline` on the box → a bundle from the current pipeline.
+2. It dirtied `include/constants/tms_hms.h` + `src/randomizer_picks.c`, exactly as noted above; restored
+   them by rsyncing the committed copies before injecting.
+3. Re-ran the *same* smoke inject against the rejected artifacts **without touching `base/`**, using
+   `INJECT_BASE_ROM` / `INJECT_BASE_MAP` / `INJECT_BASE_SYM` (make.js already supports them — that is the
+   staging hook the fix needs, no new flag required). Result: `✓ Injected 5 module(s)`,
+   `in-game trades: 15 of 15`, `settings: … / 1 / 8 / 150 / 3 / 150`.
+4. Promoted the proven base back to `base/`, hand-wrote `BASE_BUILD.json` with the same values
+   `build-base.sh` would have stamped, restarted the app, and confirmed `base-state.mjs` reports in-sync.
+
+**Collateral to undo:** step 1 regenerated `baseline.bundle.json` **in place**, so that frozen golden-master
+input is no longer the 2026-07-28 one. The corpus needed a re-freeze anyway (T-274 changes the ROM on
+purpose), but the freeze must now cover all seven bundles, and the fix below should generate into a scratch
+`CORPUS_OUT` so a smoke test can never overwrite a frozen input again.
 
 ## Root cause
 
