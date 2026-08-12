@@ -1741,7 +1741,7 @@ export class ConfigForm {
         <label for="starter-min-iv-total">Minimum IV total on your starter: <span id="starter-min-iv-total-val">${DEFAULTS.starterMinIvTotal}</span></label>
         <input type="range" id="starter-min-iv-total" class="slider" min="0" max="${MAX_IV_TOTAL}" value="${DEFAULTS.starterMinIvTotal}" step="1" style="width:100%">
         <span class="field-hint">After those perfect IVs, the rest are topped up until the six add up to at least this. Applies to the starter you choose, not to the extra starters below.</span>
-        <span class="field-hint" id="starter-shiny-note" style="margin-top:4px"></span>
+        <span class="field-hint" id="starter-shiny-note" style="display:block;margin-top:8px"></span>
       </div>
       <div style="border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;display:flex;flex-direction:column;gap:14px">
         <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap">
@@ -2233,11 +2233,15 @@ export class ConfigForm {
             // The engine forces the perfect IVs first and only then tops the rest up, so the floor the
             // starter is guaranteed to reach is whichever of the two is higher.
             const guaranteed = Math.max(perfectIvs * MAX_PER_STAT_IVS, minIvTotal);
+            const alwaysShiny = byQuality && guaranteed >= threshold;
             starterNote.textContent = !byQuality
                 ? 'This run rolls shinies by luck, so your starter may or may not be one.'
-                : guaranteed >= threshold
+                : alwaysShiny
                     ? `Your starter is always shiny: it reaches ${guaranteed} IVs and this run needs ${threshold}.`
                     : `Your starter may not be shiny: it is only guaranteed ${guaranteed} IVs and this run needs ${threshold}.`;
+            // Gold when it is guaranteed — the same gold the generated docs tint a shiny IV line with, so
+            // the two places agree at a glance. Otherwise the ordinary muted hint colour.
+            starterNote.style.color = alwaysShiny ? '#FFD43B' : '';
         }
     }
 

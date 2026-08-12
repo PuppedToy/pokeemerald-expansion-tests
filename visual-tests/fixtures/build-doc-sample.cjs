@@ -33,6 +33,7 @@ const { runWildModule } = require(R('randomizer/modules/wildModule.js'));
 const wildData = require(R('randomizer/wild.js'));
 const { writerDocs } = require(R('randomizer/writerDocs.js'));
 const { computeTrades } = require(R('randomizer/generate.js'));
+const { docsShinyRule } = require(R('randomizer/shinyRules.js'));   // T-274
 
 // ── buildDocHtml + helpers: kept in lock-step with frontend/js/app.js ───────────
 const DOC_OMIT_POKE_FIELDS = new Set([
@@ -53,7 +54,7 @@ function docRunNamespace(seed, playerIndex, romIndex) {
     if (romIndex !== undefined && romIndex !== null) parts.push(`r${romIndex}`);
     return parts.join('-').replace(/[^A-Za-z0-9_-]/g, '');
 }
-function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText) {
+function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText, shinyCfg = null) {
     const assets = JSON.parse(assetsText);
     const runNs = docRunNamespace(seed, rom.playerIndex, rom.romIndex);
     return template
@@ -65,6 +66,10 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
             `<script>const EMBEDDED_ASSETS = ${assetsText};</script>`)
         .replace('<script src="bosscaps.js"></script>',
             `<script>const bossCaps = ${bossCapsText || '[]'};</script>`)
+        // T-274 — the run's shiny rule (lock-step with app.js buildDocHtml). SHINY_JSON flips the fixture
+        // to classic mode / another threshold, to verify the viewer stops (or moves) the gold IV tint.
+        .replace('<script src="shinyrule.js"></script>',
+            `<script>const shinyRule = ${JSON.stringify(docsShinyRule(shinyCfg))};</script>`)
         .split('__FONT_PRESS_START_2P__').join(assets['fonts/PressStart2P.woff2'] || '')
         .split('__FONT_VT323__').join(assets['fonts/VT323.woff2'] || '')
         // T-163 — inject the docs-visibility-redacted viewer copy (lock-step with app.js buildDocHtml).
@@ -112,6 +117,9 @@ async function main() {
     // T-187 — optional move-mutation config via env so a mutation-on fixture can be built to verify the
     // Moves screen + modal treatment, e.g. MOVE_JSON='{"mutateMoves":true,"moveMutationChance":0.5}'.
     const moveCfg = process.env.MOVE_JSON ? JSON.parse(process.env.MOVE_JSON) : {};
+    // T-274 — optional shiny-rule config via env, e.g. SHINY_JSON='{"shinyByQuality":false}' (classic luck:
+    // the viewer must stop tinting IV lines) or '{"shinyIvThreshold":120}'. Default: the committed rule.
+    const shinyCfg = process.env.SHINY_JSON ? JSON.parse(process.env.SHINY_JSON) : null;
     const mcfg = { seed, difficulty: 7, rebalance: true, balanceChance: 0.2, allTms: false, showExactPositions: false, docsVisibility: dv || undefined, ...moveCfg };
 
     const t0 = Date.now();
@@ -136,7 +144,7 @@ async function main() {
             attachAutoNaming({ seed }, { nicknames: nickCfg }, [rom], [{ player: 0, run: 0 }]);
         }
 
-        const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText);
+        const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText, shinyCfg);
         fs.writeFileSync(outPath, html);
         console.log(`[fixture] seed=${seed} → ${outPath} (${(html.length / 1e6).toFixed(1)} MB, ${((Date.now() - t0) / 1000).toFixed(1)}s)`);
     } finally {
