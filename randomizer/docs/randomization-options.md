@@ -197,7 +197,50 @@ auto-learn; relearning a move it never actually had is always free. Default `250
 every relearn free. See task T-167. **Not buildable locally** (no GBA toolchain); the C compile runs
 in CI / on the builder.
 
+### Shiny Pokémon (T-274) — ROM-build; CI/builder-verified
+SoT of the maths: `randomizer/shinyRules.js` (defaults, `%` → odds-out-of-65536, the exact
+`P(IV total ≥ T)`, and the "1 in N" text). SoT of the ROM values: the five new fields of
+`gRandomizerSettings` (`include/randomizer_settings.h`), patched by `randomizer/shinyWriter.js` on the
+compile path and by the `dataDrivenAndToggles` injector module on the inject path. Like the league rules
+above these are **ROM behaviours, not generation knobs**: they draw no RNG, never reach either
+`toModuleConfig`, and ride in `bundle.config`. **They change C, so an inject-mode deploy needs a base
+rebuild** (`deploy/build-base.sh`).
+
+The engine has exactly one shiny seam — `GetBoxMonData(MON_DATA_IS_SHINY)` (`src/pokemon.c`
+`IsBoxMonShinyByRule`) — which every shiny sprite, star, animation and summary flag reads, so switching
+systems switches all of them at once.
+
+| Config key | Default | Effect |
+|---|---|---|
+| `shinyByQuality` | **on** | **on** = quality: a Pokémon is shiny iff its six IVs sum to `shinyIvThreshold` or more (the rule commit `5d98097` introduced). **off** = classic: gen 3's own lottery, `GET_SHINY_VALUE(otId, personality) < shinyOdds`. |
+| `shinyIvThreshold` | 150 | Quality mode's IV total (slider 0–186; 186 = all 31s). 150 ⇒ about **1 in 205** wild Pokémon. |
+| `shinyChancePercent` | 0.0122 | Classic mode's chance per Pokémon, as a percentage. Converted to the engine's integer out of 65536 (`0.0122% ⇒ 8 ⇒ 1 in 8192`, gen 3's own value). Rounds to the nearest 1/65536, so anything below ≈0.0016% lands on *never* — which the UI says out loud instead of silently promoting it. |
+| `starterPerfectIvs` | 3 | The chosen starter gets this many randomly-picked IVs forced to 31 (`CB2_GiveStarter`, `src/battle_setup.c`). |
+| `starterMinIvTotal` | 150 | ... then the remaining IVs are topped up until the six add up to at least this. **Owner decision:** the extra starters are NOT touched — they keep ordinary random IVs. |
+
+Both tunables always reach the ROM whatever the mode is, so a re-generated run never loses the other
+system's tuning, and the docs can state the threshold even in classic mode.
+
+**Classic mode is gen 3's rule, not the expansion's extras.** The read seam restores
+`(GET_SHINY_VALUE(otId, personality) < odds) ^ shinyModifier` exactly; the Shiny Charm / lure /
+fishing-chain / DexNav re-rolls that commit `5d98097` deleted from `CreateBoxMon` stay deleted, because
+none of their sources are reachable in this hack (the charm is never placed, `I_FISHING_CHAIN` and both
+`P_FLAG_FORCE_*` flags are off) and restoring them would add RNG draws for nothing.
+
+**The docs follow the run's rule.** Each generated doc carries `docsShinyRule(config)` as its `shinyRule`
+global (injected by `randomizer/writer.js` for `out.html` and by `frontend/js/app.js` for the served
+docs), and the viewer tints an IV line gold + ★ only when that total really means shiny: at the run's own
+threshold in quality mode, and **never in classic mode**, where shininess is luck the docs cannot know
+(owner decision). Docs from bundles that predate the setting carry no global and keep the historical 150
+rule. The frontend shows the same "1 in N" under both controls and in the run summary, computed by
+`frontend/js/shinyRules.js` — a hand-kept ESM mirror of the pipeline module (a browser module cannot
+require CommonJS), guarded by `frontend/__tests__/shiny-rules-parity.test.js`, which sweeps both
+implementations over every threshold and a spread of percentages.
+
 ### Starters (extra starters)
+(The chosen starter's IV floors are two sliders in this same panel but belong to the shiny rule — see
+`starterPerfectIvs` / `starterMinIvTotal` in **Shiny Pokémon** above.)
+
 An unlimited, ordered list; each slot picks by category (SoT: `randomizer/modules/wildModule.js`
 `pickExtraStartersFromSpecs` / `DEFAULT_EXTRA_STARTER_PRESET`; threaded via `runWildModule`).
 Default preset = today's 9 and routes to the legacy path (byte-identical).

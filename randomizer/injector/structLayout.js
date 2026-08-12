@@ -187,9 +187,13 @@ const INGAME_TRADE = {
 // so LTO cannot fold them. Each module still derives the stride from its symbol.
 // T-257 added the three bool8 league/heal house rules after the four u32s, so sizeof() is 20 (byte 19 is
 // the tail padding the compiler zeroes and the injector leaves alone).
+// T-274 appended the shiny rule + starter IV floors after T-257's three bools: the new bool8 fills the
+// hole at 19, then a u32 at its natural alignment, a u16 and two u8s — sizeof() 20 → 28, with every
+// earlier offset unchanged.
 const RANDOMIZER_SETTINGS = {
-    stride: 20, trainerMoneyNormal: 0, trainerMoneyBoss: 4, trainerMoneyGym: 8, moveRelearnerCost: 12,
+    stride: 28, trainerMoneyNormal: 0, trainerMoneyBoss: 4, trainerMoneyGym: 8, moveRelearnerCost: 12,
     healFaintedAfterBattle: 16, healFaintedAfterBattleLeague: 17, leagueMoveRelearnAllowed: 18,
+    shinyByQuality: 19, shinyOdds: 20, shinyIvThreshold: 24, starterPerfectIvs: 26, starterMinIvTotal: 27,
 };
 const GYM_REWARD = { stride: 4, species: 0, item: 2 };
 const STATIC_ENCOUNTER = { stride: 4, species: 0, level: 2 };

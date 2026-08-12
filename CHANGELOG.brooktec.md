@@ -9,6 +9,21 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Added
 
+- **Shinies are yours to define now — and so are your starter's IVs.** A new **Shiny Pokémon** section
+  decides what "shiny" even means in your run. By default it means *quality*: any Pokémon whose six IVs add
+  up to **150 or more** is shiny, and a slider (0–186) moves that line wherever you want it — lower for a
+  run full of keepers, higher to make them genuinely rare. Turn the switch off and you get the **original
+  games' shinies back**: pure luck, at a percentage you type in, starting from gen 3's own 0.0122%. Either
+  way the panel tells you in plain terms what your number actually means — *"About 1 in 205 wild Pokémon
+  will be shiny"* — so you are never guessing at what a slider did.
+
+  Under *Starters*, two more sliders: how many of your starter's IVs arrive **perfect** (0–6, three by
+  default) and the **minimum total** its IVs are topped up to (0–186, 150 by default). The panel does the
+  arithmetic for you and says whether that clears your run's shiny bar — with the defaults it does, so your
+  starter is still guaranteed shiny. The generated documentation follows the rule you chose: an IV line is
+  tinted gold only when that total really is shiny in your ROM, and in classic mode nothing is tinted,
+  because shininess there is luck no document can predict. (T-274)
+
 - **Fifteen traders, one in every Pokémon Center, and each trade is a real choice.** The four town
   traders became **fifteen** — Rustboro, Dewford, Slateport, Mauville, Verdanturf, Lavaridge, Fallarbor,
   Petalburg, Fortree, Lilycove, Mossdeep, Pacifidlog, Sootopolis, Ever Grande and one in the Pokémon

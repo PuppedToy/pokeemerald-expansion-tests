@@ -36,6 +36,7 @@
 #include "pokemon_summary_screen.h"
 #include "pokemon_storage_system.h"
 #include "random.h"
+#include "randomizer_settings.h"
 #include "recorded_battle.h"
 #include "rtc.h"
 #include "sound.h"
@@ -2442,6 +2443,27 @@ static u32 GetBoxMonIVTotal(struct BoxPokemon *boxMon)
          + GetBoxMonData(boxMon, MON_DATA_SPDEF_IV, NULL);
 }
 
+// T-274 — is this Pokémon shiny? The run picks the system (gRandomizerSettings, patched per run by
+// randomizer/shinyWriter.js and the injector):
+//
+//   • quality  — the IV total decides, deterministically. What 5d98097 made this game's rule.
+//   • classic  — gen 3's own lottery: the OT id folded against the personality, below the run's odds.
+//                `shinyModifier` is the saved per-mon override the classic system needs (a mon whose
+//                shininess was set explicitly, e.g. a link/frontier partner's), and is the reason the two
+//                halves of MON_DATA_IS_SHINY (get here, set in SetBoxMonData) must agree on the odds.
+//
+// This is the ONE seam: every shiny sprite, star, animation and summary flag in the game reads
+// MON_DATA_IS_SHINY, so switching systems here switches them all.
+static bool32 IsBoxMonShinyByRule(struct BoxPokemon *boxMon)
+{
+    const struct RandomizerSettings *settings = GetRandomizerSettings();
+
+    if (settings->shinyByQuality)
+        return GetBoxMonIVTotal(boxMon) >= settings->shinyIvThreshold;
+
+    return (GET_SHINY_VALUE(boxMon->otId, boxMon->personality) < settings->shinyOdds) ^ boxMon->shinyModifier;
+}
+
 /* GameFreak called GetBoxMonData with either 2 or 3 arguments, for type
  * safety we have a GetBoxMonData macro (in include/pokemon.h) which
  * dispatches to either GetBoxMonData2 or GetBoxMonData3 based on the
@@ -2902,7 +2924,7 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
             retVal = boxMon->checksum;
             break;
         case MON_DATA_IS_SHINY:
-            retVal = (GetBoxMonIVTotal(boxMon) >= P_SHINY_IV_THRESHOLD);
+            retVal = IsBoxMonShinyByRule(boxMon);
             break;
         case MON_DATA_HIDDEN_NATURE:
         {
@@ -3326,10 +3348,14 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
             break;
         case MON_DATA_IS_SHINY:
         {
+            // T-274 — the override the classic system reads back (IsBoxMonShinyByRule): store how this mon
+            // differs from what the run's own odds would have rolled, so the same odds on both sides give
+            // back exactly the shininess that was set. In quality mode the IV total decides and this
+            // modifier is inert — writing it is harmless and keeps a later toggle flip meaningful.
             u32 shinyValue = GET_SHINY_VALUE(boxMon->otId, boxMon->personality);
             bool32 isShiny;
             SET8(isShiny);
-            boxMon->shinyModifier = (shinyValue < SHINY_ODDS) ^ isShiny;
+            boxMon->shinyModifier = (shinyValue < GetRandomizerSettings()->shinyOdds) ^ isShiny;
             break;
         }
         case MON_DATA_HIDDEN_NATURE:

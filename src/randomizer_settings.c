@@ -15,6 +15,16 @@ const struct RandomizerSettings gRandomizerSettings = {
     .healFaintedAfterBattle       = FALSE,
     .healFaintedAfterBattleLeague = FALSE,
     .leagueMoveRelearnAllowed     = FALSE,
+    // T-274 — the shiny rule and the starter's IV floors. These defaults are the ONLY home of "150" and
+    // "3 perfect IVs" now (the old P_SHINY_IV_THRESHOLD #define is gone), and they reproduce exactly what
+    // the game did before the rule became configurable: quality mode at 150, and a starter with 3 forced
+    // 31s topped up to a 150 total. `shinyOdds` is gen 3's own 8/65536 (1 in 8192), unused until a run
+    // switches the toggle off.
+    .shinyByQuality     = TRUE,
+    .shinyOdds          = 8,
+    .shinyIvThreshold   = 150,
+    .starterPerfectIvs  = 3,
+    .starterMinIvTotal  = 150,
 };
 
 // `noipa` blocks LTO/IPA from propagating gRandomizerSettings' const initializer into the callers (which

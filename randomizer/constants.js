@@ -297,6 +297,7 @@ const constants = {
     TEMPLATE_WILDPOKES_REPALCEMENT: '<script src="wildpokes.js"></script>',
     TEMPLATE_COLORS_REPLACEMENT: '<script src="colors.js"></script>',
     TEMPLATE_NICKNAMES_REPLACEMENT: '<script src="nicknames.js"></script>',   // T-201
+    TEMPLATE_SHINY_RULE_REPLACEMENT: '<script src="shinyrule.js"></script>',  // T-274
 
     LOG_TYPE_BUFF: 'BUFF',
     LOG_TYPE_NERF: 'NERF',

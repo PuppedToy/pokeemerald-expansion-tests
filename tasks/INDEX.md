@@ -275,3 +275,4 @@
 | [T-271](T-271-trader-rework-docs-viewer.md) | Show the 15 traders in the docs — several trades per route, learned TMs and perfect IVs | done | 0.9.0 | 2026-08-11 |
 | [T-272](T-272-late-trader-tier-floor.md) | Pin the late traders to UU, and the League's to OU | done | 0.9.0 | 2026-08-11 |
 | [T-273](T-273-deploy-base-rom-decision.md) | Make the deploy decide by itself whether the base ROM must be rebuilt | in-progress | 0.9.0 | 2026-08-12 |
+| [T-274](T-274-configurable-shiny-rules.md) | Make the shiny rule configurable (quality or classic luck) and add starter IV floors | done | 0.9.0 | 2026-08-12 |

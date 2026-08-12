@@ -93,7 +93,7 @@
 #define MAX_STAT_STAGE    12
 
 // Shiny odds
-#define SHINY_ODDS 8 // Actual probability is SHINY_ODDS/65536
+#define SHINY_ODDS 8 // Actual probability is SHINY_ODDS/65536. T-274 — unused: this game's shiny rule is per run and lives in gRandomizerSettings (randomizer_settings.h).
 
 // Ribbon IDs used by TV and Pokénav
 #define CHAMPION_RIBBON       0
