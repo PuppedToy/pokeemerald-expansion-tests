@@ -79,3 +79,4 @@
 | [B-073](B-073-traded-mon-repeats-an-already-used-family.md) | A town trade offers a species whose family is already used elsewhere in the run | fixed | major | 0.9.0 | 0.9.0 | randomizer/__tests__/unit/trades.test.js |
 | [B-074](B-074-login-modal-behind-presets-modal.md) | The login modal opens behind the presets modal, so you cannot log in from there | fixed | major | 0.9.0 | 0.9.0 | visual-tests/interaction.spec.mjs |
 | [B-075](B-075-duplicate-mauville-trader-label.md) | The Mauville town trader reuses vanilla's decoration-trader label, so the ROM cannot be built | fixed | critical | 0.9.0 | 0.9.0 | scripts/__tests__/asm-duplicate-labels.test.mjs |
+| [B-076](B-076-base-smoke-test-rejects-a-good-base.md) | The base smoke test rejects a good base and takes the box's working base down with it | open | major | 0.9.0 |  |  |

@@ -89,6 +89,19 @@ Acceptance criteria:
   loud at the right moment.
   The base rebuild is blocked on the B-075 fix reaching the box, i.e. on the owner's push (the deploy gate).
 
+- **2026-08-12** — Path 2 completed. With B-075 fixed the tree assembled and the base built clean, but the
+  script's smoke test rejected it over a **frozen** corpus bundle whose trade ids predate the rework
+  (`INGAME_TRADE_SEEDOT`) and, because it installs before proving, left the box with **no base** → B-076.
+  Validated the rejected artifacts by hand instead: generated a bundle with the current pipeline into a
+  scratch dir, `git checkout -- src/ include/ data/maps/` (generation mutates them, injection refuses
+  otherwise), injected against `base-rejected-…` → `✓ Injected 5 module(s)`, and notably
+  `in-game trades: 15 of 15 entries`. Then moved it into `base/`, stamped it **only after checking the box's
+  `deployed.json` fingerprint matched this tree** (the same invariant the script enforces), chowned, restarted.
+  `node scripts/base-state.mjs` now prints **in-sync** for the first time — the machinery works end to end,
+  including the part that refuses to stamp a lie.
+  The base's `romSha256` (`7c5ca4dc8348…`) matches the client-artifact manifest from that build, so
+  `base/client/` belongs to this exact base.
+
 ## Outcome
 
 <!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
