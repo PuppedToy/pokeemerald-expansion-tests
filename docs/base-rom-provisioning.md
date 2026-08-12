@@ -80,9 +80,34 @@ cold** on the 2-core box ([rom-build-performance.md](rom-build-performance.md)).
 `base/` would *delete the box's base* and break every build. The base is box-managed state, like
 `backend/data/` (SQLite, frozen corpus bundles) and `roms/`.
 
-`update.sh` checks the box's base as a preflight and warns if it is missing or incomplete — a
+`update.sh` checks the box's base as a preflight and warns if it is missing, incomplete **or stale** — a
 docs-or-frontend-only deploy to a box awaiting its first base build is legitimate, so it warns rather than
 aborting.
+
+## Provenance — `base/BASE_BUILD.json` (T-273)
+
+Excluding `base/` from the rsync means the box's sources and its base can drift, and for a while the only
+evidence of what a base was built from was its **mtime**. So a successful `build-base.sh` now stamps the
+base it installed:
+
+```json
+{ "fingerprint": "<sha256 of the base-relevant tree>", "commit": "<sha>", "builtAt": "…", "romSha256": "…" }
+```
+
+The fingerprint hashes the git blob ids of every path `make` reads, so it is content-addressed — immune to
+mtimes, rebases and merge churn, and equal for two trees with identical sources. That single number is what
+makes "does this base match these sources?" a command (`node scripts/base-state.mjs`) instead of a habit,
+and it is what the deploy branches on: see
+[dev-deploy-workflow.md](dev-deploy-workflow.md#the-base-rom--the-second-step-and-how-the-deploy-knows-it-needs-it).
+
+Two invariants around the stamp:
+
+- **Only a proven base is stamped.** The stamp is written after the smoke-inject succeeds, so a base that
+  fails it is moved aside (`base-rejected-<ts>`) *and* carries no stamp — it can never read as in-sync.
+- **A stamp never claims a tree the box did not compile.** `build-base.sh` compares the box's
+  `backend/data/deployed.json` (written by `update.sh`) against the tree it is being run from and aborts on a
+  mismatch, so the correct order is always `deploy/update.sh` → `deploy/build-base.sh`. `--force` overrides
+  it for a first bring-up whose deploy predates the stamp.
 
 ## When the base is missing
 

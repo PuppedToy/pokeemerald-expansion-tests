@@ -42,12 +42,38 @@ SSH="ssh -i ${KEY} -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
 TARGET="${DEPLOY_USER}@${DEPLOY_HOST}"
 COMPOSE="docker compose -f deploy/docker-compose.yml"
 
-DRY=""; FETCH=""
+DRY=""; FETCH=""; FORCE=""
 for a in "$@"; do case "$a" in
   --dry-run) DRY=1 ;;
   --fetch)   FETCH=1 ;;
-  *) echo "unknown flag: $a (use --dry-run / --fetch)"; exit 2 ;;
+  --force)   FORCE=1 ;;
+  *) echo "unknown flag: $a (use --dry-run / --fetch / --force)"; exit 2 ;;
 esac; done
+
+# --- provenance (T-273) ----------------------------------------------------------
+# The base gets STAMPED with the fingerprint of the sources it was built from, which is what lets
+# `scripts/base-state.mjs` (and the deploy skill) decide whether a later deploy needs a rebuild instead of
+# the owner having to remember. The stamp must not lie, and it can only be honest if the box is compiling
+# the tree we have here: `make` runs on the BOX, over whatever the last rsync left. `update.sh` records that
+# with backend/data/deployed.json, so compare the two and refuse when they disagree.
+FP=$(node scripts/base-state.mjs --print-fingerprint)
+COMMIT=$(git rev-parse HEAD 2>/dev/null || echo unknown)
+if [ -z "$DRY" ]; then
+  BOX_FP=$(${SSH} "${TARGET}" "cd ${DEPLOY_PATH} 2>/dev/null && sed -n 's/.*\"fingerprint\"[: ]*\"\\([a-f0-9]*\\)\".*/\\1/p' backend/data/deployed.json 2>/dev/null | head -1" </dev/null || true)
+  if [ "$BOX_FP" != "$FP" ]; then
+    if [ -n "$FORCE" ]; then
+      echo "⚠ the box's tree is not this one (box ${BOX_FP:-none} ≠ here ${FP:0:12}) — --force: stamping anyway"
+    else
+      echo "✗ the box is not holding the tree you have here:"
+      echo "    here: ${FP:0:12}   box: ${BOX_FP:-'(no deploy marker)'}"
+      echo "  The base would be compiled from the box's older sources and then stamped as if it were this"
+      echo "  tree, which is exactly the drift this stamp exists to catch. Deploy first, then rebuild:"
+      echo "      deploy/update.sh && deploy/build-base.sh"
+      echo "  (--force overrides, e.g. a first bring-up whose deploy predates the stamp.)"
+      exit 1
+    fi
+  fi
+fi
 
 REMOTE_SCRIPT=$(cat <<'EOS'
 set -euo pipefail
@@ -129,6 +155,20 @@ else
     exit 1
   fi
 fi
+# T-273 — stamp the base with the sources it came from, now that it is proven injectable. This file is what
+# `scripts/base-state.mjs` compares a later deploy against; base/ is rsync-excluded, so it persists.
+echo "==> stamping base/BASE_BUILD.json (provenance for the deploy decision)"
+cat > base/BASE_BUILD.json <<JSON
+{
+  "fingerprint": "${FP_IN}",
+  "commit": "${COMMIT_IN}",
+  "builtAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "romSha256": "$(sha256sum base/pokeemerald.gba | cut -d' ' -f1)"
+}
+JSON
+chown 1000:1000 base/BASE_BUILD.json 2>/dev/null || true
+cat base/BASE_BUILD.json
+
 echo "==> restart app (its boot check now finds the base and starts the worker)"
 $COMPOSE_IN up -d --force-recreate app
 sleep 5
@@ -149,7 +189,7 @@ echo "==> building the base on ${TARGET}:${DEPLOY_PATH}"
 # shellcheck disable=SC2029
 printf '%s\n' "$REMOTE_SCRIPT" | ${SSH} "${TARGET}" "cat > /tmp/ec-build-base.sh"
 # shellcheck disable=SC2029
-${SSH} "${TARGET}" "DEPLOY_PATH_IN='${DEPLOY_PATH}' COMPOSE_IN='${COMPOSE}' bash /tmp/ec-build-base.sh" </dev/null
+${SSH} "${TARGET}" "DEPLOY_PATH_IN='${DEPLOY_PATH}' COMPOSE_IN='${COMPOSE}' FP_IN='${FP}' COMMIT_IN='${COMMIT}' bash /tmp/ec-build-base.sh" </dev/null
 
 if [ -n "$FETCH" ]; then
   echo "==> fetching base/ into the local working tree"
@@ -166,4 +206,6 @@ if ! ${SSH} "${TARGET}" "cd ${DEPLOY_PATH} && for f in base/pokeemerald.gba base
   echo "  ✗ the base is missing or incomplete on the box — read the output above; nothing was installed"
   exit 1
 fi
-echo "==> base installed ✓  (re-run this after any C source / include / data-maps change)"
+echo "==> confirming the stamp the deploy decision reads"
+node scripts/base-state.mjs || { echo "  ✗ the base is installed but base-state says it does not match this tree"; exit 1; }
+echo "==> base installed ✓  (the stamp now proves which sources it came from — scripts/base-state.mjs)"
