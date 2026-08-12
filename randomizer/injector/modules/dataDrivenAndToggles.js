@@ -33,6 +33,7 @@ const { patchSetvar, findSetvarOperand } = require('../scriptPatch');
 const moneyWriter = require('../../moneyWriter');
 const moveRelearnerPriceWriter = require('../../moveRelearnerPriceWriter');
 const leagueRulesWriter = require('../../leagueRulesWriter');
+const shinyWriter = require('../../shinyWriter');
 const itemRandomizer = require('../../itemRandomizer');
 const megaHiddenWriter = require('../../megaHiddenWriter');
 const runAndBunWriter = require('../../runAndBunWriter');
@@ -132,31 +133,42 @@ function writeTable(ctx, { symbol, baseRows, newRows, encode, tag }) {
 const SETTINGS_U32_FIELDS = ['trainerMoneyNormal', 'trainerMoneyBoss', 'trainerMoneyGym', 'moveRelearnerCost'];
 // T-257 — the three bool8 league/heal rules that follow the u32s, written as TRUE/FALSE in the C.
 const SETTINGS_BOOL_FIELDS = leagueRulesWriter.LEAGUE_RULE_FIELDS;
+// T-274 — the shiny rule and the starter's IV floors close the struct, in three widths. The names (and
+// their order) come from the writer that owns them; only the widths are this module's business.
+const SETTINGS_SHINY_KINDS = {
+    shinyByQuality: 'bool', shinyOdds: 'u32', shinyIvThreshold: 'u16',
+    starterPerfectIvs: 'u8', starterMinIvTotal: 'u8',
+};
 
-/** The seven values a settings source declares, in struct order (booleans as 0/1). */
+/** Every field of the struct, in struct order, with the width the ROM stores it at. */
+const SETTINGS_FIELDS = [
+    ...SETTINGS_U32_FIELDS.map(name => ({ name, kind: 'u32' })),
+    ...SETTINGS_BOOL_FIELDS.map(name => ({ name, kind: 'bool' })),
+    ...shinyWriter.SHINY_RULE_FIELDS.map(name => ({ name, kind: SETTINGS_SHINY_KINDS[name] })),
+];
+
+/** The twelve values a settings source declares, in struct order (booleans as 0/1). */
 function parseSettings(text) {
-    const values = SETTINGS_U32_FIELDS.map((field) => {
-        const match = text.match(new RegExp(`\\.${field}\\s*=\\s*(\\d+)`));
-        if (!match) throw new Error(`injector/${TAG}: .${field} is not in src/randomizer_settings.c`);
-        return Number(match[1]);
+    return SETTINGS_FIELDS.map(({ name, kind }) => {
+        const pattern = kind === 'bool' ? `\\.${name}\\s*=\\s*(TRUE|FALSE)` : `\\.${name}\\s*=\\s*(\\d+)`;
+        const match = text.match(new RegExp(pattern));
+        if (!match) throw new Error(`injector/${TAG}: .${name} is not in src/randomizer_settings.c`);
+        return kind === 'bool' ? (match[1] === 'TRUE' ? 1 : 0) : Number(match[1]);
     });
-
-    for (const field of SETTINGS_BOOL_FIELDS) {
-        const match = text.match(new RegExp(`\\.${field}\\s*=\\s*(TRUE|FALSE)`));
-        if (!match) throw new Error(`injector/${TAG}: .${field} is not in src/randomizer_settings.c`);
-        values.push(match[1] === 'TRUE' ? 1 : 0);
-    }
-
-    return values;
 }
 
 function encodeSettings(values) {
+    // Any byte the fields do not cover is struct padding: the compiler zeroes it and Buffer.alloc keeps it
+    // zero, so the base check compares it too and would catch a struct that grew behind our back.
     const buffer = Buffer.alloc(RANDOMIZER_SETTINGS.stride, 0);
-    SETTINGS_U32_FIELDS.forEach((field, i) => buffer.writeUInt32LE(values[i] >>> 0, RANDOMIZER_SETTINGS[field]));
-    // The tail byte after the three bools is struct padding: the compiler zeroes it and Buffer.alloc keeps
-    // it zero, so the base check compares it too and would catch a struct that grew behind our back.
-    SETTINGS_BOOL_FIELDS.forEach((field, i) =>
-        buffer.writeUInt8(values[SETTINGS_U32_FIELDS.length + i] ? 1 : 0, RANDOMIZER_SETTINGS[field]));
+    SETTINGS_FIELDS.forEach(({ name, kind }, i) => {
+        const at = RANDOMIZER_SETTINGS[name];
+        const value = values[i];
+        if (kind === 'u32') buffer.writeUInt32LE(value >>> 0, at);
+        else if (kind === 'u16') buffer.writeUInt16LE(value & 0xFFFF, at);
+        else if (kind === 'u8') buffer.writeUInt8(value & 0xFF, at);
+        else buffer.writeUInt8(value ? 1 : 0, at);
+    });
     return buffer;
 }
 
@@ -166,11 +178,13 @@ function injectSettings(ctx, { settingsSource = null } = {}) {
     // The writers own the clamping and the defaults (an absent/invalid value must land on the same
     // number the compile path would have written), so they produce the text and this reads it back.
     // (the exact config keys make.js passes to the writers, in the same order)
-    const patched = leagueRulesWriter.patchLeagueRulesInContent(
-        moveRelearnerPriceWriter.patchMoveRelearnPriceInContent(
-            moneyWriter.patchMoneyInContent(source, config.money),
-            config.moveRelearnPrice),
-        config);   // T-257 — the three league rules are top-level config keys
+    const patched = shinyWriter.patchShinyRulesInContent(
+        leagueRulesWriter.patchLeagueRulesInContent(
+            moveRelearnerPriceWriter.patchMoveRelearnPriceInContent(
+                moneyWriter.patchMoneyInContent(source, config.money),
+                config.moveRelearnPrice),
+            config),   // T-257 — the three league rules are top-level config keys
+        config);       // T-274 — as are the shiny rule and the starter IV floors
 
     const at = ctx.offsetMap.offsetOf('gRandomizerSettings');
     const expected = encodeSettings(parseSettings(source));

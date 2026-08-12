@@ -16,6 +16,7 @@
 #include "follower_npc.h"
 #include "league_rules.h"
 #include "random.h"
+#include "randomizer_settings.h"
 #include "starter_choose.h"
 #include "script_pokemon_util.h"
 #include "palette.h"
@@ -903,26 +904,35 @@ static void CB2_GiveStarter(void)
     // T-068 — apply the bundle-decided gender + nickname for the chosen starter (defaults: MON_GENDERLESS
     // + empty name → random gender + species name, i.e. unchanged when the feature is off).
     ScriptGiveMonWithGenderAndNickname(starterMon, introLevel, ITEM_NONE, GetStarterGender(), GetStarterNickname());
-    // Force 3 randomly chosen IVs to 31, then top up remaining IVs until shiny threshold
+    // T-274 — the starter's IV floors, now per run (gRandomizerSettings, see randomizer_settings.h):
+    // `starterPerfectIvs` randomly chosen IVs are forced to 31, then the remaining ones are topped up
+    // until the total reaches `starterMinIvTotal`. The defaults (3 and 150) are what this code did
+    // hard-coded against the old P_SHINY_IV_THRESHOLD, i.e. a guaranteed-shiny starter under the default
+    // shiny rule. Only the chosen starter is touched — the extra starters below keep ordinary random IVs.
     {
+        const struct RandomizerSettings *settings = GetRandomizerSettings();
+        u32 forcedIvs = settings->starterPerfectIvs;
+        u32 minIvTotal = settings->starterMinIvTotal;
         u8 iv31 = MAX_PER_STAT_IVS;
         u8 ivOrder[NUM_STATS] = {0, 1, 2, 3, 4, 5};
         u8 k, j, tmp;
+        if (forcedIvs > NUM_STATS)
+            forcedIvs = NUM_STATS;
         for (k = NUM_STATS - 1; k > 0; k--)
         {
             j = Random() % (k + 1);
             tmp = ivOrder[k]; ivOrder[k] = ivOrder[j]; ivOrder[j] = tmp;
         }
-        for (k = 0; k < 3; k++)
+        for (k = 0; k < forcedIvs; k++)
             SetMonData(&gPlayerParty[0], MON_DATA_HP_IV + ivOrder[k], &iv31);
         {
             u32 total = 0, stat;
             for (stat = 0; stat < NUM_STATS; stat++)
                 total += GetMonData(&gPlayerParty[0], MON_DATA_HP_IV + stat, NULL);
-            for (k = 3; k < NUM_STATS && total < P_SHINY_IV_THRESHOLD; k++)
+            for (k = forcedIvs; k < NUM_STATS && total < minIvTotal; k++)
             {
                 u32 current = GetMonData(&gPlayerParty[0], MON_DATA_HP_IV + ivOrder[k], NULL);
-                u32 need = P_SHINY_IV_THRESHOLD - total;
+                u32 need = minIvTotal - total;
                 u32 room = MAX_PER_STAT_IVS - current;
                 u32 toAdd = need < room ? need : room;
                 if (toAdd > 0)

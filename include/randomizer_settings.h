@@ -27,6 +27,20 @@ struct RandomizerSettings
     bool8 healFaintedAfterBattle;       // fully restore the party after an ordinary battle
     bool8 healFaintedAfterBattleLeague; // ... after an Elite Four / Champion battle
     bool8 leagueMoveRelearnAllowed;     // T-258 — let the summary-screen relearner work inside the gauntlet
+    // T-274 — which shiny system this run uses, and the number behind each of them. TRUE = **quality**:
+    // a Pokémon is shiny iff its six IVs sum to `shinyIvThreshold` or more (deterministic, the rule
+    // 5d98097 introduced). FALSE = **classic**: gen 3's own lottery,
+    // GET_SHINY_VALUE(otId, personality) < shinyOdds out of 65536 (8 ⇒ 1 in 8192). Both numbers ride to
+    // the ROM whatever the mode, so flipping the toggle keeps the other system's tuning. The one read
+    // seam is GetBoxMonData(MON_DATA_IS_SHINY) — see src/pokemon.c.
+    bool8 shinyByQuality;
+    u32 shinyOdds;           // classic mode: shiny when the 16-bit fold lands below this (0 = never)
+    u16 shinyIvThreshold;    // quality mode: shiny at this IV total or above (max 186 = all 31s)
+    // T-274 — the starter's IV floors (CB2_GiveStarter): this many IVs are forced to 31, then the rest are
+    // topped up until the total reaches `starterMinIvTotal`. Independent of the shiny rule above, which is
+    // what lets a run guarantee a shiny starter (or deliberately not).
+    u8 starterPerfectIvs;    // 0..6
+    u8 starterMinIvTotal;    // 0..186
 };
 
 extern const struct RandomizerSettings gRandomizerSettings;

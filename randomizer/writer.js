@@ -15,11 +15,13 @@ const {
     TEMPLATE_ITEMS_REPLACEMENT,
     TEMPLATE_COLORS_REPLACEMENT,
     TEMPLATE_NICKNAMES_REPLACEMENT,
+    TEMPLATE_SHINY_RULE_REPLACEMENT,
     MEGA_TRAINERS,
     PALAFIN_HERO_ID,
     GRENINJA_ASH_ID,
 } = require('./constants');
 const { typeMainColors } = require('./trainerColors');
+const { docsShinyRule } = require('./shinyRules');   // T-274 — the shiny rule the viewer states
 const { BANNED_SPECIES_FOR_PICKING, resolveRewardMegaStone } = require('./modules/wildModule');
 const { updateMegaHiddenTable } = require('./megaHiddenWriter');
 const { assignMegaStones } = require('./megaAssignment');
@@ -234,7 +236,9 @@ function buildTrainersResultsFromDocs(docsTrainers, pokemonList) {
 // deterministic across ROMs that share a trainer artifact but differ in wild data.
 // docs: when provided (bundle mode), trainer teams are taken verbatim from the pre-resolved
 // docs instead of re-resolved via RNG — guaranteeing the ROM matches the bundle's docs.
-async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null, runNs = '', starterNaming = null, trades = null, locationNaming = null, tradeNaming = null) {
+// T-274 — `runConfig` is the bundle's config, needed only so the viewer can state the run's shiny rule
+// (make.js passes it; the analyze.js path has none and falls back to the committed defaults).
+async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildArtifact, isDebug, baseRngSeed = null, docs = null, runNs = '', starterNaming = null, trades = null, locationNaming = null, tradeNaming = null, runConfig = null) {
     let { pokes: pokemonList, moves, abilities, items } = pokedexArtifact;
     // Deep-clone trainersData — mega trainer processing splices entries in-place,
     // which would corrupt the shared artifact when the same trainers object is used across ROMs.
@@ -755,6 +759,11 @@ async function writer(pokedexArtifact, trainersArtifact, startersArtifact, wildA
     };
     htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_NICKNAMES_REPLACEMENT, `<script>const nicknamesData = ${JSON.stringify(nicknamesData)};</script>`);
     await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'nicknames.js'), `const nicknamesData = ${JSON.stringify(nicknamesData, null, 4)};`, 'utf8');
+    // T-274 — the run's shiny rule, so the viewer knows whether an IV total means shiny (and at what
+    // total). Parity with frontend/js/app.js buildDocHtml, which injects the same object.
+    const shinyRuleData = docsShinyRule(runConfig);
+    htmlOutputTemplate = htmlOutputTemplate.replace(TEMPLATE_SHINY_RULE_REPLACEMENT, `<script>const shinyRule = ${JSON.stringify(shinyRuleData)};</script>`);
+    await fs.writeFile(path.resolve(__dirname, OUTPUT_DIR, 'shinyrule.js'), `const shinyRule = ${JSON.stringify(shinyRuleData, null, 4)};`, 'utf8');
     const maps = wild.maps.map(({ id, ...keys }) => {
         const result = {
             id,

@@ -76,10 +76,11 @@ describe('gRandomizerSettings (T-234)', () => {
         expect(() => injectSettings(base.ctx, SOURCES)).toThrow(/gRandomizerSettings does not hold/);
     });
 
-    // T-257 — the struct grew three bool8 house rules after the four u32s. parseSettings' array is in
-    // struct order, so the four money/price values keep indices 0..3.
-    test('the committed source really holds all seven fields', () => {
-        expect(parseSettings(SETTINGS_SOURCE)).toEqual([250, 3000, 5000, 250, 0, 0, 0]);
+    // T-257 — the struct grew three bool8 house rules after the four u32s; T-274 appended the shiny rule
+    // and the starter's IV floors after those. parseSettings' array is in struct order, so every earlier
+    // field keeps its index and only the tail grows.
+    test('the committed source really holds all twelve fields', () => {
+        expect(parseSettings(SETTINGS_SOURCE)).toEqual([250, 3000, 5000, 250, 0, 0, 0, 1, 8, 150, 3, 150]);
     });
 
     test('writes the three league house rules as bytes (T-257)', () => {
@@ -116,6 +117,55 @@ describe('gRandomizerSettings (T-234)', () => {
     test('a base whose league rules are already on is refused (T-257)', () => {
         const base = setup({ config: {} });
         base.rom.buffer.writeUInt8(1, at(base, 'gRandomizerSettings') + RANDOMIZER_SETTINGS.leagueMoveRelearnAllowed);
+
+        expect(() => injectSettings(base.ctx, SOURCES)).toThrow(/gRandomizerSettings does not hold/);
+    });
+
+    // T-274 — the shiny rule and the starter IV floors ride in the same struct, in three widths.
+    test('a quality run writes its IV threshold, keeping the mode byte on (T-274)', () => {
+        const base = setup({ config: { shinyByQuality: true, shinyIvThreshold: 170 } });
+        injectSettings(base.ctx, SOURCES);
+
+        const settings = at(base, 'gRandomizerSettings');
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.shinyByQuality)).toBe(1);
+        expect(base.rom.readU16(settings + RANDOMIZER_SETTINGS.shinyIvThreshold)).toBe(170);
+    });
+
+    test('a classic run writes the mode byte off and the percentage as odds out of 65536 (T-274)', () => {
+        const base = setup({ config: { shinyByQuality: false, shinyChancePercent: 0.0122 } });
+        injectSettings(base.ctx, SOURCES);
+
+        const settings = at(base, 'gRandomizerSettings');
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.shinyByQuality)).toBe(0);
+        expect(base.rom.readU32(settings + RANDOMIZER_SETTINGS.shinyOdds)).toBe(8);
+        // The IV threshold still rides along, so the docs can read the run's tuning either way.
+        expect(base.rom.readU16(settings + RANDOMIZER_SETTINGS.shinyIvThreshold)).toBe(150);
+    });
+
+    test('the starter IV floors are written as their own bytes (T-274)', () => {
+        const base = setup({ config: { starterPerfectIvs: 6, starterMinIvTotal: 0 } });
+        injectSettings(base.ctx, SOURCES);
+
+        const settings = at(base, 'gRandomizerSettings');
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.starterPerfectIvs)).toBe(6);
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.starterMinIvTotal)).toBe(0);
+    });
+
+    test('a config with no shiny keys reproduces the committed rule (T-274)', () => {
+        const base = setup({ config: {} });
+        injectSettings(base.ctx, SOURCES);
+
+        const settings = at(base, 'gRandomizerSettings');
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.shinyByQuality)).toBe(1);
+        expect(base.rom.readU32(settings + RANDOMIZER_SETTINGS.shinyOdds)).toBe(8);
+        expect(base.rom.readU16(settings + RANDOMIZER_SETTINGS.shinyIvThreshold)).toBe(150);
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.starterPerfectIvs)).toBe(3);
+        expect(base.rom.readU8(settings + RANDOMIZER_SETTINGS.starterMinIvTotal)).toBe(150);
+    });
+
+    test('a base whose shiny rule is not the committed one is refused (T-274)', () => {
+        const base = setup({ config: {} });
+        base.rom.buffer.writeUInt16LE(160, at(base, 'gRandomizerSettings') + RANDOMIZER_SETTINGS.shinyIvThreshold);
 
         expect(() => injectSettings(base.ctx, SOURCES)).toThrow(/gRandomizerSettings does not hold/);
     });

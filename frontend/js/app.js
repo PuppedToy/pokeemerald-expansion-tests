@@ -6,6 +6,7 @@ import { initFeedback } from './feedback.js';
 import { initPresets } from './presets.js';
 import { initAdmin } from './admin.js';
 import { parsePath, pathFor, titleFor } from './router.js';
+import { shinyChanceText, docsShinyRule } from './shinyRules.js';
 
 // ── Routing (T-259) ───────────────────────────────────────────────────────────
 // Every destination has its own path; router.js owns the map from path to { tab, subtab }. The nav is
@@ -283,7 +284,9 @@ function docRunNamespace(seed, playerIndex, romIndex) {
 
 // Inline a ROM's data (+ the shared sprite map) into the template, producing a
 // fully self-contained doc HTML. Single source for both download paths.
-function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText) {
+// T-274 — `config` is the run's config, needed only for the shiny rule the viewer states (an older bundle
+// without it falls back to the committed default rule, which is what its ROM was built with).
+function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText, config = null) {
     const assets = JSON.parse(assetsText);
     const runNs = docRunNamespace(seed, rom.playerIndex, rom.romIndex);
     return template
@@ -295,6 +298,10 @@ function buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bos
             `<script>const EMBEDDED_ASSETS = ${assetsText};</script>`)
         .replace('<script src="bosscaps.js"></script>',
             `<script>const bossCaps = ${bossCapsText || '[]'};</script>`)
+        // T-274 — the run's shiny rule (mode + IV threshold + human odds), so the viewer tints an IV line
+        // gold only when that total really means shiny. Parity with randomizer/writer.js.
+        .replace('<script src="shinyrule.js"></script>',
+            `<script>const shinyRule = ${JSON.stringify(docsShinyRule(config))};</script>`)
         .split('__FONT_PRESS_START_2P__').join(assets['fonts/PressStart2P.woff2'] || '')
         .split('__FONT_VT323__').join(assets['fonts/VT323.woff2'] || '')
         // T-163 — inject the docs-visibility-redacted viewer copy (falls back to the full teams for
@@ -360,7 +367,7 @@ async function buildFullZipBlob(bundle, artifacts) {
         if (!rom) continue;
         const { folder, base } = romName(rom, bundle.roms);
         const pokedex = resolveArtifact(rom.artifacts.pokedex, bundle.sharedData, 'pokedex');
-        const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText);
+        const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText, bundle.config || null);
         const dir = folder ? `${folder}/` : '';
         zip.file(`${dir}${base}.gba`, art.gbaBytes);      // applied ROM at root / player folder
         zip.file(`${dir}docs/${base}.html`, html);        // docs/ folder (only in the full archive)
@@ -389,7 +396,7 @@ document.getElementById('btn-download-docs').addEventListener('click', async () 
 
         for (const rom of currentBundle.roms) {
             const pokedex = resolveArtifact(rom.artifacts.pokedex, currentBundle.sharedData, 'pokedex');
-            const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText);
+            const html = buildDocHtml(template, rom, pokedex, spritesText, assetsText, seed, bossCapsText, currentBundle.config || null);
             // T-211 — docs-only download: docs at the archive root (no `docs/` wrapper). Soul-link groups
             // them under one folder per player (player-1/player-1-rom-1.html).
             const { folder, base } = romName(rom, currentBundle.roms);
@@ -755,6 +762,12 @@ function reviewRowsHtml(cfg) {
     rows.push(['Reward money', `$${money.normal ?? 250} / $${money.boss ?? 3000} / $${money.gym ?? 5000}`]);
     rows.push(['Extra starters', String((cfg.extraStarters || []).length)]);
     rows.push(['Main starter quality', String(cfg.starterQuality ?? 'UU')]);
+    // T-274 — the shiny rule, in the same human terms the config panel shows, plus the starter's IV
+    // floors. The rule row always names the active system: the number alone would not say which one.
+    rows.push(['Shiny rule', cfg.shinyByQuality === false
+        ? `Classic luck, ${cfg.shinyChancePercent ?? 0.0122}% — ${shinyChanceText(cfg)}`
+        : `IV total ${cfg.shinyIvThreshold ?? 150}+ — ${shinyChanceText(cfg)}`]);
+    rows.push(['Starter IVs', `${cfg.starterPerfectIvs ?? 3} perfect, ${cfg.starterMinIvTotal ?? 150} total minimum`]);
     // T-073 shop prices + T-167 relearn price.
     rows.push(['Shop prices', fmtShopPrices(cfg.prices)]);
     rows.push(['Move relearn price', `$${cfg.moveRelearnPrice ?? 250}`]);

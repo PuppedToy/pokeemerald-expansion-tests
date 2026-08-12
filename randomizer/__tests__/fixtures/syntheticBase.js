@@ -306,10 +306,17 @@ function buildSyntheticBase({
         let cursor = DATA_DRIVEN_BASE;
         const add = (name, size) => { const at = cursor; cursor += size + (size % 2); dataDrivenSymbols[name] = { romOffset: at, size }; return at; };
 
-        // T-257 — four u32s then three bool8 league/heal rules (+1 B tail padding): sizeof() == 20. The
-        // rules stay zero here, matching the committed FALSE/FALSE/FALSE.
-        const settings = add('gRandomizerSettings', 20);
+        // T-257 — four u32s then three bool8 league/heal rules; T-274 appended the shiny rule (bool8 +
+        // u32 + u16) and the starter's two IV-floor u8s: sizeof() == 28, no padding left. The league rules
+        // stay zero here, matching the committed FALSE/FALSE/FALSE; the T-274 fields carry the committed
+        // defaults (quality mode, gen 3's 8/65536 unused behind it, 150, and a 3×31 / 150-total starter).
+        const settings = add('gRandomizerSettings', 28);
         [250, 3000, 5000, 250].forEach((v, i) => buffer.writeUInt32LE(v, settings + i * 4));
+        buffer.writeUInt8(1, settings + 19);        // shinyByQuality = TRUE
+        buffer.writeUInt32LE(8, settings + 20);     // shinyOdds
+        buffer.writeUInt16LE(150, settings + 24);   // shinyIvThreshold
+        buffer.writeUInt8(3, settings + 26);        // starterPerfectIvs
+        buffer.writeUInt8(150, settings + 27);      // starterMinIvTotal
         add('gGymRewards', 11 * 4);                       // all SPECIES_NONE / ITEM_NONE = zeros
         const statics = add('gStaticEncounters', 7 * 4);
         [['SPECIES_REGIROCK', 36], ['SPECIES_REGICE', 39], ['SPECIES_REGISTEEL', 46], ['SPECIES_MEW', 39],

@@ -200,6 +200,7 @@ async function compileOneRom({ rom, bundle, seed, universeSeed = seed, outDir, i
     const { writeItemPrices }           = require('./randomizer/itemPriceWriter');
     const { writeMoveRelearnerPrice }   = require('./randomizer/moveRelearnerPriceWriter');
     const { writeLeagueRules }          = require('./randomizer/leagueRulesWriter');
+    const { writeShinyRules }           = require('./randomizer/shinyWriter');
     const { writeRunAndBunVars }        = require('./randomizer/runAndBunWriter');
     const { writeStevenTagVar }         = require('./randomizer/stevenTagWriter');
     const { writeLocationNames }        = require('./randomizer/locationNameWriter');
@@ -224,7 +225,7 @@ async function compileOneRom({ rom, bundle, seed, universeSeed = seed, outDir, i
     try {
         const runNs = writer.docRunNamespace({ seed, playerIndex: rom.playerIndex, romIndex: rom.romIndex });
         // starterNaming is per-ROM (never shared) — read it straight off the rom, no resolveArtifact (T-068).
-        await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed, universeSeed), rom.docs, runNs, rom.artifacts.starterNaming || null, rom.artifacts.trades || null, rom.artifacts.locationNaming || null, rom.artifacts.tradeNaming || null);
+        await writer(pokedex, trainers, starters, wild, isDebug, resolveTrainingBaseSeed(rom, seed, universeSeed), rom.docs, runNs, rom.artifacts.starterNaming || null, rom.artifacts.trades || null, rom.artifacts.locationNaming || null, rom.artifacts.tradeNaming || null, bundle.config || null);
         await writeTMsFromList(pokedex.tmList);
         writeItemFilesFromBundle(trainers.itemAssignments);
         // T-052 — patch configurable prize money into the C source (restored by restore() after build).
@@ -236,6 +237,9 @@ async function compileOneRom({ rom, bundle, seed, universeSeed = seed, outDir, i
         // T-257/T-258 — the three Pokémon League house rules (post-battle healing in the world / in the
         // gauntlet, relearner allowed in the gauntlet) into gRandomizerSettings (restored by restore()).
         await writeLeagueRules(bundle.config);
+        // T-274 — the run's shiny rule (quality IV total or classic luck) and the starter's IV floors,
+        // into the same gRandomizerSettings block (restored by restore() after build).
+        await writeShinyRules(bundle.config);
         // T-091/ADR-014 — preset the League Run & Bun mode gate + E4 quotas from the run config
         // into Sidney's room init script (restored by restore() after build).
         await writeRunAndBunVars(bundle.config);

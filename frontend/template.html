@@ -1437,6 +1437,7 @@
   <script src="nicknames.js"></script>
   <script src="sprites.js"></script>
   <script src="bosscaps.js"></script>
+  <script src="shinyrule.js"></script>
   <!-- per-run localStorage namespace. The run-namespace token below is replaced
  at doc-generation time (randomizer/writer.js, frontend/js/app.js) with a stable
  per-run id (see docRunNamespace). nsKey suffixes every storage key with it so
@@ -1795,16 +1796,20 @@
           : '';
         // T-163 — IVs render only when "Show IVs" was on (the pipeline strips them otherwise).
         // ivs is an object { hp, atk, def, spa, spd, spe } (randomizer/modules/resolveTrainerTeam.js).
-        // T-168 — this game ties shininess to the IV total: 150+ is guaranteed shiny in-game (see the rules
-        // in index.html). When shown, a shiny mon's IV line is tinted gold with a small ★ at the end.
+        // T-168/T-274 — the run's shiny rule arrives in the injected `shinyRule` global. In quality mode a
+        // mon whose IVs reach the run's threshold is guaranteed shiny in-game, so its IV line is tinted gold
+        // with a small ★ at the end; in classic mode shininess is luck the docs cannot know, so no line is
+        // tinted. Docs from bundles that predate the setting carry no global and keep the old fixed 150 rule.
         let ivsHTML = '';
         if (member.ivs && typeof member.ivs === 'object') {
           const ivVals = ['hp','atk','def','spa','spd','spe'].map(k => member.ivs[k]);
           const ivTotal = ivVals.reduce((sum, v) => sum + (Number(v) || 0), 0);
-          const shiny = ivTotal >= 150;
+          const rule = (typeof shinyRule !== 'undefined' && shinyRule) ? shinyRule : { byQuality: true, ivThreshold: 150 };
+          const threshold = Number.isFinite(Number(rule.ivThreshold)) ? Number(rule.ivThreshold) : 150;
+          const shiny = rule.byQuality !== false && ivTotal >= threshold;
           const star = shiny ? ` <span class="rm-ivs-star">★</span>` : '';
           const tip = shiny
-            ? `Individual Values — HP / Atk / Def / SpA / SpD / Spe · total ${ivTotal} (150+) → shiny in-game`
+            ? `Individual Values — HP / Atk / Def / SpA / SpD / Spe · total ${ivTotal} (${threshold}+) → shiny in-game`
             : 'Individual Values — HP / Atk / Def / SpA / SpD / Spe';
           ivsHTML = `<span class="rm-ivs${shiny ? ' rm-ivs--shiny' : ''}" data-tooltip="${tip}">IVs ${ivVals.join('/')}${star}</span>`;
         }

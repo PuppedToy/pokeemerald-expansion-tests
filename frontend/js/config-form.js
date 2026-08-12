@@ -1,6 +1,7 @@
 import { storageGet, storageSet } from './storage.js';
 import { readJsonFile, extractConfig, isFullBundle } from './session.js';
 import { STARTER_NAME_POOLS } from './data/starterNames.js';
+import { SHINY_DEFAULTS, MAX_IV_TOTAL, MAX_PER_STAT_IVS, shinyChanceText } from './shinyRules.js';
 
 const STORAGE_KEY = 'lastConfig';
 
@@ -304,6 +305,15 @@ export const DEFAULTS = {
     prices: PRICE_DEFAULTS,
     // T-167 — Move relearn price. Applied at ROM-build time (patches src/move_relearner.c). 0 = always free.
     moveRelearnPrice: 250,
+    // T-274 — the shiny rule and the starter's IV floors, applied at ROM-build time
+    // (gRandomizerSettings). Defaults reproduce today's game: shiny by quality at a 150 IV total, a
+    // starter with 3 perfect IVs topped up to 150. shinyChancePercent only bites when the toggle is off
+    // (gen 3's own 0.0122% = 1 in 8192). The maths lives in shinyRules.js.
+    shinyByQuality: SHINY_DEFAULTS.shinyByQuality,
+    shinyIvThreshold: SHINY_DEFAULTS.shinyIvThreshold,
+    shinyChancePercent: SHINY_DEFAULTS.shinyChancePercent,
+    starterPerfectIvs: SHINY_DEFAULTS.starterPerfectIvs,
+    starterMinIvTotal: SHINY_DEFAULTS.starterMinIvTotal,
     // T-072 — quality tier for the 3 main starters (same vocabulary as extra starters).
     // Default UU reproduces the historical hardcoded behaviour (3-stage LC line peaking at UU).
     starterQuality: 'UU',
@@ -610,6 +620,13 @@ export class ConfigForm {
         const extraStarters = (this._starterSpecs || []).map(s => ({ ...s }));
         const starterQualityRaw = (this._q('#starter-quality') || {}).value;
         const starterQuality = EXTRA_STARTER_TIER_OPTIONS.includes(starterQualityRaw) ? starterQualityRaw : 'UU';
+        // T-274 — the shiny rule + the starter's IV floors. Both tunables are always read, whichever mode
+        // the toggle is in, so switching back and forth never loses the other system's number.
+        const shinyByQuality = this._q('#shiny-by-quality')?.checked !== false;
+        const shinyIvThreshold = this._intField('#shiny-iv-threshold', DEFAULTS.shinyIvThreshold, 0, MAX_IV_TOTAL);
+        const shinyChancePercent = this._floatField('#shiny-chance-percent', DEFAULTS.shinyChancePercent);
+        const starterPerfectIvs = this._intField('#starter-perfect-ivs', DEFAULTS.starterPerfectIvs, 0, 6);
+        const starterMinIvTotal = this._intField('#starter-min-iv-total', DEFAULTS.starterMinIvTotal, 0, MAX_IV_TOTAL);
         const nicknames = this._readNicknames();
         const prices = this._readPrices();
         const base = { runType, battleFormat, singlesPercent, leagueRunAndBun, mixedSequentialSplit, wildEncounterType, pokemonPerZone, difficulty,
@@ -618,7 +635,8 @@ export class ConfigForm {
             mutateStats, mutateAbilities, mutateTypes, mutateLearnsets, mutationProbs,
             mutateMoves, moveMutationChance, mutatePower, mutateAccuracy, mutateType, mutateCategory,
             movePowerChance, moveAccuracyChance, moveTypeChance, moveCategoryChance, evoLevels,
-            money, prices, moveRelearnPrice, starterQuality, extraStarters, seed, universeSeed, docsVisibility, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, disableStevenTagBattle, nicknames };
+            money, prices, moveRelearnPrice, shinyByQuality, shinyIvThreshold, shinyChancePercent,
+            starterQuality, starterPerfectIvs, starterMinIvTotal, extraStarters, seed, universeSeed, docsVisibility, gymsTypeChanged, e4TypeChanged, championTypeChangeChance, aquaTypes, magmaTypes, disableStevenTagBattle, nicknames };
 
         if (runType === 'nuzlocke') {
             // T-081 — clamp to the field's documented range (matches the input's min/max) so a
@@ -712,6 +730,13 @@ export class ConfigForm {
         this._q('#reward-gym').value = money.gym ?? 5000;
         this._q('#reward-relearn').value = cfg.moveRelearnPrice ?? 250; // T-167
         this._setPrices(cfg.prices);
+        // T-274 — shiny rule + starter IV floors (quality mode is the default, so only an explicit
+        // false switches to classic luck; an older config that predates them lands on the defaults).
+        const sbq = this._q('#shiny-by-quality'); if (sbq) sbq.checked = cfg.shinyByQuality !== false;
+        const sit = this._q('#shiny-iv-threshold'); if (sit) sit.value = cfg.shinyIvThreshold ?? 150;
+        const scp = this._q('#shiny-chance-percent'); if (scp) scp.value = cfg.shinyChancePercent ?? DEFAULTS.shinyChancePercent;
+        const spi = this._q('#starter-perfect-ivs'); if (spi) spi.value = cfg.starterPerfectIvs ?? 3;
+        const smit = this._q('#starter-min-iv-total'); if (smit) smit.value = cfg.starterMinIvTotal ?? 150;
         const sq = this._q('#starter-quality');
         if (sq) sq.value = EXTRA_STARTER_TIER_OPTIONS.includes(cfg.starterQuality) ? cfg.starterQuality : 'UU';
         this._starterSpecs = (cfg.extraStarters || EXTRA_STARTER_DEFAULT_PRESET).map(normalizeStarterSpec);
@@ -788,6 +813,14 @@ export class ConfigForm {
         const el = this._q(sel);
         if (!el) return def;
         const n = parseInt(el.value, 10);
+        return isNaN(n) ? def : n;
+    }
+
+    /** T-274 — the decimal sibling of _intField, for the fractional shiny percentage. */
+    _floatField(sel, def) {
+        const el = this._q(sel);
+        if (!el) return def;
+        const n = parseFloat(el.value);
         return isNaN(n) ? def : n;
     }
 
@@ -1660,6 +1693,34 @@ export class ConfigForm {
   </div>
 </section>
 
+<section class="config-category" data-cat="shiny">
+  <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-shiny">
+    <span class="config-cat-title">Shiny Pokémon</span><span class="config-cat-arrow">▶</span>
+  </button>
+  <div class="config-cat-body hidden" id="cat-body-shiny">
+    <div class="card-glass" style="display:flex;flex-direction:column;gap:16px;padding:20px">
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Shiny by quality</div>
+          <div class="toggle-desc">A Pokémon is shiny when its IVs are good enough — no luck involved, and a shiny you meet is always worth keeping. Switch it off to go back to gen 3's random shinies.</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="shiny-by-quality" checked><span class="toggle-track"></span></label>
+      </div>
+      <div id="shiny-quality-row">
+        <label for="shiny-iv-threshold">Shiny from this IV total: <span id="shiny-iv-threshold-val">${DEFAULTS.shinyIvThreshold}</span></label>
+        <input type="range" id="shiny-iv-threshold" class="slider" min="0" max="${MAX_IV_TOTAL}" value="${DEFAULTS.shinyIvThreshold}" step="1" style="width:100%">
+        <span class="field-hint">A Pokémon's six IVs add up to at most ${MAX_IV_TOTAL}. Every Pokémon that reaches this total is shiny, so the lower it is the more shinies you meet.</span>
+      </div>
+      <div class="field" id="shiny-chance-row">
+        <label for="shiny-chance-percent">Shiny chance (%)</label>
+        <input type="number" id="shiny-chance-percent" class="input" min="0" max="100" step="0.0001" value="${DEFAULTS.shinyChancePercent}" style="width:120px">
+        <span class="field-hint">The chance each Pokémon rolls shiny, as in the original games. Gen 3's own value is 0.0122%. Anything finer than 0.0016% rounds down to never.</span>
+      </div>
+      <div class="field-hint" id="shiny-chance-note" style="margin:0"></div>
+    </div>
+  </div>
+</section>
+
 <section class="config-category" data-cat="starters">
   <button type="button" class="config-cat-header" aria-expanded="false" aria-controls="cat-body-starters">
     <span class="config-cat-title">Starters</span><span class="config-cat-arrow">▶</span>
@@ -1670,6 +1731,17 @@ export class ConfigForm {
         <label for="starter-quality">Starter quality</label>
         <select id="starter-quality" class="input" style="width:140px">${EXTRA_STARTER_TIER_OPTIONS.map(t => `<option value="${t}"${t === DEFAULTS.starterQuality ? ' selected' : ''}>${t}</option>`).join('')}</select>
         <span class="field-hint">Competitive tier the <strong>3 normal starters</strong>' evolution lines peak at. They are always early 3-stage lines with a weak base. This setting sets how strong their final evolution ends up.</span>
+      </div>
+      <div>
+        <label for="starter-perfect-ivs">Perfect IVs on your starter: <span id="starter-perfect-ivs-val">${DEFAULTS.starterPerfectIvs}</span></label>
+        <input type="range" id="starter-perfect-ivs" class="slider" min="0" max="6" value="${DEFAULTS.starterPerfectIvs}" step="1" style="width:100%">
+        <span class="field-hint">How many of its six IVs arrive at a perfect 31, picked at random.</span>
+      </div>
+      <div>
+        <label for="starter-min-iv-total">Minimum IV total on your starter: <span id="starter-min-iv-total-val">${DEFAULTS.starterMinIvTotal}</span></label>
+        <input type="range" id="starter-min-iv-total" class="slider" min="0" max="${MAX_IV_TOTAL}" value="${DEFAULTS.starterMinIvTotal}" step="1" style="width:100%">
+        <span class="field-hint">After those perfect IVs, the rest are topped up until the six add up to at least this. Applies to the starter you choose, not to the extra starters below.</span>
+        <span class="field-hint" id="starter-shiny-note" style="margin-top:4px"></span>
       </div>
       <div style="border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;display:flex;flex-direction:column;gap:14px">
         <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap">
@@ -2015,6 +2087,8 @@ export class ConfigForm {
         const nbtsVal = this._q('#non-boss-team-size-val');
         if (nbtsVal) nbtsVal.textContent = this._q('#non-boss-team-size')?.value ?? '6';
 
+        this._syncShiny();
+
         // T-068/T-070 — nicknames: master toggle shows the box; run-type gates the sharing switches;
         // "different per gender" swaps the tabbed pools ↔ the single pool. Location naming (autoLocation)
         // lives in the same box; "lock gender per route" is only usable with autoLocation + differentPerGender.
@@ -2115,6 +2189,55 @@ export class ConfigForm {
                 const tabs = this._q('#nickname-pools-gendered')?.querySelector('.nick-tabs');
                 if (tabs && warns.previousElementSibling !== tabs) tabs.after(warns);
             }
+        }
+    }
+
+    /**
+     * T-274 — the Shiny Pokémon panel and the starter's IV floors, which are two ends of the same rule.
+     * The toggle swaps which number is editable; the "1 in N" line under them is shown in BOTH modes,
+     * because it is the only place the chosen number turns into something a player can picture. The
+     * starter note answers what the sliders make you ask — "so will my starter be shiny?" — and only
+     * quality mode can answer it: classic shininess is luck no config can predict.
+     */
+    _syncShiny() {
+        const byQuality = this._q('#shiny-by-quality')?.checked !== false;
+        const qualityRow = this._q('#shiny-quality-row');
+        const chanceRow = this._q('#shiny-chance-row');
+        if (qualityRow) qualityRow.style.display = byQuality ? '' : 'none';
+        if (chanceRow) chanceRow.style.display = byQuality ? 'none' : '';
+
+        const threshold = this._intField('#shiny-iv-threshold', DEFAULTS.shinyIvThreshold, 0, MAX_IV_TOTAL);
+        const percent = this._floatField('#shiny-chance-percent', DEFAULTS.shinyChancePercent);
+        const thresholdVal = this._q('#shiny-iv-threshold-val');
+        if (thresholdVal) thresholdVal.textContent = String(threshold);
+
+        const note = this._q('#shiny-chance-note');
+        if (note) {
+            const chance = shinyChanceText({
+                shinyByQuality: byQuality, shinyIvThreshold: threshold, shinyChancePercent: percent,
+            });
+            note.textContent = chance === 'never' ? 'No wild Pokémon will ever be shiny in this run.'
+                : chance === 'always' ? 'Every Pokémon in this run is shiny.'
+                : `About ${chance} wild Pokémon will be shiny.`;
+        }
+
+        const perfectIvs = this._intField('#starter-perfect-ivs', DEFAULTS.starterPerfectIvs, 0, 6);
+        const minIvTotal = this._intField('#starter-min-iv-total', DEFAULTS.starterMinIvTotal, 0, MAX_IV_TOTAL);
+        const perfectIvsVal = this._q('#starter-perfect-ivs-val');
+        if (perfectIvsVal) perfectIvsVal.textContent = String(perfectIvs);
+        const minIvTotalVal = this._q('#starter-min-iv-total-val');
+        if (minIvTotalVal) minIvTotalVal.textContent = String(minIvTotal);
+
+        const starterNote = this._q('#starter-shiny-note');
+        if (starterNote) {
+            // The engine forces the perfect IVs first and only then tops the rest up, so the floor the
+            // starter is guaranteed to reach is whichever of the two is higher.
+            const guaranteed = Math.max(perfectIvs * MAX_PER_STAT_IVS, minIvTotal);
+            starterNote.textContent = !byQuality
+                ? 'This run rolls shinies by luck, so your starter may or may not be one.'
+                : guaranteed >= threshold
+                    ? `Your starter is always shiny: it reaches ${guaranteed} IVs and this run needs ${threshold}.`
+                    : `Your starter may not be shiny: it is only guaranteed ${guaranteed} IVs and this run needs ${threshold}.`;
         }
     }
 
@@ -2263,6 +2386,13 @@ export class ConfigForm {
         this._q('#shop-prices')?.addEventListener('input', onChange);
         // T-072 — quality tier for the 3 main starters
         this._q('#starter-quality')?.addEventListener('change', onChange);
+        // T-274 — the shiny rule and the starter's IV floors (the sliders' live readouts and the "1 in N"
+        // line are repainted by _syncShiny, which onChange runs).
+        this._q('#shiny-by-quality')?.addEventListener('change', onChange);
+        this._q('#shiny-iv-threshold')?.addEventListener('input', onChange);
+        this._q('#shiny-chance-percent')?.addEventListener('input', onChange);
+        this._q('#starter-perfect-ivs')?.addEventListener('input', onChange);
+        this._q('#starter-min-iv-total')?.addEventListener('input', onChange);
 
         // Extra-starter list: add / remove / edit rows (event delegation, since rows re-render).
         this._q('#add-starter')?.addEventListener('click', () => {
