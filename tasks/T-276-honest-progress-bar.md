@@ -1,10 +1,10 @@
 ---
 id: T-276
 title: Make the randomization progress bar reflect the real work
-status: in-progress
+status: done
 type: fix
 created: 2026-08-12
-updated: 2026-08-12
+updated: 2026-08-13
 target-version: 0.9.0
 links: []
 blocked-by: []
@@ -110,6 +110,41 @@ Acceptance criteria:
   `cd randomizer && npm test` 2523 passed / 209 suites; `cd frontend && node --test` 258 passed.
   Browser bundle rebuilt (`node build.js`) so the Worker actually carries the new model.
 
+- **2026-08-13** — Owner generated a run and validated the bar. Closing.
+
 ## Outcome
 
-<!-- Filled when closing: what shipped, deviations from the plan, follow-ups spawned (link new task ids). -->
+Shipped as planned, in one commit (`0c4162dd2f`). The progress bar's percentages are now a weighted
+fraction of the work a run will really do, and the two units that carry ~100% of a run's wall clock
+report from inside their own loops.
+
+What shipped:
+- `randomizer/progress.js` — the cost model's single home (`WEIGHTS` per unit of work,
+  `POKEDEX_PASSES`, `DOCS_TRAINERS_SHARE`), the tracker (`createProgressTracker`: monotonic,
+  throttled to whole percents, 100% only from `finish()`), and `passReporter` for long loops.
+- `randomizer/generate.js` — all three run types drive the tracker; the equal-weight
+  `tick`/`totalSteps` is gone. Counts come from the run's own shape, so multi-ROM runs amortize
+  shared work automatically. Each step announces itself at its own start instead of the previous
+  step naming the next one.
+- Sub-progress through optional hooks: `runPokedexModule(config, baseData, { onProgress })` and
+  `writerDocs(..., { onProgress })`. Every caller that passes nothing is untouched.
+- `frontend/js/gen-progress.js` — the display side, extracted from `app.js` and now tested: the
+  crawl's lookahead went from 18 points to 2, so it smooths between reports instead of inventing
+  progress. `frontend/js/randomizer-worker.cjs` reserves the first 2% for the base-data download
+  via the new `progressFloor` hook.
+- Tests: `randomizer/__tests__/unit/progress.test.js` (model),
+  `.../unit/progressWiring.test.js` (pipeline), `.../unit/pokedexProgress.test.js`,
+  `.../integration/docsProgress.test.js` (the two loops), `frontend/__tests__/gen-progress.test.js`.
+
+Deviations from the plan: none in substance. Two things worth recording:
+- The plan's "Pokédex sub-passes" turned out to need three shares, not two — the rebalance pass sits
+  between rating and contextual and re-rates what it mutated, so it gets its own share of the weight.
+- Proving output neutrality needed timestamp normalisation first: `runPokedexModule` stamps its own
+  `new Date()` into the artifact, so two identical runs never hash the same. With that normalised,
+  the bundles are byte-identical before and after, for both a `default` and a 2-ROM `nuzlocke` run.
+
+Deliberately not done: no ETA, and no streaming progress for the base-data download. A 4 MB fetch
+served with `Content-Encoding` reports compressed `Content-Length` while the reader yields
+decompressed bytes, so a byte-counting progress bar there would overshoot — the flat 2% is honest.
+
+No follow-up tasks spawned.

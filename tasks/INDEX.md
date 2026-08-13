@@ -277,4 +277,4 @@
 | [T-273](T-273-deploy-base-rom-decision.md) | Make the deploy decide by itself whether the base ROM must be rebuilt | in-progress | 0.9.0 | 2026-08-12 |
 | [T-274](T-274-configurable-shiny-rules.md) | Make the shiny rule configurable (quality or classic luck) and add starter IV floors | done | 0.9.0 | 2026-08-12 |
 | [T-275](T-275-always-adjust-evolution-levels.md) | Make evolution-level adjustment unconditional (drop the on/off toggle) | done | 0.9.0 | 2026-08-12 |
-| [T-276](T-276-honest-progress-bar.md) | Make the randomization progress bar reflect the real work | in-progress | 0.9.0 | 2026-08-12 |
+| [T-276](T-276-honest-progress-bar.md) | Make the randomization progress bar reflect the real work | done | 0.9.0 | 2026-08-13 |
