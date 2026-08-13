@@ -104,6 +104,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **The progress bar while your run is generated now means something.** It used to sprint from 20% to 80%
+  in a blink and then sit still, because it counted *steps* and gave each the same fifth of the bar — while
+  in truth two of those steps are the entire wait (building the Pokédex is about two thirds of it, working
+  out every trainer's team the remaining third) and the other three are a few hundredths of a second. Each
+  step now takes the share of the bar it really costs, and the two long ones report from the inside as they
+  go, so the bar advances about once a second from start to finish and 100% arrives when the run is actually
+  done. Generating several ROMs re-weights itself too: work shared between them stops pretending to be a
+  fifth of the job. There is still no time estimate, and there cannot be an honest one — the whole run
+  happens in your own browser, at your own machine's pace. (T-276)
+
 - **The fifteen traders can actually be built into the game.** The Mauville trader shared its internal name
   with the Pokémon Center's old decoration trader, and two things cannot answer to one name: the game refused
   to build at all, so the whole feature had never made it into a ROM. Renamed, and the build now checks for

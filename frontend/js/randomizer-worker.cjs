@@ -14,11 +14,16 @@ const { createTeamAudit, renderTeamAuditText } = require('../../randomizer/teamA
 // Pre-cooked base data loaded once from /data/base-data.json
 let baseData = null;
 
+// T-276 — the head of the progress bar belongs to the download above: it is the one step whose cost
+// is the client's network rather than the client's CPU, so it cannot be weighted like the rest. The
+// run's own scale (randomizer/progress.js) starts here instead of rewinding the bar to 0.
+const LOAD_PCT = 2;
+
 self.onmessage = async ({ data: { type, config } }) => {
     if (type !== 'generate') return;
     try {
         if (!baseData) {
-            post('progress', 2, 'Loading base data...');
+            post('progress', LOAD_PCT, 'Loading base data...');
             baseData = await fetch('/data/base-data.json').then(r => {
                 if (!r.ok) throw new Error(`Failed to load base data: ${r.status}`);
                 return r.json();
@@ -39,6 +44,7 @@ self.onmessage = async ({ data: { type, config } }) => {
 
         const bundle = await runGeneration(config, toModuleConfig(config), uuid(), {
             progress: (pct, step) => post('progress', pct, step),
+            progressFloor: LOAD_PCT,   // T-276 — the download already spent the first slice of the bar
             baseData,
             diagnostics: diag,
             audit,

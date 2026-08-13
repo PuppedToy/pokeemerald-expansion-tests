@@ -14,6 +14,7 @@ const { applyMeloettaTierBlend } = require('../meloetta');
 const { applyMiniorTierBlend, applyMiniorContextualBlend } = require('../minior');
 const { applyGreninjaTierBlend, applyGreninjaContextualBlend } = require('../greninja');
 const { capLevelMap } = require('../bossCaps');
+const { POKEDEX_PASSES, passReporter } = require('../progress');   // T-276 — sub-progress cost model
 const {
     TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, ABILITIES_FILE_PATH, ITEMS_FILE_PATH, MEGA_EVOS_PATH,
     EVO_TYPE_MEGA,
@@ -152,9 +153,13 @@ async function parseBaseData() {
 // baseData: pre-parsed result from parseBaseData(). Pass this from the browser
 //   (loaded from base-data.json) to skip all file I/O.
 //   When null (Node CLI), parseBaseData() is called internally and JSON caches are written.
-async function runPokedexModule(config, baseData = null) {
+// hooks.onProgress: optional (fraction 0..1) => void. This module is ~68% of a run's wall clock, so
+//   the progress bar needs to hear from inside its rating loops (T-276); the shares each loop
+//   reports live in progress.js, the cost model's single home.
+async function runPokedexModule(config, baseData = null, hooks = {}) {
     const allTms  = config.allTms ?? false;
     const nodeMode = !baseData;
+    const onProgress = hooks.onProgress;
 
     if (nodeMode) {
         baseData = await parseBaseData();
@@ -223,9 +228,12 @@ async function runPokedexModule(config, baseData = null) {
     expandAllTeachables(allPokes, tmPool, moves, baseData.universalMoves || []);
 
     // 8. Rate all pokemon (singles + T-097 doubles)
-    for (const poke of allPokes) {
+    const reportRated = passReporter(onProgress, { total: allPokes.length, base: 0, span: POKEDEX_PASSES.rate });
+    for (let i = 0; i < allPokes.length; i++) {
+        const poke = allPokes[i];
         poke.rating = ratePokemon(poke, moves, abilities, tmPool);
         { const _rd = ratePokemonDoubles(poke, moves, abilities, tmPool, poke.rating.bestMoveset); poke.ratingDoubles = _rd.ratingDoubles; poke.tierDoubles = _rd.tierDoubles; poke.supportTierDoubles = _rd.supportTierDoubles; poke.supportRatingDoubles = _rd.supportRatingDoubles; poke.isSupportDoubles = _rd.isSupportDoubles; }
+        reportRated(i);
     }
 
     // 9. Optional rebalance
@@ -243,8 +251,12 @@ async function runPokedexModule(config, baseData = null) {
             mutateLearnsets: config.mutateLearnsets !== false,
             probs: config.mutationProbs,
         };
+        const reportBalanced = passReporter(onProgress, {
+            total: allPokes.length, base: POKEDEX_PASSES.rate, span: POKEDEX_PASSES.rebalance,
+        });
         for (let i = 0; i < allPokes.length; i++) {
             allPokes[i] = balancePokemon(allPokes[i], abilityKeys, moves, config.balanceChance, mutationOptions);
+            reportBalanced(i);
             if (allPokes[i].log && allPokes[i].log.length) {
                 allPokes[i].baseBST = allPokes[i].baseHP + allPokes[i].baseAttack + allPokes[i].baseDefense + allPokes[i].baseSpAttack + allPokes[i].baseSpDefense + allPokes[i].baseSpeed;
                 allPokes[i].rating = ratePokemon(allPokes[i], moves, abilities, tmPool);
@@ -370,8 +382,15 @@ async function runPokedexModule(config, baseData = null) {
     const rayquazaMega = allPokes.find(p => p.id === 'SPECIES_RAYQUAZA_MEGA');
     if (rayquaza && rayquazaMega) rayquaza.rating = { ...rayquazaMega.rating };
 
-    // 11. Contextual ratings
-    for (const poke of allPokes) {
+    // 11. Contextual ratings — 1230 species × 25 level caps × 2 formats, the single most expensive
+    // thing in a run (~60% of it), so this is the loop the progress bar most needs to hear from.
+    const reportContextual = passReporter(onProgress, {
+        total: allPokes.length,
+        base: POKEDEX_PASSES.rate + POKEDEX_PASSES.rebalance,
+        span: POKEDEX_PASSES.contextual,
+    });
+    for (let p = 0; p < allPokes.length; p++) {
+        const poke = allPokes[p];
         poke.contextualRatings = {};
         poke.contextualRatingsDoubles = {}; // T-111
         for (const cap of LEVEL_CAPS) {
@@ -387,6 +406,7 @@ async function runPokedexModule(config, baseData = null) {
             // T-111 — per-level doubles rating, reusing the singles contextual bestMoveset (rng-free).
             poke.contextualRatingsDoubles[cap] = rateContextualDoubles(ctxPoke, moves, abilities, { level: cap, tms: [] }, poke.contextualRatings[cap].bestMoveset);
         }
+        reportContextual(p);
     }
 
     // 11-bis. Minior (T-155) — blend Meteor's per-cap contextual ratings (singles + doubles) with
