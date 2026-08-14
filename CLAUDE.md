@@ -118,6 +118,7 @@ These are regenerated from source on every run; committing them pollutes history
 
 | File | Purpose |
 |------|---------|
+| `families-and-forms.md` | The family model: what counts as one Pokémon, what inherits from what, the two regional shapes, the dedup rule, and the premium transformation items (ADR-026, T-277). |
 | `tms.md` | Full TM/HM table: slot number, pool, in-world location. Verify gym reward TM slots, pick-list assignments, unplaced slots. |
 | `pick-list-howto.md` | Checklist for wiring a new 3-choice TM pick: which files to touch and in what order. |
 | `items.md` | All item categories/pools (fixed, `goodItemPool`, `averageItemPool`, `plates`, `gems`, `protectionBerries`, `fullItemPool`) and every world location with flag, pool, trainer bag cascade. |
