@@ -59,24 +59,24 @@ inheritance keeps the existing single-pass loop — no reordering, minimal RNG-s
 
 ### Child tasks
 
-| # | Task | Owner items | Needs owner input | Depends on |
+| # | Task | Owner items | Status | Depends on |
 |---|---|---|---|---|
-| 0 | T-289 — remove Rockruff-Own-Tempo and Gimmighoul-Roaming from the pool | (new) | decided | — |
-| 1 | T-278 — evolution-graph module + inherit only from the direct pre-evolution | 10 | D0 ✔ | T-289 |
-| 2 | T-279 — stage classification from the graph (kill the false SOLO/LC) | 6, 2 | no | T-278 |
-| 3 | T-280 — `bestEvo` / `devolveToBase` by reachability, not family | 4 | no | T-278 |
-| 4 | T-281 — megas attach to their base species, not the family | 5 | no | T-278 |
-| 5 | T-282 — converging evolution levels keyed by (holder, target) | 7 | no | — |
-| 6 | T-283 — macro-defined species: their mutations must reach the ROM | 8 | no | — |
-| 7 | T-284 — one family = one evolution component + curated form sets | 1, 2 | **Pass A** | T-278…T-281 |
-| 8 | T-285 — dedup groups chosen case by case | 11 | **Pass B** | T-284 |
-| 9 | T-286 — Meltan → Melmetal, one real line and one family | 9 | Pass A row | T-284 |
-| 10 | T-287 — Mothim: the three Burmy cloaks converge on one real Mothim | 3 | Pass A row | T-284 |
-| 11 | T-290 — premium transformation items (Rusted Sword/Shield, Red/Blue Orb, + O8) | (new) | O8, O9 | T-281, T-283 |
-| 12 | T-291 — remove the cosmetic duplicate species from the game | (new) | decided | — |
-| 13 | T-292 — rate Tera Shift 0 and fix the Terapagos placeable form | (new) | decided | — |
-| 14 | T-293 — ban the battle-only states that are currently placeable | (new) | decided | — |
-| 15 | T-288 — model docs + fresh golden-master baseline | — | no | all |
+| 0 | T-289 — remove Rockruff-Own-Tempo and Gimmighoul-Roaming from the pool | (new) | **done** | — |
+| 1 | T-278 — evolution-graph module + inherit only from the direct pre-evolution | 10 | **done** | T-289 |
+| 2 | T-279 — stage classification from the graph (kill the false SOLO/LC) | 6, 2 | **done** | T-278 |
+| 3 | T-280 — `bestEvo` / `devolveToBase` by reachability, not family | 4 | **done** | T-278 |
+| 4 | T-281 — megas attach to their base species, not the family | 5 | **done** | T-278 |
+| 5 | T-282 — converging evolution levels collapse to one gate | 7 | **done** | — |
+| 6 | T-292 — Terastal abilities rate 0; Terapagos placeable form fixed | — | **done** | — |
+| 7 | ~~T-293~~ — ban the battle-only placeables | — | **absorbed into T-292** | — |
+| 8 | T-283 — macro-defined species: their mutations must reach the ROM | 8 | todo | — |
+| 9 | T-284 — one family = one evolution component + curated form sets | 1, 2 | todo | T-278…T-281 |
+| 10 | T-285 — dedup: one obtainable per superfamily (G1) | 11 | todo | T-284 |
+| 11 | T-291 — remove the cosmetic duplicate species from the game | (new) | todo | — |
+| 12 | T-286 — Meltan → Melmetal, one real line and one family | 9 | todo | T-284 |
+| 13 | T-287 — Mothim: the three Burmy cloaks converge on one real Mothim | 3 | todo | T-284 |
+| 14 | T-290 — premium transformation items | (new) | todo | T-281, T-283 |
+| 15 | T-288 — model docs + fresh golden-master baseline | — | todo | all |
 
 T-282 and T-283 are independent of the graph work and can run in parallel. T-283, T-286 and T-287
 touch `gen_*_families.h`, so they share one base-ROM rebuild lane. T-287 is deliberately last: making
@@ -107,7 +107,7 @@ Acceptance criteria (umbrella):
 - [ ] O8 and O9 answered (both gate T-290 only).
 - [ ] ADR-026 accepted: identity, stage classification and dedup are three separate concerns; the
       first two derive from the edge graph, the third is a curated policy map.
-- [ ] All 15 child tasks closed.
+- [ ] All 15 child tasks closed (7 done, T-293 absorbed into T-292).
 - [ ] Fresh golden-master baseline captured (`/verify-corpus`) — every fix here shifts the RNG stream,
       so existing seeds stop reproducing their worlds.
 
