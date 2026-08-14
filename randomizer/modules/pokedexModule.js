@@ -7,7 +7,8 @@ const { randomizeTMs, buildTMList, annotateTmNumbers } = require('../tmRandomize
 const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
 const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, assignSupportTiersDoubles } = require('../rating');
-const { balancePokemon, resetFamilyTracking } = require('../rebalancer');
+const { balancePokemon, resetInheritance } = require('../rebalancer');
+const { buildEvoGraph } = require('../evoGraph');
 const { mutateAllMoves } = require('../moveMutator');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -238,10 +239,13 @@ async function runPokedexModule(config, baseData = null, hooks = {}) {
 
     // 9. Optional rebalance
     if (config.rebalance) {
-        // B-069 — the rebalancer's family mutation log is per-RUN state that used to live for the whole
-        // process, so a second generation in one process inherited the first's families and stopped
+        // B-069 — the rebalancer's mutation log is per-RUN state that used to live for the whole
+        // process, so a second generation in one process inherited the first's lines and stopped
         // honouring the seed. Clear it before every pass.
-        resetFamilyTracking();
+        resetInheritance();
+        // ADR-026 — inheritance follows the evolution edge. The graph is built over the SAME list the
+        // loop walks, so an evolution whose target was filtered out of this run simply has no parent.
+        const evoGraph = buildEvoGraph(allPokes);
         const abilityKeys = Object.keys(abilities).map(key => key.replace('ABILITY_', ''));
         // T-052 — per-category mutation toggles + probability overrides (default on / defaults).
         const mutationOptions = {
@@ -255,7 +259,8 @@ async function runPokedexModule(config, baseData = null, hooks = {}) {
             total: allPokes.length, base: POKEDEX_PASSES.rate, span: POKEDEX_PASSES.rebalance,
         });
         for (let i = 0; i < allPokes.length; i++) {
-            allPokes[i] = balancePokemon(allPokes[i], abilityKeys, moves, config.balanceChance, mutationOptions);
+            allPokes[i] = balancePokemon(allPokes[i], abilityKeys, moves, config.balanceChance,
+                { ...mutationOptions, parents: evoGraph.parentsOf(allPokes[i].id) });
             reportBalanced(i);
             if (allPokes[i].log && allPokes[i].log.length) {
                 allPokes[i].baseBST = allPokes[i].baseHP + allPokes[i].baseAttack + allPokes[i].baseDefense + allPokes[i].baseSpAttack + allPokes[i].baseSpDefense + allPokes[i].baseSpeed;

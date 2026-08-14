@@ -41,8 +41,9 @@ const BANNED_ABILITIES = [
     'DEFEATIST',
 ];
 
-// @TODO Thoughts after testing it:
-// 1. Stat changes carry over forms besides from family. E.g. Meowth +20 def should not carry alolan and galar meowth.
+// (The long-standing @TODO here — "stat changes carry over forms besides from family, e.g. Meowth
+// +20 def should not carry alolan and galar meowth" — is what T-278 fixed: inheritance now follows
+// the evolution edge, so a form only ever inherits from its own pre-evolution.)
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -78,19 +79,37 @@ function insertMoveIntoLearnset(learnset, moveId, move, deviation = MOVE_RATING_
     };
 }
 
-// Per-RUN state: a family's later members inherit the mutations its earlier members were given, so the
-// whole family stays coherent. B-069 — this MUST be cleared between runs. It used to live for the whole
-// process, so a second generation started with every family already logged from the first: the first
-// member of each family inherited mutations it never earned, took different branches, drew a different
-// number of RNG values and shifted the entire stream. The seed stopped reproducing anything.
-// runPokedexModule calls resetFamilyTracking() before its rebalance pass; keep it that way.
-let familyTracking = {};
+// Per-RUN state, keyed by SPECIES id: the full log (inherited + own) each species ended up with, so
+// its evolutions can replay it. ADR-026 — inheritance follows the evolution edge, not the `family`
+// string: a mon takes its direct pre-evolution's log and nothing else, never a sibling's and never
+// another form's. A convergence point (only Mothim, once T-289 landed) stacks every parent's log.
+//
+// Because a parent's stored log already contains what IT inherited, replaying just the parents gives
+// the whole line cumulatively — Raichu gets Pichu's changes through Pikachu, with no walk needed.
+// Parse (dex) order is topological for every evolution edge in this dex (verified, 0 exceptions), so
+// the single-pass rebalance loop always reaches a parent before its child.
+//
+// B-069 — this MUST be cleared between runs. It used to live for the whole process, so a second
+// generation started with every line already logged from the first: mons inherited mutations they
+// never earned, took different branches, drew a different number of RNG values and shifted the entire
+// stream. The seed stopped reproducing anything. runPokedexModule calls resetInheritance() before its
+// rebalance pass; keep it that way.
+let logsBySpecies = {};
 
-/** B-069 — drop all family mutation history. Call once per pokédex build, before rebalancing. */
-function resetFamilyTracking() {
-    familyTracking = {};
+/** B-069 — drop all mutation history. Call once per pokédex build, before rebalancing. */
+function resetInheritance() {
+    logsBySpecies = {};
 }
 
+/**
+ * @param {object}   pokemon
+ * @param {string[]} abilityNames
+ * @param {object}   moves
+ * @param {number}   [balanceChance]
+ * @param {object}   [options]
+ * @param {string[]} [options.parents] direct pre-evolution species ids, from the evolution graph.
+ *        Omitted or empty ⇒ the species inherits nothing.
+ */
 function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined, options = {}) {
 
     const inheritedLog = [];
@@ -103,9 +122,12 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined,
         parsedAbilities: pokemon.parsedAbilities ? [...pokemon.parsedAbilities] : [],
     };
 
-    if (familyTracking[pokemon.family]) {
-        const familyLog = familyTracking[pokemon.family] || [];
-        familyLog.forEach(entry => {
+    // Every direct pre-evolution's full log, in parent order, stacked. One parent is the normal case;
+    // several means a convergence point, and D0 says it accumulates all of them.
+    const parentLog = (options.parents || []).flatMap(parentId => logsBySpecies[parentId] || []);
+
+    if (parentLog.length) {
+        parentLog.forEach(entry => {
             let changed = false;
             const nextEntry = {...entry}
             if (['baseHP', 'baseAttack', 'baseDefense', 'baseSpAttack', 'baseSpDefense', 'baseSpeed'].includes(entry.target)) {
@@ -168,6 +190,8 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined,
 
     const balanceThreshold = balanceChance !== undefined ? balanceChance : getConfig().balanceChance;
     if (rng.random() > balanceThreshold) {
+        // Still record what it carries: its own evolutions must inherit the line, not nothing.
+        logsBySpecies[newPokemon.id] = inheritedLog;
         return {
             ...newPokemon,
             log: inheritedLog,
@@ -478,29 +502,26 @@ function balancePokemon(pokemon, abilityNames, moves, balanceChance = undefined,
     }
     }
 
-    if (!familyTracking[newPokemon.family]) {
-        familyTracking[newPokemon.family] = [...log];
-    }
-    else {
-        familyTracking[newPokemon.family] = [
-            ...familyTracking[newPokemon.family],
-            ...log,
-        ];
-    }
+    const fullLog = [
+        ...inheritedLog,
+        ...log,
+    ];
+    // What this species passes down is everything it ended up carrying, so a grandchild needs to
+    // read only its parent.
+    logsBySpecies[newPokemon.id] = fullLog;
 
     return {
         ...newPokemon,
-        log: [
-            ...inheritedLog,
-            ...log,
-        ],
+        log: fullLog,
     };
 
 }
 
 module.exports = {
     balancePokemon,
-    resetFamilyTracking,   // B-069 — per-run state; the pipeline clears it before each rebalance pass.
+    resetInheritance,   // B-069 — per-run state; the pipeline clears it before each rebalance pass.
+    // Kept so B-069's regression test and the pipeline mocks keep working under the old name.
+    resetFamilyTracking: resetInheritance,
     insertMoveIntoLearnset,
     getLearnLevelBasedOnRating,
     BANNED_ABILITIES,   // T-184 — exported so the unban of Wonder Guard is regression-tested.

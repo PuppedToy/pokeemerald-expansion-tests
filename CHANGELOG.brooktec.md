@@ -89,6 +89,18 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   right away (or, if they'd already prepared a ROM, a single combined "you're in + it's ready" email when it
   finishes building). (T-217)
 
+### Fixed
+
+- **A Pokémon's changes now come from the Pokémon it evolved from — and from nothing else.** Until now
+  the randomizer kept one list of changes per *family* and replayed all of it onto every later member,
+  which meant your Flareon carried buffs Vaporeon had earned, your Cascoon carried Silcoon's *and*
+  Beautifly's, and all eight Eeveelutions piled up each other's. Meanwhile the ones the game files put
+  in a separate family inherited nothing at all: Koffing's changes never reached Weezing Galar, and
+  Cursola inherited from the ordinary Corsola instead of from the Galarian one it actually evolves from.
+  And a handful — Perrserker, Clodsire, Obstagoon, Runerigus, Sneasler, Mr. Rime — inherited a line they
+  have nothing to do with. Every one of those is fixed: changes travel down the real evolution arrow.
+  Where several Pokémon converge on the same evolution — only Mothim now — it stacks all of them. (T-278)
+
 ### Removed
 
 - **Two duplicate Pokémon are out of the pool: Rockruff Own Tempo and Roaming Gimmighoul.** Both existed
