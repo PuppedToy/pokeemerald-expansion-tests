@@ -48,7 +48,11 @@ const BANNED_SPECIES_FOR_PICKING = [
     'SPECIES_CASTFORM_SNOWY',
     'SPECIES_MORPEKO_HANGRY',
     'SPECIES_ZYGARDE_COMPLETE',
-    'SPECIES_TERAPAGOS_NORMAL',
+    // T-292 — this pair used to read NORMAL + STELLAR, which banned the form the player actually
+    // catches and left the in-battle one placeable. Terapagos-Normal is the obtainable mon; Terastal
+    // (entered on switch-in via Tera Shift) and Stellar (on Terastallizing) are battle states, and
+    // Terastallization does not exist in this base at all.
+    'SPECIES_TERAPAGOS_TERASTAL',
     'SPECIES_TERAPAGOS_STELLAR',
     'SPECIES_DARMANITAN_ZEN',
     'SPECIES_DARMANITAN_GALAR_ZEN',

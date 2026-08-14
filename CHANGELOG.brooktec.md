@@ -91,6 +91,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Terapagos is judged on what it can actually do here, and you can now be given the one you can
+  catch.** Its ability Terastallizes the Pokémon on entry — except Terastallization does not exist in
+  this game, so the ability does nothing while still being scored as one of the best in the dex, which
+  pushed Terapagos far above its weight. It is now worth zero, like the two other Terastal-only
+  abilities. And the placement rule was backwards: the form you would actually catch was barred while
+  the in-battle one was being handed out. (T-292)
+
 - **The evolution level the documentation promises is the one the cartridge uses.** When several
   Pokémon evolve into the same one — the three Burmy cloaks all becoming Mothim — each was rolled its
   own level for the guide while the ROM could only keep one of them, so the guide could tell you level
