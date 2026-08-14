@@ -91,6 +91,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Nineteen Pokémon were filed at the wrong point in their evolution line, and are not any more.**
+  Cursola, Sirfetch'd, Galarian Weezing and Overqwil were all treated as Pokémon that neither evolve nor
+  come from anything — so a run could hand you one straight out of the grass as if it were a Pokémon you
+  catch at the start. Flapple and Appletun were filed as if they still had an evolution ahead of them,
+  which they do not. Mr. Rime, Obstagoon and Hisuian Goodra were shortchanged as two-stage finals when
+  their lines are three deep, and Basculin's red and blue stripes were listed as the end of a line they
+  can never join. Where a Pokémon sits in its line decides where the game may place it, so all of this
+  now follows the actual evolution arrows. (T-279)
+
 - **A Pokémon's changes now come from the Pokémon it evolved from — and from nothing else.** Until now
   the randomizer kept one list of changes per *family* and replayed all of it onto every later member,
   which meant your Flareon carried buffs Vaporeon had earned, your Cascoon carried Silcoon's *and*
