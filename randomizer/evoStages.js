@@ -92,4 +92,31 @@ function bestEvoOf(pokemonList) {
     };
 }
 
-module.exports = { classifyStages, bestEvoOf };
+/**
+ * ADR-026 — which megas a species can reach: the megas of the species itself plus the megas of
+ * everything forward-reachable from it. `megaEvoTree` was keyed by FAMILY and handed the whole list
+ * to every member, so a mega bled across sibling branches — Slowking carried Slowbro-Mega, and
+ * Gardevoir and Gallade each carried both.
+ *
+ * @param {Array} pokemonList
+ * @returns {(id: string) => string[]} mega species ids, in list order
+ */
+function megaEvosOf(pokemonList) {
+    const graph = buildEvoGraph(pokemonList);
+    const megasByBase = new Map();   // base species id → [mega id]
+    for (const poke of pokemonList) {
+        const data = poke.evolutionData;
+        if (!data || !data.isMega || !data.megaBaseForm) continue;
+        if (!megasByBase.has(data.megaBaseForm)) megasByBase.set(data.megaBaseForm, []);
+        megasByBase.get(data.megaBaseForm).push(poke.id);
+    }
+
+    return function megasFor(id) {
+        const poke = pokemonList.find(p => p.id === id);
+        if (poke && poke.evolutionData && poke.evolutionData.isMega) return [];   // a mega has none
+        return [id, ...graph.forwardReachable(id)]
+            .flatMap(reachableId => megasByBase.get(reachableId) || []);
+    };
+}
+
+module.exports = { classifyStages, bestEvoOf, megaEvosOf };

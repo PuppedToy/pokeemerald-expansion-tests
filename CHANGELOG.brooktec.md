@@ -91,6 +91,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Mega Evolutions no longer leak onto Pokémon that cannot use them.** Slowking was carrying Mega
+  Slowbro, Kleavor was carrying Mega Scizor and Froslass Mega Glalie — none of which they can become —
+  while Gardevoir and Gallade each claimed *both* of their line's megas instead of their own. A mega
+  now belongs to the Pokémon it is a mega of and to the ones that can still evolve into it, so Kirlia
+  keeps both and Slowpoke keeps Mega Slowbro, as they should. (T-281)
+
 - **A Pokémon's "best evolution" is now one it can actually reach.** Sixty Pokémon were being valued —
   and therefore placed, offered and traded — against the best member of their *family* rather than the
   best thing they can turn into. Flareon was rated as though it could become Espeon, Silcoon as though

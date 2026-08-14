@@ -64,11 +64,12 @@ function sampleAndRemove(array) {
     return element;
 }
 
-const invalidMegas = ['SPECIES_FROSLASS', 'SPECIES_KLEAVOR'];
+// T-281 — this used to carry `invalidMegas = ['SPECIES_FROSLASS', 'SPECIES_KLEAVOR']`, a hand-patch
+// for megas bleeding across sibling branches when `megaEvos` was keyed by family. `megaEvosOf` now
+// attaches a mega only to the line that can actually reach its base form, so the blocklist is gone —
+// and it covers Slowking, which the blocklist never did.
 function hasValidMega(poke) {
-    return poke.evolutionData.megaEvos
-        && poke.evolutionData.megaEvos.length > 0
-        && !invalidMegas.includes(poke.id);
+    return !!(poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length > 0);
 }
 
 // ADR-026 — the base form is the in-degree-0 ancestor in the EVOLUTION GRAPH, not `evoTree[0]`.

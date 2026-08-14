@@ -9,7 +9,7 @@ const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpand
 const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, assignSupportTiersDoubles } = require('../rating');
 const { balancePokemon, resetInheritance } = require('../rebalancer');
 const { buildEvoGraph } = require('../evoGraph');
-const { classifyStages, bestEvoOf } = require('../evoStages');
+const { classifyStages, bestEvoOf, megaEvosOf } = require('../evoStages');
 const { mutateAllMoves } = require('../moveMutator');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -343,6 +343,7 @@ async function runPokedexModule(config, baseData = null, hooks = {}) {
     // graph, not the best member of its family. Walking evoTree gave Flareon a bestEvo of Espeon and
     // Basculin-Red-Striped one of Basculegion, a mon it cannot reach at all.
     const bestReachable = bestEvoOf(allPokes);
+    const megasReachable = megaEvosOf(allPokes);
     allPokes.forEach(poke => {
         const reachable = bestReachable(poke.id);
         let bestEvo = reachable.id;
@@ -351,8 +352,12 @@ async function runPokedexModule(config, baseData = null, hooks = {}) {
         poke.rating.bestEvo       = bestEvo;
         poke.rating.bestEvoRating = bestEvoRating;
         poke.rating.bestEvoTier   = bestEvoTier;
-        if (megaEvoTree[poke.family] && !poke.evolutionData.isMega) {
-            poke.evolutionData.megaEvos = megaEvoTree[poke.family];
+        // ADR-026 — a mega attaches to the species it is a mega of and to the line that can reach it,
+        // never to a whole family. Keyed by family, Slowking carried Slowbro-Mega and Gardevoir and
+        // Gallade each carried both.
+        if (!poke.evolutionData.isMega) {
+            const reachableMegas = megasReachable(poke.id);
+            if (reachableMegas.length) poke.evolutionData.megaEvos = reachableMegas;
         }
         if (poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length) {
             let bestMegaEvo = poke.evolutionData.megaEvos[0];
