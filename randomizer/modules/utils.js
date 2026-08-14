@@ -18,8 +18,9 @@ const { activeDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
 // T-063 — cosmetic multi-form suffixes. A family named `P_FAMILY_<BASE>_<SUFFIX>` whose suffix is
 // one of these is a size/seasonal/sea/antique variant of `P_FAMILY_<BASE>` and must collapse to it,
 // so the "one obtainable per family per run" dedup treats all its forms as one. Deliberately a
-// curated SUBSET of POKE_FORMS: regional forms (ALOLA/GALAR/HISUI/PALDEA) and functional forms
-// (OWN_TEMPO/ROAMING/ARTISAN) are genuinely distinct Pokémon and stay their own families.
+// curated SUBSET of POKE_FORMS: regional forms (ALOLA/GALAR/HISUI/PALDEA) and the ARTISAN form
+// are genuinely distinct Pokémon and stay their own families. (OWN_TEMPO and ROAMING were the other
+// two functional suffixes; T-289 removed their only species, so both suffixes are gone.)
 const COSMETIC_FORM_SUFFIXES = [
     'EAST', 'SUMMER', 'AUTUMN', 'WINTER', 'SMALL', 'LARGE', 'SUPER', 'ANTIQUE',
     // T-157 — Burmy cloaks and Ogerpon masks: separate families that randomize independently (in

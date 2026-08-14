@@ -314,9 +314,7 @@ const constants = {
     POKE_FORM_SMALL: 'SMALL',
     POKE_FORM_LARGE: 'LARGE',
     POKE_FORM_SUPER: 'SUPER',
-    POKE_FORM_OWN_TEMPO: 'OWN_TEMPO',
     POKE_FORM_ANTIQUE: 'ANTIQUE',
-    POKE_FORM_ROAMING: 'ROAMING',
     POKE_FORM_ARTISAN: 'ARTISAN',
     // T-157 — Burmy cloaks (Plant is the base family) and Ogerpon masks (Teal is the base family).
     // Each becomes its own family that randomizes independently (Deerling model); they collapse back
@@ -577,9 +575,7 @@ constants.POKE_FORMS = [
     constants.POKE_FORM_SMALL,
     constants.POKE_FORM_LARGE,
     constants.POKE_FORM_SUPER,
-    constants.POKE_FORM_OWN_TEMPO,
     constants.POKE_FORM_ANTIQUE,
-    constants.POKE_FORM_ROAMING,
     constants.POKE_FORM_ARTISAN,
     constants.POKE_FORM_SANDY,
     constants.POKE_FORM_TRASH,

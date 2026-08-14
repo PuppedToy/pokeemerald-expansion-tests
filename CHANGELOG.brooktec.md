@@ -91,6 +91,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Removed
 
+- **Two duplicate Pokémon are out of the pool: Rockruff Own Tempo and Roaming Gimmighoul.** Both existed
+  only as a second way into an evolution you could already reach, and the randomizer treated each as its
+  own creature — so a single run could hand you two Rockruff, or two Gimmighoul, that looked and played the
+  same. Nothing is lost: the ordinary Rockruff still evolves into all three Lycanroc (Rare Candy for Midday,
+  Moon Stone for Midnight, Dusk Stone for Dusk), and Gholdengo is still waiting at the end of the Gimmighoul
+  you find. (T-289)
+
 - **Your Pokémon always listen to you now.** The old rule where a Pokémon above the level your Badges
   "allowed" could loaf around, turn away, fall asleep, hurt itself or use a move you never picked is gone
   for good — at any level, with any number of Badges, traded or caught, gift or starter. Every Pokémon

@@ -116,6 +116,14 @@ const REMOVED_SPECIES = [
     'SPECIES_MINIOR_CORE_BLUE',
     'SPECIES_MINIOR_CORE_INDIGO',
     'SPECIES_MINIOR_CORE_VIOLET',
+    // T-289 — two forms whose only purpose was a SECOND path into an already-reachable evolution.
+    // Each was its own dedup group, so a run could place the plain form AND the variant (two
+    // Rockruff, two Gimmighoul). Dropping them costs nothing — the plain Rockruff already branches
+    // into all three Lycanroc (candy / moon stone / dusk stone) and Gholdengo is still reachable
+    // from Gimmighoul-Chest — and it leaves Mothim as the dex's only convergent evolution, the one
+    // place ADR-026's "a convergence point inherits from all its pre-evolutions" rule fires.
+    'SPECIES_ROCKRUFF_OWN_TEMPO',
+    'SPECIES_GIMMIGHOUL_ROAMING',
     // B-040 — Mothim has no cloak forms. MOTHIM_PLANT/SANDY/TRASH are byte-identical dupes and
     // SPECIES_MOTHIM aliases MOTHIM_PLANT, so only Plant (the base Mothim) is kept; all three Burmy
     // cloaks evolve into it (Sandy/Trash stone-evo targets are remapped via EVOLUTION_TARGET_ALIASES).
