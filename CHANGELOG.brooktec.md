@@ -91,6 +91,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **The evolution level the documentation promises is the one the cartridge uses.** When several
+  Pokémon evolve into the same one — the three Burmy cloaks all becoming Mothim — each was rolled its
+  own level for the guide while the ROM could only keep one of them, so the guide could tell you level
+  18 and the game ask for 20. They now share a single level: the lowest of the rolls, so it is
+  reachable from whichever cloak you happen to have. (T-282)
+
 - **Mega Evolutions no longer leak onto Pokémon that cannot use them.** Slowking was carrying Mega
   Slowbro, Kleavor was carrying Mega Scizor and Froslass Mega Glalie — none of which they can become —
   while Gardevoir and Gallade each claimed *both* of their line's megas instead of their own. A mega
