@@ -59,4 +59,37 @@ function classifyStages(pokemonList) {
     };
 }
 
-module.exports = { classifyStages };
+/**
+ * ADR-026 — the best form a species can ACTUALLY become: the highest `rating.absoluteRating` among
+ * itself and everything forward-reachable from it. Not "the best member of my family", which is what
+ * walking `evoTree` answered and which gave Flareon a bestEvo of Espeon.
+ *
+ * @param {Array} pokemonList rated pokémon
+ * @returns {(id: string) => {id: string, rating: number, tier: string}}
+ */
+function bestEvoOf(pokemonList) {
+    const graph = buildEvoGraph(pokemonList);
+    const byId = new Map(pokemonList.map(p => [p.id, p]));
+    const ratingOf = poke => (poke && poke.rating && typeof poke.rating.absoluteRating === 'number')
+        ? poke.rating.absoluteRating : -Infinity;
+
+    return function best(id) {
+        const self = byId.get(id);
+        let bestPoke = self;
+        let bestRating = ratingOf(self);
+        for (const reachableId of graph.forwardReachable(id)) {
+            const candidate = byId.get(reachableId);
+            if (ratingOf(candidate) > bestRating) {
+                bestPoke = candidate;
+                bestRating = ratingOf(candidate);
+            }
+        }
+        return {
+            id: bestPoke ? bestPoke.id : id,
+            rating: bestRating === -Infinity ? 0 : bestRating,
+            tier: bestPoke && bestPoke.rating ? bestPoke.rating.tier : undefined,
+        };
+    };
+}
+
+module.exports = { classifyStages, bestEvoOf };

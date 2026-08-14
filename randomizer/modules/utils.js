@@ -14,6 +14,7 @@ const {
     DEFAULT_EVOLUTION_LEVEL,
 } = require('../constants');
 const { activeDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
+const { buildEvoGraph } = require('../evoGraph');
 
 // T-063 — cosmetic multi-form suffixes. A family named `P_FAMILY_<BASE>_<SUFFIX>` whose suffix is
 // one of these is a size/seasonal/sea/antique variant of `P_FAMILY_<BASE>` and must collapse to it,
@@ -70,19 +71,26 @@ function hasValidMega(poke) {
         && !invalidMegas.includes(poke.id);
 }
 
+// ADR-026 — the base form is the in-degree-0 ancestor in the EVOLUTION GRAPH, not `evoTree[0]`.
+// Reading it off the family tree returned a base from the wrong line whenever the family string and
+// the graph disagreed: `devolveToBase(Perrserker)` gave Meowth, so a reward that hands out "the base
+// form of Perrserker" handed out a Meowth that can never become one. Eight species were affected.
+// The graph is memoised per list so the loops that call this stay cheap.
+const graphCache = new WeakMap();
+function graphFor(pokemonList) {
+    if (!graphCache.has(pokemonList)) graphCache.set(pokemonList, buildEvoGraph(pokemonList));
+    return graphCache.get(pokemonList);
+}
+
 function devolveToBase(pokemonList, pokemon) {
-    if (
-        pokemon.evolutionData.type === EVO_TYPE_SOLO
-        || pokemon.evolutionData.isLC
-        || !pokemon.evoTree?.length
-    ) {
-        return pokemon;
-    }
     if (pokemon.evolutionData.megaBaseForm) {
-        return devolveToBase(pokemonList, pokemonList.find(p => p.id === pokemon.evolutionData.megaBaseForm));
+        const base = pokemonList.find(p => p.id === pokemon.evolutionData.megaBaseForm);
+        return base ? devolveToBase(pokemonList, base) : pokemon;
     }
-    const baseForm = pokemon.evoTree[0];
-    return pokemonList.find(p => p.id === baseForm);
+    // Several bases means a convergence point (only Mothim); the first is the canonical one.
+    const [baseId] = graphFor(pokemonList).baseFormsOf(pokemon.id);
+    if (!baseId || baseId === pokemon.id) return pokemon;
+    return pokemonList.find(p => p.id === baseId) || pokemon;
 }
 
 // B-067 — the level at which an evolution becomes reachable. A LEVEL evolution carries it in `param`;

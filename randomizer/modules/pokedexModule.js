@@ -9,7 +9,7 @@ const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpand
 const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, assignSupportTiersDoubles } = require('../rating');
 const { balancePokemon, resetInheritance } = require('../rebalancer');
 const { buildEvoGraph } = require('../evoGraph');
-const { classifyStages } = require('../evoStages');
+const { classifyStages, bestEvoOf } = require('../evoStages');
 const { mutateAllMoves } = require('../moveMutator');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -339,19 +339,15 @@ async function runPokedexModule(config, baseData = null, hooks = {}) {
     }
 
     // 10. Best-evo / mega-evo ratings
+    // ADR-026 — bestEvo is what a mon can ACTUALLY become: forward reachability in the evolution
+    // graph, not the best member of its family. Walking evoTree gave Flareon a bestEvo of Espeon and
+    // Basculin-Red-Striped one of Basculegion, a mon it cannot reach at all.
+    const bestReachable = bestEvoOf(allPokes);
     allPokes.forEach(poke => {
-        let bestEvo = poke.id;
-        let bestEvoRating = poke.rating.absoluteRating;
-        let bestEvoTier   = poke.rating.tier;
-        (poke.evoTree || []).forEach(evoStage => {
-            const candidates = Array.isArray(evoStage) ? evoStage : [evoStage];
-            candidates.forEach(evo => {
-                const evoPoke = allPokes.find(p => p.id === evo);
-                if (evoPoke && evoPoke.rating.absoluteRating > bestEvoRating) {
-                    bestEvo = evoPoke.id; bestEvoRating = evoPoke.rating.absoluteRating; bestEvoTier = evoPoke.rating.tier;
-                }
-            });
-        });
+        const reachable = bestReachable(poke.id);
+        let bestEvo = reachable.id;
+        let bestEvoRating = reachable.rating;
+        let bestEvoTier   = reachable.tier !== undefined ? reachable.tier : poke.rating.tier;
         poke.rating.bestEvo       = bestEvo;
         poke.rating.bestEvoRating = bestEvoRating;
         poke.rating.bestEvoTier   = bestEvoTier;

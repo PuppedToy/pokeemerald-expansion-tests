@@ -281,4 +281,5 @@
 | [T-277](T-277-evolution-and-form-family-model.md) | Audit and fix how evolution lines, forms and mutation inheritance are keyed | in-progress | 0.9.0 | 2026-08-14 |
 | [T-278](T-278-inheritance-by-evolution-edge.md) | Inherit mutations along the evolution edge, not the family string | in-progress | 0.9.0 | 2026-08-14 |
 | [T-279](T-279-stage-classification-from-the-graph.md) | Classify evolution stages from the graph instead of the family tree index | in-progress | 0.9.0 | 2026-08-14 |
+| [T-280](T-280-best-evo-by-reachability.md) | Derive bestEvo and devolveToBase from reachability, not from the family tree | in-progress | 0.9.0 | 2026-08-14 |
 | [T-289](T-289-remove-duplicate-path-forms.md) | Remove Rockruff-Own-Tempo and Gimmighoul-Roaming from the obtainable pool | in-progress | 0.9.0 | 2026-08-14 |

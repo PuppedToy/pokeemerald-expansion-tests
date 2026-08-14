@@ -91,6 +91,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **A Pokémon's "best evolution" is now one it can actually reach.** Sixty Pokémon were being valued —
+  and therefore placed, offered and traded — against the best member of their *family* rather than the
+  best thing they can turn into. Flareon was rated as though it could become Espeon, Silcoon as though
+  it could become Dustox, Poliwrath as though it could become Politoed, and Basculin's red stripe as
+  though it could become Basculegion, which it cannot do at all. Wurmple still sees the best of all
+  four ends of its line, because it genuinely reaches them; Silcoon now sees only Beautifly. The same
+  fix reaches rewards that hand you "the first form" of a Pokémon: asking for Perrserker's used to
+  give you an ordinary Meowth, which can never become one. (T-280)
+
 - **Nineteen Pokémon were filed at the wrong point in their evolution line, and are not any more.**
   Cursola, Sirfetch'd, Galarian Weezing and Overqwil were all treated as Pokémon that neither evolve nor
   come from anything — so a run could hand you one straight out of the grass as if it were a Pokémon you
