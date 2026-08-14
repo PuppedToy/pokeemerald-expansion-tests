@@ -9,6 +9,7 @@ const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpand
 const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, assignSupportTiersDoubles } = require('../rating');
 const { balancePokemon, resetInheritance } = require('../rebalancer');
 const { buildEvoGraph } = require('../evoGraph');
+const { classifyStages } = require('../evoStages');
 const { mutateAllMoves } = require('../moveMutator');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -89,16 +90,23 @@ async function parseBaseData() {
     const megaEvoTree = {};
     const allPokes = [];
 
+    // T-279 — parse every gen FIRST, then classify. A species' stage is a property of the whole
+    // evolution graph (its degree, and the longest path through it), so it cannot be decided while
+    // later gens are still unparsed.
+    const rawPokes = [];
     for (let gen = 1; gen <= TOTAL_GENS; gen++) {
         const genSpeciesFilePath = path.resolve(SPECIES_DIR, `gen_${gen}_families.h`);
         const genSpeciesFileText = await fs.readFile(genSpeciesFilePath, 'utf-8');
-        const parsedPokes = parser.parseSpeciesFile(genSpeciesFileText, definitions, evoTree);
+        rawPokes.push(...parser.parseSpeciesFile(genSpeciesFileText, definitions, evoTree));
+    }
 
-        parsedPokes.forEach(poke => {
+    {
+        const stageOf = classifyStages(rawPokes);
+        rawPokes.forEach(poke => {
             const learnset   = (poke.levelUpLearnset  && levelUpLearnsets[poke.levelUpLearnset])  ? levelUpLearnsets[poke.levelUpLearnset]  : [];
             const teachables = (poke.teachableLearnset && TMTeachables[poke.teachableLearnset]) ? TMTeachables[poke.teachableLearnset] : [];
 
-            const evolutionType = parser.getEvolutionType(poke, evoTree);
+            const evolutionType = stageOf(poke.id);
             const isMega = evolutionType === EVO_TYPE_MEGA;
             let megaBaseForm, megaItem;
             if (isMega) {
