@@ -3,7 +3,7 @@
 // T-157 — Burmy and Ogerpon on the Deerling multi-form model: each catchable form is its own family
 // (so forms randomize independently), but they collapse to one family group for the "one obtainable per
 // family per run" dedup (one in the wild; a trainer holds at most one). Their form suffixes therefore
-// go in BOTH POKE_FORMS (parser split) and COSMETIC_FORM_SUFFIXES (getFamilyGroup collapse). Ogerpon's
+// go in POKE_FORMS, which drives BOTH the parser split and the getFamilyGroup collapse (G1). Ogerpon's
 // battle-only `_TERA` forms are dropped.
 
 const { POKE_FORMS } = require('../../constants');

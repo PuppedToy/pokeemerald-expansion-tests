@@ -16,19 +16,21 @@ const {
 const { activeDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
 const { buildEvoGraph } = require('../evoGraph');
 
-// T-063 — cosmetic multi-form suffixes. A family named `P_FAMILY_<BASE>_<SUFFIX>` whose suffix is
-// one of these is a size/seasonal/sea/antique variant of `P_FAMILY_<BASE>` and must collapse to it,
-// so the "one obtainable per family per run" dedup treats all its forms as one. Deliberately a
-// curated SUBSET of POKE_FORMS: regional forms (ALOLA/GALAR/HISUI/PALDEA) and the ARTISAN form
-// are genuinely distinct Pokémon and stay their own families. (OWN_TEMPO and ROAMING were the other
-// two functional suffixes; T-289 removed their only species, so both suffixes are gone.)
-const COSMETIC_FORM_SUFFIXES = [
-    'EAST', 'SUMMER', 'AUTUMN', 'WINTER', 'SMALL', 'LARGE', 'SUPER', 'ANTIQUE',
-    // T-157 — Burmy cloaks and Ogerpon masks: separate families that randomize independently (in
-    // POKE_FORMS) but collapse here so the "one obtainable per family per run" dedup treats all
-    // cloaks/masks as one (one in the wild; a trainer holds at most one, though it may be any form).
-    'SANDY', 'TRASH', 'WELLSPRING', 'HEARTHFLAME', 'CORNERSTONE',
-];
+// G1 (ADR-026) — dedup is per SUPERFAMILY: the player may obtain one member of a dev block
+// (`#if P_FAMILY_x`) per run, whatever that block splits into. So a family named
+// `P_FAMILY_<BLOCK>_<SUFFIX>` collapses to `P_FAMILY_<BLOCK>` for **every** suffix the parser can
+// append, not a curated subset.
+//
+// This supersedes T-063 decision #1. That list was deliberately a SUBSET of POKE_FORMS — regional
+// forms were held out as "genuinely different Pokémon" and so kept their own obtainable slot, which
+// is how one run could offer Meowth-Alola and Meowth-Galar together. They ARE different Pokémon, and
+// they still are: T-278 keeps them as separate families that inherit nothing from each other. Being
+// a different Pokémon and being worth a second slot in the same run are simply different questions,
+// and the owner answered the second one with a single invariant rule.
+//
+// Deriving from POKE_FORMS rather than restating it means a new form suffix can never silently
+// escape the dedup again.
+const { POKE_FORMS } = require('../constants');
 
 // Explicit overrides (win over the suffix strip) for any family that can't be derived by stripping.
 const groupedFamilies = {
@@ -41,7 +43,7 @@ const groupedFamilies = {
 
 function getFamilyGroup(familyId) {
     if (groupedFamilies[familyId]) return groupedFamilies[familyId];
-    for (const suffix of COSMETIC_FORM_SUFFIXES) {
+    for (const suffix of POKE_FORMS) {
         if (familyId.endsWith('_' + suffix)) return familyId.slice(0, -(suffix.length + 1));
     }
     return familyId;

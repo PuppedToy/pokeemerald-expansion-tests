@@ -318,7 +318,8 @@ const constants = {
     POKE_FORM_ARTISAN: 'ARTISAN',
     // T-157 — Burmy cloaks (Plant is the base family) and Ogerpon masks (Teal is the base family).
     // Each becomes its own family that randomizes independently (Deerling model); they collapse back
-    // to the base for wild/trainer dedup via COSMETIC_FORM_SUFFIXES in modules/utils.js.
+    // to the base for wild/trainer dedup by getFamilyGroup in modules/utils.js, which strips every
+    // suffix in this list (G1, ADR-026).
     POKE_FORM_SANDY: 'SANDY',
     POKE_FORM_TRASH: 'TRASH',
     POKE_FORM_WELLSPRING: 'WELLSPRING',

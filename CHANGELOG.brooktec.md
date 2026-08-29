@@ -91,6 +91,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **One Pokémon per family per run now really means one.** A run could hand you an ordinary Meowth, an
+  Alolan Meowth *and* a Galarian one, because each regional line counted as its own separate prize.
+  They are still three different Pokémon — with their own stats, their own changes and their own
+  evolutions — but a single run now offers you one of them, the same way it has always offered you one
+  Pumpkaboo rather than four. Same for every other regional line, and for Koffing, which gives you
+  Weezing or Galarian Weezing but never both. (T-285)
+
 - **Terapagos is judged on what it can actually do here, and you can now be given the one you can
   catch.** Its ability Terastallizes the Pokémon on entry — except Terastallization does not exist in
   this game, so the ability does nothing while still being scored as one of the best in the dex, which
