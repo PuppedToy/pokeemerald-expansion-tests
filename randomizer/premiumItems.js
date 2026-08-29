@@ -23,7 +23,7 @@
  */
 
 const rng = require('./rng');
-const { TIER_AG } = require('./constants');
+const { TIER_AG, MEGA_TRAINERS } = require('./constants');
 
 /**
  * A `choices` entry is a group: the run takes ONE of them (O9). Everything else is a single item.
@@ -107,4 +107,66 @@ function selectPremiumItems(pokedex, obtainable) {
     return shuffle(picked);
 }
 
-module.exports = { PREMIUM_ITEMS, selectPremiumItems };
+/**
+ * Rule 1 — the last mega-stone batch, the one unlocked by defeating May. The owner named its five
+ * trainers: Violet, Jacki, Fredrick, Davis and Jonas, i.e. `MEGA_TRAINERS` ids 17–21. Nothing in the
+ * sources records the batch, so it is stated here once rather than inferred from trainer levels.
+ */
+const PREMIUM_ITEM_TRAINERS = ['17', '18', '19', '20', '21'];
+
+/**
+ * Rule 7 — which of the last batch's trainers hands out which premium item.
+ *
+ * `assignMegaStones` runs first and is never disturbed: premium items take only the last-batch slots
+ * it left empty, and when every slot holds a mega stone nothing is placed. `picks` arrives already
+ * shuffled by `selectPremiumItems`, so truncating from the front is fair.
+ *
+ * Lives beside the mega assignment for the reason that module exists (B-062): this rule crosses a JSON
+ * boundary into the writer, the injector and the docs, and three re-derivations of one rule is exactly
+ * how the documentation and the ROM came to disagree.
+ *
+ * @param {Array}  picks                   from `selectPremiumItems`
+ * @param {{assigned: Map}} megaAssignment from `assignMegaStones`
+ * @returns {Map<string, {item: string, base: string, form: string}>} MEGA_TRAINERS id → pick
+ */
+function assignPremiumItems(picks, megaAssignment) {
+    const taken = (megaAssignment && megaAssignment.assigned) || new Map();
+    const freeSlots = PREMIUM_ITEM_TRAINERS.filter(id => !taken.has(id));
+    const queue = [...(picks || [])];
+    const out = new Map();
+    for (const slot of freeSlots) {
+        if (!queue.length) break;
+        out.set(slot, queue.shift());
+    }
+    return out;
+}
+
+/**
+ * Rules 3, 4 and 5 — which premium item a trainer's team carries, and on which member.
+ *
+ * The caller decides who is eligible (rule 3: the Elite Four and the Champion). This decides the rest:
+ * the item must be one the run actually placed, the team must field its base form, and it goes on a
+ * mon that is not already carrying something — a premium item is EXTRA (rule 4), so it never displaces
+ * a mega stone or a held item, it simply goes elsewhere or not at all.
+ *
+ * One per trainer: the first eligible pairing in team order, which keeps every output path agreeing.
+ *
+ * @param {Array}  team    the trainer's mons, each `{ species, item?, megaStone? }`
+ * @param {Array}  placed  the picks this run placed (`assignPremiumItems`' values)
+ * @returns {{monIndex: number, item: string, base: string, form: string}|null}
+ */
+function equipPremiumItem(team, placed) {
+    if (!Array.isArray(team) || !team.length || !Array.isArray(placed) || !placed.length) return null;
+    for (let monIndex = 0; monIndex < team.length; monIndex++) {
+        const mon = team[monIndex];
+        if (!mon || mon.item || mon.megaStone) continue;   // rule 4 — extra, never a replacement
+        const pick = placed.find(candidate => candidate.base === mon.species);   // rule 5
+        if (pick) return { monIndex, item: pick.item, base: pick.base, form: pick.form };
+    }
+    return null;
+}
+
+module.exports = {
+    PREMIUM_ITEMS, selectPremiumItems, assignPremiumItems, equipPremiumItem,
+    PREMIUM_ITEM_TRAINERS, MEGA_TRAINERS,
+};
