@@ -55,7 +55,7 @@ Acceptance criteria:
       drive per run; deterministic per seed; random order.
 - [x] B: primal forms are rated and placed as standard Pokémon.
 - [ ] C: placed in the last batch only, E4/Champion only, alongside a mega stone, equipped only with
-      the base form, mega stones first when slots run short.
+      the base form, mega stones first when slots run short. **BLOCKED — see below.**
 - [ ] `cd randomizer && npm test` green.
 - [ ] `CHANGELOG.brooktec.md` line added.
 - [ ] Owner manually tests a built ROM and confirms.
@@ -85,5 +85,23 @@ Acceptance criteria:
   Spec change to `__tests__/unit/stageClassification.test.js`: its "megas keep their own type" table
   listed `SPECIES_KYOGRE_PRIMAL`. Replaced with an explicit assertion of the new rule rather than
   quietly dropping the row. Full suite green: 2735 passed.
+
+- **2026-08-14** — Layer C **blocked on a fact that is not in the codebase**, raised as **O10**.
+  Rule 1 says the premium items appear "only in the last mega-stone batch — the one unlocked by
+  defeating May". There is no May gate anywhere in the randomizer: `MEGA_TRAINERS` is a flat list of 21
+  entries (`constants.js:386`) with no batch metadata, and `assignMegaStones` decides purely by
+  comparing a trainer's level to the level a mega becomes reachable at. Nothing records which of the 21
+  sit behind May.
+  Proceeding on a guess would put the items in the wrong part of the game, and item placement across
+  the writer, the injector and the docs is the exact surface B-062 came from — three copies of one rule
+  either side of a JSON boundary, which is why `megaAssignment.js` exists at all. Stopping here rather
+  than adding a fourth copy built on an assumption.
+  What layer C needs once O10 is answered, all of it downstream of `premiumItems.selectPremiumItems`:
+  · the batch predicate, expressed once, next to `assignMegaStones`;
+  · an E4/Champion bag slot that is not `TRAINER_POKE_MEGA_FROM_STONE` (rule 4 — carried as well as the
+    real mega stone, so it cannot reuse the `ITEM_MEGA_NN` slot mechanism);
+  · the equip condition (rule 5) in `modules/trainerSelector.js`, where the mega special already lives;
+  · surfacing in `writer.js`, `injector/modules/megaMapItems.js` and `writerDocs.js` — through one
+    shared rule, as `megaAssignment` does, never re-derived per path.
 
 ## Outcome

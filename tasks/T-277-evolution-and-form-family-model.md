@@ -69,13 +69,13 @@ inheritance keeps the existing single-pass loop — no reordering, minimal RNG-s
 | 5 | T-282 — converging evolution levels collapse to one gate | 7 | **done** | — |
 | 6 | T-292 — Terastal abilities rate 0; Terapagos placeable form fixed | — | **done** | — |
 | 7 | ~~T-293~~ — ban the battle-only placeables | — | **absorbed into T-292** | — |
-| 8 | T-283 — macro-defined species: their mutations must reach the ROM | 8 | todo | — |
-| 9 | T-284 — one family = one evolution component + curated form sets | 1, 2 | todo | T-278…T-281 |
-| 10 | T-285 — dedup: one obtainable per superfamily (G1) | 11 | todo | T-284 |
-| 11 | T-291 — remove the cosmetic duplicate species from the game | (new) | todo | — |
-| 12 | T-286 — Meltan → Melmetal, one real line and one family | 9 | todo | T-284 |
-| 13 | T-287 — Mothim: the three Burmy cloaks converge on one real Mothim | 3 | todo | T-284 |
-| 14 | T-290 — premium transformation items | (new) | todo | T-281, T-283 |
+| 8 | T-283 — macro-shared species: their mutations must reach the ROM | 8 | **done** | — |
+| 9 | T-284 — family names the component; the chain comes from the graph | 1, 2 | **done** | T-278…T-281 |
+| 10 | T-285 — dedup: one obtainable per superfamily (G1) | 11 | **done** | T-284 |
+| 11 | T-291 — remove the cosmetic duplicate species from the game | (new) | **done** | — |
+| 12 | T-286 — Meltan → Melmetal, one real line and one family | 9 | **done** | T-284 |
+| 13 | T-287 — Mothim: the three Burmy cloaks converge on one real Mothim | 3 | **done** | T-284 |
+| 14 | T-290 — premium transformation items | (new) | **layers A+B done, C blocked on O10** | T-281, T-283 |
 | 15 | T-288 — model docs + fresh golden-master baseline | — | todo | all |
 
 T-282 and T-283 are independent of the graph work and can run in parallel. T-283, T-286 and T-287
