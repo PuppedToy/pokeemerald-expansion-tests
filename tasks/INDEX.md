@@ -289,6 +289,7 @@
 | [T-285](T-285-dedup-per-superfamily.md) | Dedup per superfamily — one obtainable per dev block per run (G1) | in-progress | 0.9.0 | 2026-08-14 |
 | [T-286](T-286-meltan-melmetal-line.md) | Give Meltan an evolution into Melmetal | in-progress | 0.9.0 | 2026-08-14 |
 | [T-287](T-287-burmy-cloaks-converge-on-one-mothim.md) | Point all three Burmy cloaks at the one Mothim, in the source | in-progress | 0.9.0 | 2026-08-14 |
+| [T-288](T-288-model-docs-and-baseline.md) | Document the shipped family model and capture a fresh golden-master baseline | in-progress | 0.9.0 | 2026-08-14 |
 | [T-289](T-289-remove-duplicate-path-forms.md) | Remove Rockruff-Own-Tempo and Gimmighoul-Roaming from the obtainable pool | in-progress | 0.9.0 | 2026-08-14 |
 | [T-290](T-290-premium-transformation-items.md) | Premium transformation items — a tier of their own alongside mega stones | in-progress | 0.9.0 | 2026-08-14 |
 | [T-291](T-291-remove-cosmetic-duplicates.md) | Remove the cosmetic duplicate forms from the game | in-progress | 0.9.0 | 2026-08-14 |

@@ -306,3 +306,61 @@ forms are obtainable **only** the way a mega stone is: through the item, in the 
 
 No open items remain. The ruleset above is complete; ADR-026 records the model and the 15 child tasks
 implement it.
+
+---
+
+## Where each concern lives now (T-277, shipped)
+
+ADR-026's three concerns, and the module that owns each. Nothing outside these reads `poke.family` to
+decide behaviour any more.
+
+| Concern | Owner | Rule |
+|---|---|---|
+| The evolution graph | `randomizer/evoGraph.js` | edges from `evolutions[]`; parents, children, degree, reachability, base forms. Ignores targets filtered out of the run; terminates on cycles |
+| Mutation inheritance | `randomizer/rebalancer.js` | keyed by **species**: a mon replays each direct parent's full log and nothing else. Several parents stack (D0). A parent's stored log already holds what it inherited, so a line stays cumulative with no ancestor walk |
+| Stage classification | `randomizer/evoStages.js` `classifyStages` | in/out-degree; the `_OF_2` / `_OF_3` half is the longest path through the mon |
+| Best evolution | `evoStages.bestEvoOf` | forward reachability — what it can actually become |
+| Base form | `modules/utils.devolveToBase` | the in-degree-0 ancestor, memoised per list |
+| Mega attachment | `evoStages.megaEvosOf` | the megas of the species plus of everything forward-reachable. No blocklist |
+| Family label | `evoStages.componentFamilyOf` | the family of the component's **base form**. A label only |
+| Evolution chain (docs) | `evoStages.evoChainOf` | the chain from the species' own base forms forward |
+| Dedup (G1) | `modules/utils.getFamilyGroup` | strips **every** suffix in `POKE_FORMS` to reach the dev block. Derived from that list, never a curated subset |
+| Converging gate levels | `evoLevelWriter.collapseConvergentGates` | one level per target, the lowest rolled |
+| Premium items | `randomizer/premiumItems.js` | catalogue, per-run selection, slot assignment, equip rule |
+
+### Why the base form and not the component root
+
+`componentFamilyOf` names a family after its **base form**, not after the component. That is what makes
+the Burmy exception free: the three cloaks converge on one Mothim, so a connected component would merge
+them and T-157's independent randomization would die — but each cloak is its own base and keeps its own
+family. The curated "keep separate despite convergence" list ADR-026 anticipated turned out to need no
+entries at all.
+
+### Things that stopped existing
+
+- `EVOLUTION_TARGET_ALIASES` (parser) — the Burmy cloaks name the real Mothim in the source (T-287).
+- `invalidMegas` (utils) — reachability covers it, including Slowking, which the blocklist never did.
+- `COSMETIC_FORM_SUFFIXES` (utils) — G1 strips every suffix, so a new form cannot escape the dedup.
+- `resetFamilyTracking` — now `resetInheritance`, with the old name kept as an alias for B-069's test.
+
+### Premium transformation items — as built
+
+`premiumItems.js` owns four things, each a rule from the ruleset above:
+
+- **the catalogue** — nine entries, seven single items plus two groups (one Ogerpon mask and one
+  Genesect Drive per run, O9);
+- **`selectPremiumItems`** — rule 2 (the base must be obtainable) and rule 6 (an **AG form**, not an AG
+  base, withholds its item). A group's choices are filtered by rule 6 *before* the draw, so a run with
+  two AG masks always gets the third. Returns a shuffled list so rule 7 can truncate fairly;
+- **`assignPremiumItems`** — rules 1 and 7. The post-May batch is `MEGA_TRAINERS` ids **17–21**
+  (Violet, Jacki, Fredrick, Davis, Jonas), stated explicitly because nothing in the sources records it.
+  Premium items take only the last-batch slots the mega stones left empty;
+- **`equipPremiumItem`** — rules 3, 4 and 5. Rule 4 ("extra, not the mega") decides the target: the item
+  never displaces a mega stone or a held item, it goes on another mon or not at all.
+
+A primal form is **not** a mega (`evoStages` no longer matches `_PRIMAL`): it is reached by holding an
+item, exactly like Zacian-Crowned, which was never a mega only because its id lacks the suffix.
+
+**Still to wire (T-290 C2):** surfacing that assignment in `writer.js`,
+`injector/modules/megaMapItems.js` and `writerDocs.js` — through the one shared rule, as
+`megaAssignment.js` does, never re-derived per path.
