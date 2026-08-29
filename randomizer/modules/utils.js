@@ -14,19 +14,23 @@ const {
     DEFAULT_EVOLUTION_LEVEL,
 } = require('../constants');
 const { activeDiagnostics, DIAGNOSTIC_CODES } = require('../diagnostics');
+const { buildEvoGraph } = require('../evoGraph');
 
-// T-063 — cosmetic multi-form suffixes. A family named `P_FAMILY_<BASE>_<SUFFIX>` whose suffix is
-// one of these is a size/seasonal/sea/antique variant of `P_FAMILY_<BASE>` and must collapse to it,
-// so the "one obtainable per family per run" dedup treats all its forms as one. Deliberately a
-// curated SUBSET of POKE_FORMS: regional forms (ALOLA/GALAR/HISUI/PALDEA) and functional forms
-// (OWN_TEMPO/ROAMING/ARTISAN) are genuinely distinct Pokémon and stay their own families.
-const COSMETIC_FORM_SUFFIXES = [
-    'EAST', 'SUMMER', 'AUTUMN', 'WINTER', 'SMALL', 'LARGE', 'SUPER', 'ANTIQUE',
-    // T-157 — Burmy cloaks and Ogerpon masks: separate families that randomize independently (in
-    // POKE_FORMS) but collapse here so the "one obtainable per family per run" dedup treats all
-    // cloaks/masks as one (one in the wild; a trainer holds at most one, though it may be any form).
-    'SANDY', 'TRASH', 'WELLSPRING', 'HEARTHFLAME', 'CORNERSTONE',
-];
+// G1 (ADR-026) — dedup is per SUPERFAMILY: the player may obtain one member of a dev block
+// (`#if P_FAMILY_x`) per run, whatever that block splits into. So a family named
+// `P_FAMILY_<BLOCK>_<SUFFIX>` collapses to `P_FAMILY_<BLOCK>` for **every** suffix the parser can
+// append, not a curated subset.
+//
+// This supersedes T-063 decision #1. That list was deliberately a SUBSET of POKE_FORMS — regional
+// forms were held out as "genuinely different Pokémon" and so kept their own obtainable slot, which
+// is how one run could offer Meowth-Alola and Meowth-Galar together. They ARE different Pokémon, and
+// they still are: T-278 keeps them as separate families that inherit nothing from each other. Being
+// a different Pokémon and being worth a second slot in the same run are simply different questions,
+// and the owner answered the second one with a single invariant rule.
+//
+// Deriving from POKE_FORMS rather than restating it means a new form suffix can never silently
+// escape the dedup again.
+const { POKE_FORMS } = require('../constants');
 
 // Explicit overrides (win over the suffix strip) for any family that can't be derived by stripping.
 const groupedFamilies = {
@@ -39,7 +43,7 @@ const groupedFamilies = {
 
 function getFamilyGroup(familyId) {
     if (groupedFamilies[familyId]) return groupedFamilies[familyId];
-    for (const suffix of COSMETIC_FORM_SUFFIXES) {
+    for (const suffix of POKE_FORMS) {
         if (familyId.endsWith('_' + suffix)) return familyId.slice(0, -(suffix.length + 1));
     }
     return familyId;
@@ -62,26 +66,34 @@ function sampleAndRemove(array) {
     return element;
 }
 
-const invalidMegas = ['SPECIES_FROSLASS', 'SPECIES_KLEAVOR'];
+// T-281 — this used to carry `invalidMegas = ['SPECIES_FROSLASS', 'SPECIES_KLEAVOR']`, a hand-patch
+// for megas bleeding across sibling branches when `megaEvos` was keyed by family. `megaEvosOf` now
+// attaches a mega only to the line that can actually reach its base form, so the blocklist is gone —
+// and it covers Slowking, which the blocklist never did.
 function hasValidMega(poke) {
-    return poke.evolutionData.megaEvos
-        && poke.evolutionData.megaEvos.length > 0
-        && !invalidMegas.includes(poke.id);
+    return !!(poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length > 0);
+}
+
+// ADR-026 — the base form is the in-degree-0 ancestor in the EVOLUTION GRAPH, not `evoTree[0]`.
+// Reading it off the family tree returned a base from the wrong line whenever the family string and
+// the graph disagreed: `devolveToBase(Perrserker)` gave Meowth, so a reward that hands out "the base
+// form of Perrserker" handed out a Meowth that can never become one. Eight species were affected.
+// The graph is memoised per list so the loops that call this stay cheap.
+const graphCache = new WeakMap();
+function graphFor(pokemonList) {
+    if (!graphCache.has(pokemonList)) graphCache.set(pokemonList, buildEvoGraph(pokemonList));
+    return graphCache.get(pokemonList);
 }
 
 function devolveToBase(pokemonList, pokemon) {
-    if (
-        pokemon.evolutionData.type === EVO_TYPE_SOLO
-        || pokemon.evolutionData.isLC
-        || !pokemon.evoTree?.length
-    ) {
-        return pokemon;
-    }
     if (pokemon.evolutionData.megaBaseForm) {
-        return devolveToBase(pokemonList, pokemonList.find(p => p.id === pokemon.evolutionData.megaBaseForm));
+        const base = pokemonList.find(p => p.id === pokemon.evolutionData.megaBaseForm);
+        return base ? devolveToBase(pokemonList, base) : pokemon;
     }
-    const baseForm = pokemon.evoTree[0];
-    return pokemonList.find(p => p.id === baseForm);
+    // Several bases means a convergence point (only Mothim); the first is the canonical one.
+    const [baseId] = graphFor(pokemonList).baseFormsOf(pokemon.id);
+    if (!baseId || baseId === pokemon.id) return pokemon;
+    return pokemonList.find(p => p.id === baseId) || pokemon;
 }
 
 // B-067 — the level at which an evolution becomes reachable. A LEVEL evolution carries it in `param`;

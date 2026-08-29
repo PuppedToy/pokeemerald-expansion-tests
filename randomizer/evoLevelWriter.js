@@ -188,6 +188,16 @@ function applyEvoLevels(pokemonList, evoConfig = {}, { stoneUnlockLevel = null }
         }
     }
 
+    // T-282 — a converging evolution must gate at ONE level. The maps below are keyed by TARGET
+    // species, and both the text writer and the injector apply them by target across every entry that
+    // points at it, so the ROM can only ever hold one gate per target. Rolling per holder therefore
+    // produced a docs promise the cartridge could not keep (Burmy-Plant's Mothim read 18 in the docs
+    // and 20 in the ROM — the same class of defect as B-062).
+    //
+    // Collapse to the LOWEST roll, so the gate is reachable from whichever pre-evolution the player
+    // actually has. Consumes no RNG: the rolls already happened, this only agrees on one of them.
+    collapseConvergentGates(pokemonList, levelMap, stoneMap);
+
     // B-067 — a stone evolution needs a stone, and every stone arrives at once from the Rustboro rival
     // (see bossCaps.EVOLUTION_STONES_UNLOCK_FLAG). So the real requirement is max(unlock, rolled gate).
     // Applied LAST so the stage-gap safeguard above cannot push a gate back under the floor, and it
@@ -207,6 +217,37 @@ function applyEvoLevels(pokemonList, evoConfig = {}, { stoneUnlockLevel = null }
     }
 
     return { levelMap, stoneMap };
+}
+
+
+/**
+ * T-282 — force every evolution entry pointing at the same target to share one gate: the lowest of
+ * the levels rolled for it. Mutates the entries and the maps in place; draws no RNG.
+ *
+ * A target with a single pre-evolution is left exactly as it was, so this is a no-op for all but the
+ * dex's convergence points (only Mothim, after T-289).
+ */
+function collapseConvergentGates(pokemonList, levelMap, stoneMap) {
+    const entriesByTarget = new Map();   // target id → [evo entry]
+    for (const pokemon of pokemonList) {
+        for (const evo of pokemon.evolutions || []) {
+            if (evo.method !== 'LEVEL' && evo.method !== 'ITEM') continue;
+            if (!entriesByTarget.has(evo.pokemon)) entriesByTarget.set(evo.pokemon, []);
+            entriesByTarget.get(evo.pokemon).push(evo);
+        }
+    }
+    for (const [target, entries] of entriesByTarget) {
+        if (entries.length < 2) continue;
+        const levels = entries
+            .map(evo => parseInt(evo.method === 'LEVEL' ? evo.param : evo.minLevel, 10))
+            .filter(Number.isFinite);
+        if (!levels.length) continue;
+        const shared = Math.min(...levels);
+        for (const evo of entries) {
+            if (evo.method === 'LEVEL') { evo.param = String(shared); levelMap.set(target, shared); }
+            else { evo.minLevel = String(shared); stoneMap.set(target, shared); }
+        }
+    }
 }
 
 /**
@@ -327,6 +368,7 @@ async function writeEvoLevels(pokemonList, { recompute = true, evoConfig = {}, s
 
 module.exports = {
     applyEvoLevels,
+    collapseConvergentGates,   // T-282 — exported for unit testing
     writeEvoLevels,
     buildEvoLevelMapFromParams,
     patchEvoLevelInContent,

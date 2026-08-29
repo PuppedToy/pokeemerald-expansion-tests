@@ -20,7 +20,7 @@ jest.mock('../../rating', () => ({
     wishiwashiEffectivePoke: jest.fn((p) => p),
     palafinEffectivePoke: jest.fn((p) => p),
 }));
-jest.mock('../../rebalancer', () => ({ balancePokemon: jest.fn((p) => p), resetFamilyTracking: jest.fn() }));
+jest.mock('../../rebalancer', () => ({ balancePokemon: jest.fn((p) => p), resetInheritance: jest.fn() }));
 jest.mock('../../teachableExpander', () => ({ expandAllTeachables: jest.fn(), buildTmPoolFromFile: jest.fn(async () => new Set()) }));
 jest.mock('../../tmRandomizer', () => ({
     randomizeTMs: jest.fn(async () => []),

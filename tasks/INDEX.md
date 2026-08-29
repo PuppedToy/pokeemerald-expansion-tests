@@ -278,3 +278,19 @@
 | [T-274](T-274-configurable-shiny-rules.md) | Make the shiny rule configurable (quality or classic luck) and add starter IV floors | done | 0.9.0 | 2026-08-12 |
 | [T-275](T-275-always-adjust-evolution-levels.md) | Make evolution-level adjustment unconditional (drop the on/off toggle) | done | 0.9.0 | 2026-08-12 |
 | [T-276](T-276-honest-progress-bar.md) | Make the randomization progress bar reflect the real work | done | 0.9.0 | 2026-08-13 |
+| [T-277](T-277-evolution-and-form-family-model.md) | Audit and fix how evolution lines, forms and mutation inheritance are keyed | in-progress | 0.9.0 | 2026-08-14 |
+| [T-278](T-278-inheritance-by-evolution-edge.md) | Inherit mutations along the evolution edge, not the family string | in-progress | 0.9.0 | 2026-08-14 |
+| [T-279](T-279-stage-classification-from-the-graph.md) | Classify evolution stages from the graph instead of the family tree index | in-progress | 0.9.0 | 2026-08-14 |
+| [T-280](T-280-best-evo-by-reachability.md) | Derive bestEvo and devolveToBase from reachability, not from the family tree | in-progress | 0.9.0 | 2026-08-14 |
+| [T-281](T-281-mega-attachment-by-reachability.md) | Attach megas to the species they are a mega of, not to a family | in-progress | 0.9.0 | 2026-08-14 |
+| [T-282](T-282-convergent-evo-level-collapse.md) | Give a converging evolution one gate level, so the docs and the ROM agree | in-progress | 0.9.0 | 2026-08-14 |
+| [T-283](T-283-macro-shared-species-stats.md) | Macro-shared species keep vanilla stats in the ROM while the docs show mutated ones | in-progress | 0.9.0 | 2026-08-14 |
+| [T-284](T-284-family-and-chain-from-the-graph.md) | Name families after the component and draw the real evolution chain | in-progress | 0.9.0 | 2026-08-14 |
+| [T-285](T-285-dedup-per-superfamily.md) | Dedup per superfamily — one obtainable per dev block per run (G1) | in-progress | 0.9.0 | 2026-08-14 |
+| [T-286](T-286-meltan-melmetal-line.md) | Give Meltan an evolution into Melmetal | in-progress | 0.9.0 | 2026-08-14 |
+| [T-287](T-287-burmy-cloaks-converge-on-one-mothim.md) | Point all three Burmy cloaks at the one Mothim, in the source | in-progress | 0.9.0 | 2026-08-14 |
+| [T-288](T-288-model-docs-and-baseline.md) | Document the shipped family model and capture a fresh golden-master baseline | in-progress | 0.9.0 | 2026-08-14 |
+| [T-289](T-289-remove-duplicate-path-forms.md) | Remove Rockruff-Own-Tempo and Gimmighoul-Roaming from the obtainable pool | in-progress | 0.9.0 | 2026-08-14 |
+| [T-290](T-290-premium-transformation-items.md) | Premium transformation items — a tier of their own alongside mega stones | in-progress | 0.9.0 | 2026-08-14 |
+| [T-291](T-291-remove-cosmetic-duplicates.md) | Remove the cosmetic duplicate forms from the game | in-progress | 0.9.0 | 2026-08-14 |
+| [T-292](T-292-terapagos-and-absent-mechanic-abilities.md) | Rate the Terastal abilities 0 and place the Terapagos form the player can own | in-progress | 0.9.0 | 2026-08-14 |

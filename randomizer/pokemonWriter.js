@@ -6,12 +6,101 @@ const { TOTAL_GENS, SPECIES_DIR, LEVEL_UP_LEARNSETS_DIR, POKEMON_TYPES } = requi
 // (ADR-022). Both counts include the terminator, so a payload may be at most capacity - 1 long.
 const { LEVEL_UP_LEARNSET_CAPACITY, TEACHABLE_LEARNSET_CAPACITY } = require("./layout");
 
+// T-283 — some species own no stat lines of their own: they are written
+// `[SPECIES_X] = SOME_SPECIES_INFO,` and their fields live in a `#define` body shared with their
+// sibling forms. The writer used to walk straight past those bodies, so those species kept their base
+// stats in the ROM while the parser read the macro and the docs showed the mutated ones — a docs≠ROM
+// defect of the same class as B-062. Six live species are affected, all survivors of a T-154 cosmetic
+// collapse: Mothim, Vivillon-Icy-Snow, Flabebe/Floette/Florges-Red, Alcremie-Strawberry-Vanilla-Cream.
+//
+// Writing a macro body moves EVERY species that invokes it. That is safe here only because each of the
+// six is the sole survivor of its macro — every co-user is a removed species — and a test pins it.
+// Two spellings for "my stats live in a macro":
+//   [SPECIES_MOTHIM_PLANT] = MOTHIM_SPECIES_INFO,          — the whole entry is the macro
+//   [SPECIES_VIVILLON_ICY_SNOW] = { VIVILLON_MISC_INFO(IcySnow, …), .description = … }
+//                                                          — a real block whose stat lines are not
+const MACRO_SPECIES_DECL = /^\s*\[(SPECIES_[A-Z0-9_]+)\]\s*=\s*([A-Z][A-Z0-9_]*)\s*(?:\([^)]*\))?\s*,/;
+const MACRO_INVOCATION = /^\s{4,}([A-Z][A-Z0-9_]*)\s*\(/;
+const MACRO_DEFINE = /^#define\s+([A-Z][A-Z0-9_]*)/;
+const STAT_LINE = /^\s*\.(baseHP|baseAttack|baseDefense|baseSpeed|baseSpAttack|baseSpDefense|types|abilities)\s*=/;
+
 function editSpeciesFile(genSpeciesFileText, pokemonList) {
     const lines = genSpeciesFileText.split('\n');
+
+    // Which species owns each macro body. Built first because a `#define` can appear before or after
+    // the declarations that use it.
+    //
+    // Only macros whose body actually declares stat lines can be owned — that keeps the scan from
+    // claiming SHADOW(), FOOTPRINT(), OVERWORLD() and friends, which a species block also invokes.
+    const statMacros = new Set();
+    {
+        let openMacro = null;
+        for (const line of lines) {
+            const def = line.match(MACRO_DEFINE);
+            if (def) { openMacro = def[1]; continue; }
+            if (!openMacro) continue;
+            if (STAT_LINE.test(line)) statMacros.add(openMacro);
+            if (!/\\\s*$/.test(line)) openMacro = null;   // the body ends at the first un-continued line
+        }
+    }
+
+    const macroOwner = new Map();
+    let declaringSpecies = null;
+    for (const line of lines) {
+        // A `#define` ends the species block scan: a macro invoked inside another macro's body belongs
+        // to whoever owns that body (resolved by the propagation pass below), never to whichever
+        // species header happened to come before the `#define`.
+        if (MACRO_DEFINE.test(line)) { declaringSpecies = null; continue; }
+        const decl = line.match(MACRO_SPECIES_DECL);
+        if (decl) {
+            const owner = pokemonList.find(p => p.id === decl[1]);
+            if (owner && !macroOwner.has(decl[2])) macroOwner.set(decl[2], owner);
+            declaringSpecies = null;
+            continue;
+        }
+        const header = line.match(/^\s*\[(SPECIES_[A-Z0-9_]+)\]\s*=/);
+        if (header) { declaringSpecies = pokemonList.find(p => p.id === header[1]) || null; continue; }
+        const invocation = declaringSpecies && line.match(MACRO_INVOCATION);
+        if (invocation && statMacros.has(invocation[1]) && !macroOwner.has(invocation[1])) {
+            macroOwner.set(invocation[1], declaringSpecies);
+        }
+    }
+
+    // Macros nest: Alcremie's entry is ALCREMIE_REGULAR_SPECIES_INFO(...), whose body invokes
+    // ALCREMIE_MISC_INFO(color) — and the stats are in the inner one. Propagate ownership inward so
+    // the body that actually holds the stat lines is reachable. Bounded: each pass can only claim an
+    // unowned macro, so it converges.
+    for (let pass = 0; pass < 4; pass++) {
+        let claimed = false;
+        let openMacro = null;
+        for (const line of lines) {
+            const def = line.match(MACRO_DEFINE);
+            if (def) { openMacro = def[1]; continue; }
+            if (!openMacro) continue;
+            const inner = line.match(MACRO_INVOCATION);
+            if (inner && macroOwner.has(openMacro) && !macroOwner.has(inner[1]) && statMacros.has(inner[1])) {
+                macroOwner.set(inner[1], macroOwner.get(openMacro));
+                claimed = true;
+            }
+            if (!/\\\s*$/.test(line)) openMacro = null;
+        }
+        if (!claimed) break;
+    }
+
     let currentPokemonId;
     let currentPokemon;
     let currentLog = [];
     for (let i = 0; i < lines.length; i++) {
+        const macro = lines[i].match(MACRO_DEFINE);
+        if (macro) {
+            // Always reset here, even when nothing owns this macro. Otherwise an unconsumed entry from
+            // whichever species block happened to precede the `#define` rewrites the macro body and so
+            // moves every species that uses it — the hazard injector/modules/species.js warns about.
+            currentPokemon = macroOwner.get(macro[1]);
+            currentPokemonId = currentPokemon ? currentPokemon.id : undefined;
+            currentLog = [...(currentPokemon?.log || [])];
+            continue;
+        }
         if (lines[i].startsWith('    [')) {
             currentPokemonId = lines[i].split('[')[1].split(']')[0];
             currentPokemon = pokemonList.find(p => p.id === currentPokemonId);
@@ -22,6 +111,11 @@ function editSpeciesFile(genSpeciesFileText, pokemonList) {
             continue;
         }
         if (!currentLog.length) continue;
+        // B-025 — inside a `#define` body every line ends in a `\` continuation. A `//` comment before
+        // it would swallow the next macro line and break the build, so those rewrites are re-emitted
+        // with a block comment below. Captured before the rewrites so the check is on the ORIGINAL.
+        const wasContinuation = /\\\s*$/.test(lines[i]);
+        const originalLine = lines[i];
         if (lines[i].startsWith('        .baseHP')) {
             const hpEntryIndex = currentLog.findIndex(entry => entry.target === 'baseHP');
             if (hpEntryIndex === -1) continue;
@@ -86,6 +180,13 @@ function editSpeciesFile(genSpeciesFileText, pokemonList) {
             currentLog.splice(abilityEntryIndex, 1);
             const monAbilities = currentPokemon.parsedAbilities.map(a => `ABILITY_${a.toUpperCase()}`).join(', ');
             lines[i] = `        .abilities = { ${monAbilities} }, // @PUPPED-AUTO-BALANCE #${currentPokemon.id} [oldValue = ${oldValue}] -- previous line was >> ${lines[i]}`;
+        }
+        // B-025 — a rewritten line inside a `#define` body must keep its continuation, and its comment
+        // must be a block comment: a `//` before the trailing `\` swallows the next macro line.
+        // Untouched lines and ordinary species blocks are left exactly as they were, so the output of
+        // every non-macro rewrite stays byte-identical to before T-283.
+        if (wasContinuation && lines[i] !== originalLine) {
+            lines[i] = `${lines[i].replace(/\s*\/\/\s?/, ' /* ').trimEnd()} */ \\`;
         }
     }
     return lines.join('\n');

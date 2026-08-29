@@ -7,7 +7,9 @@ const { randomizeTMs, buildTMList, annotateTmNumbers } = require('../tmRandomize
 const { parseTmLocations } = require('../tmLocations');
 const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpander');
 const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, assignSupportTiersDoubles } = require('../rating');
-const { balancePokemon, resetFamilyTracking } = require('../rebalancer');
+const { balancePokemon, resetInheritance } = require('../rebalancer');
+const { buildEvoGraph } = require('../evoGraph');
+const { classifyStages, bestEvoOf, megaEvosOf, evoChainOf, componentFamilyOf } = require('../evoStages');
 const { mutateAllMoves } = require('../moveMutator');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -88,16 +90,28 @@ async function parseBaseData() {
     const megaEvoTree = {};
     const allPokes = [];
 
+    // T-279 — parse every gen FIRST, then classify. A species' stage is a property of the whole
+    // evolution graph (its degree, and the longest path through it), so it cannot be decided while
+    // later gens are still unparsed.
+    const rawPokes = [];
     for (let gen = 1; gen <= TOTAL_GENS; gen++) {
         const genSpeciesFilePath = path.resolve(SPECIES_DIR, `gen_${gen}_families.h`);
         const genSpeciesFileText = await fs.readFile(genSpeciesFilePath, 'utf-8');
-        const parsedPokes = parser.parseSpeciesFile(genSpeciesFileText, definitions, evoTree);
+        rawPokes.push(...parser.parseSpeciesFile(genSpeciesFileText, definitions, evoTree));
+    }
 
-        parsedPokes.forEach(poke => {
+    {
+        const stageOf = classifyStages(rawPokes);
+        // ADR-026 — the chain the guide draws and the family label both follow the graph, not the
+        // `#if P_FAMILY_` block: `evoTree[poke.family]` drew the line the FAMILY is in, so Perrserker's
+        // chain read "Meowth → Persian" and Weezing-Galar had none at all.
+        const chainOf = evoChainOf(rawPokes);
+        const familyOf = componentFamilyOf(rawPokes);
+        rawPokes.forEach(poke => {
             const learnset   = (poke.levelUpLearnset  && levelUpLearnsets[poke.levelUpLearnset])  ? levelUpLearnsets[poke.levelUpLearnset]  : [];
             const teachables = (poke.teachableLearnset && TMTeachables[poke.teachableLearnset]) ? TMTeachables[poke.teachableLearnset] : [];
 
-            const evolutionType = parser.getEvolutionType(poke, evoTree);
+            const evolutionType = stageOf(poke.id);
             const isMega = evolutionType === EVO_TYPE_MEGA;
             let megaBaseForm, megaItem;
             if (isMega) {
@@ -120,6 +134,12 @@ async function parseBaseData() {
                 parsedTypes: parser.parseMonTypes(poke.types),
                 parsedAbilities: poke.abilities.replace(/\/\/.*$/, '').trim().replace(/{ /, '').replace(/ }/, '').split(', ').map(a => a.replace('ABILITY_', '')),
                 ...poke,
+                // ADR-026 — the identity group is the connected component, named after its base
+                // form's family. The parser's value comes from the `#if P_FAMILY_` block plus a form
+                // suffix, which parks a cross-family evolution in the wrong line (Perrserker carried
+                // P_FAMILY_MEOWTH). A label now — nothing behavioural reads it — but the model must
+                // not say one thing and store another.
+                family: familyOf(poke.id) || poke.family,
                 baseHP, baseAttack, baseDefense, baseSpeed, baseSpAttack, baseSpDefense, baseBST,
                 evolutionData: {
                     type: evolutionType,
@@ -133,7 +153,7 @@ async function parseBaseData() {
                 ...parser.FIXED_PROPERTIES,
                 learnset,
                 teachables,
-                evoTree: evoTree[poke.family],
+                evoTree: chainOf(poke.id),
             };
             allPokes.push(fullPoke);
         });
@@ -238,10 +258,13 @@ async function runPokedexModule(config, baseData = null, hooks = {}) {
 
     // 9. Optional rebalance
     if (config.rebalance) {
-        // B-069 — the rebalancer's family mutation log is per-RUN state that used to live for the whole
-        // process, so a second generation in one process inherited the first's families and stopped
+        // B-069 — the rebalancer's mutation log is per-RUN state that used to live for the whole
+        // process, so a second generation in one process inherited the first's lines and stopped
         // honouring the seed. Clear it before every pass.
-        resetFamilyTracking();
+        resetInheritance();
+        // ADR-026 — inheritance follows the evolution edge. The graph is built over the SAME list the
+        // loop walks, so an evolution whose target was filtered out of this run simply has no parent.
+        const evoGraph = buildEvoGraph(allPokes);
         const abilityKeys = Object.keys(abilities).map(key => key.replace('ABILITY_', ''));
         // T-052 — per-category mutation toggles + probability overrides (default on / defaults).
         const mutationOptions = {
@@ -255,7 +278,8 @@ async function runPokedexModule(config, baseData = null, hooks = {}) {
             total: allPokes.length, base: POKEDEX_PASSES.rate, span: POKEDEX_PASSES.rebalance,
         });
         for (let i = 0; i < allPokes.length; i++) {
-            allPokes[i] = balancePokemon(allPokes[i], abilityKeys, moves, config.balanceChance, mutationOptions);
+            allPokes[i] = balancePokemon(allPokes[i], abilityKeys, moves, config.balanceChance,
+                { ...mutationOptions, parents: evoGraph.parentsOf(allPokes[i].id) });
             reportBalanced(i);
             if (allPokes[i].log && allPokes[i].log.length) {
                 allPokes[i].baseBST = allPokes[i].baseHP + allPokes[i].baseAttack + allPokes[i].baseDefense + allPokes[i].baseSpAttack + allPokes[i].baseSpDefense + allPokes[i].baseSpeed;
@@ -326,24 +350,25 @@ async function runPokedexModule(config, baseData = null, hooks = {}) {
     }
 
     // 10. Best-evo / mega-evo ratings
+    // ADR-026 — bestEvo is what a mon can ACTUALLY become: forward reachability in the evolution
+    // graph, not the best member of its family. Walking evoTree gave Flareon a bestEvo of Espeon and
+    // Basculin-Red-Striped one of Basculegion, a mon it cannot reach at all.
+    const bestReachable = bestEvoOf(allPokes);
+    const megasReachable = megaEvosOf(allPokes);
     allPokes.forEach(poke => {
-        let bestEvo = poke.id;
-        let bestEvoRating = poke.rating.absoluteRating;
-        let bestEvoTier   = poke.rating.tier;
-        (poke.evoTree || []).forEach(evoStage => {
-            const candidates = Array.isArray(evoStage) ? evoStage : [evoStage];
-            candidates.forEach(evo => {
-                const evoPoke = allPokes.find(p => p.id === evo);
-                if (evoPoke && evoPoke.rating.absoluteRating > bestEvoRating) {
-                    bestEvo = evoPoke.id; bestEvoRating = evoPoke.rating.absoluteRating; bestEvoTier = evoPoke.rating.tier;
-                }
-            });
-        });
+        const reachable = bestReachable(poke.id);
+        let bestEvo = reachable.id;
+        let bestEvoRating = reachable.rating;
+        let bestEvoTier   = reachable.tier !== undefined ? reachable.tier : poke.rating.tier;
         poke.rating.bestEvo       = bestEvo;
         poke.rating.bestEvoRating = bestEvoRating;
         poke.rating.bestEvoTier   = bestEvoTier;
-        if (megaEvoTree[poke.family] && !poke.evolutionData.isMega) {
-            poke.evolutionData.megaEvos = megaEvoTree[poke.family];
+        // ADR-026 — a mega attaches to the species it is a mega of and to the line that can reach it,
+        // never to a whole family. Keyed by family, Slowking carried Slowbro-Mega and Gardevoir and
+        // Gallade each carried both.
+        if (!poke.evolutionData.isMega) {
+            const reachableMegas = megasReachable(poke.id);
+            if (reachableMegas.length) poke.evolutionData.megaEvos = reachableMegas;
         }
         if (poke.evolutionData.megaEvos && poke.evolutionData.megaEvos.length) {
             let bestMegaEvo = poke.evolutionData.megaEvos[0];

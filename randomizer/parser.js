@@ -116,9 +116,38 @@ const REMOVED_SPECIES = [
     'SPECIES_MINIOR_CORE_BLUE',
     'SPECIES_MINIOR_CORE_INDIGO',
     'SPECIES_MINIOR_CORE_VIOLET',
+    // T-291 / G4 — cosmetic duplicates: forms that share stats, types and abilities with the one kept,
+    // so a run offering two of them offers the same Pokémon twice under different art. G1 already
+    // stopped them being handed out together; removing them frees the dex slot, the docs entry and the
+    // randomization roll. The survivor is the canonical form — and for Basculin the only one that
+    // leads anywhere, since White-Striped is Basculegion's base.
+    'SPECIES_BASCULIN_RED_STRIPED', 'SPECIES_BASCULIN_BLUE_STRIPED',
+    'SPECIES_DEERLING_SUMMER', 'SPECIES_DEERLING_AUTUMN', 'SPECIES_DEERLING_WINTER',
+    'SPECIES_SAWSBUCK_SUMMER', 'SPECIES_SAWSBUCK_AUTUMN', 'SPECIES_SAWSBUCK_WINTER',
+    'SPECIES_PUMPKABOO_SMALL', 'SPECIES_PUMPKABOO_LARGE', 'SPECIES_PUMPKABOO_SUPER',
+    'SPECIES_GOURGEIST_SMALL', 'SPECIES_GOURGEIST_LARGE', 'SPECIES_GOURGEIST_SUPER',
+    'SPECIES_SHELLOS_EAST', 'SPECIES_GASTRODON_EAST',
+    'SPECIES_SINISTEA_ANTIQUE', 'SPECIES_POLTEAGEIST_ANTIQUE',
+    // Masterpiece is only reachable from Artisan, so the pair leaves together.
+    'SPECIES_POLTCHAGEIST_ARTISAN', 'SPECIES_SINISTCHA_MASTERPIECE',
+    'SPECIES_SQUAWKABILLY_BLUE', 'SPECIES_SQUAWKABILLY_YELLOW', 'SPECIES_SQUAWKABILLY_WHITE',
+    'SPECIES_TATSUGIRI_DROOPY', 'SPECIES_TATSUGIRI_STRETCHY',
+    // A separate event distribution, not a transformation — the engine declares no form change.
+    'SPECIES_ZARUDE_DADA',
+    // Xerneas Neutral and Active are byte-identical (BST 680, pure Fairy, Fairy Aura); Active is
+    // simply what it looks like in battle. Neutral is what the player owns.
+    'SPECIES_XERNEAS_ACTIVE',
+    // T-289 — two forms whose only purpose was a SECOND path into an already-reachable evolution.
+    // Each was its own dedup group, so a run could place the plain form AND the variant (two
+    // Rockruff, two Gimmighoul). Dropping them costs nothing — the plain Rockruff already branches
+    // into all three Lycanroc (candy / moon stone / dusk stone) and Gholdengo is still reachable
+    // from Gimmighoul-Chest — and it leaves Mothim as the dex's only convergent evolution, the one
+    // place ADR-026's "a convergence point inherits from all its pre-evolutions" rule fires.
+    'SPECIES_ROCKRUFF_OWN_TEMPO',
+    'SPECIES_GIMMIGHOUL_ROAMING',
     // B-040 — Mothim has no cloak forms. MOTHIM_PLANT/SANDY/TRASH are byte-identical dupes and
     // SPECIES_MOTHIM aliases MOTHIM_PLANT, so only Plant (the base Mothim) is kept; all three Burmy
-    // cloaks evolve into it (Sandy/Trash stone-evo targets are remapped via EVOLUTION_TARGET_ALIASES).
+    // cloaks name it directly as their stone-evo target since T-287.
     // (Wormadam's three cloak forms are genuinely different types and are NOT collapsed.)
     'SPECIES_MOTHIM_SANDY',
     'SPECIES_MOTHIM_TRASH',
@@ -251,19 +280,18 @@ function processLineForDefinitions(line, definitions) {
     }
 }
 
-// B-040 — canonicalize evolution targets that are removed cosmetic dupes onto the kept base species,
-// so an evolution pointing at a dropped form (e.g. Burmy Sandy → Mothim Sandy) resolves to the real one.
-const EVOLUTION_TARGET_ALIASES = {
-    SPECIES_MOTHIM_SANDY: 'SPECIES_MOTHIM_PLANT',
-    SPECIES_MOTHIM_TRASH: 'SPECIES_MOTHIM_PLANT',
-};
+// T-287 — this used to hold EVOLUTION_TARGET_ALIASES, remapping Burmy Sandy/Trash's Mothim targets
+// onto SPECIES_MOTHIM_PLANT after parsing (B-040). It only ever fixed the pipeline's view: the
+// injector writes evolution levels, never targets, so the cartridge still sent those cloaks to their
+// own Mothim — species the writer never touches, which therefore kept vanilla stats. All three cloaks
+// now name SPECIES_MOTHIM_PLANT in the source, so there is nothing left to remap.
 
 const evoRegex = /{EVO_(.*?), (.*?), (.*?)(?:}|,)/;
 function parseEvo(familyId, pokeId, line, evoTree) {
     const match = line.match(evoRegex);
     if (match) {
         const [, method, param, rawPokemon] = match;
-        const pokemon = EVOLUTION_TARGET_ALIASES[rawPokemon.trim()] || rawPokemon.trim();
+        const pokemon = rawPokemon.trim();
         // Frist time, create the family
         if (!evoTree[familyId]) {
             evoTree[familyId] = [pokeId, [pokemon]];

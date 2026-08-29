@@ -89,7 +89,101 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
   right away (or, if they'd already prepared a ROM, a single combined "you're in + it's ready" email when it
   finishes building). (T-217)
 
+### Fixed
+
+- **Six Pokémon were being rebalanced on paper only.** Mothim, Icy Snow Vivillon, the red Flabébé line
+  and Strawberry Vanilla Cream Alcremie share their stats with sibling forms in the game files, and the
+  tool that writes changes back could not reach that shared block — so the guide showed you a rebalanced
+  Pokémon and the cartridge handed you an untouched one. They are written now. The same fix closes a
+  quieter fault where a leftover change from one Pokémon could land in that shared block and move every
+  Pokémon using it. (T-283)
+
+- **All three Burmy cloaks now really do become the same Mothim, in the cartridge as well as the guide.**
+  Each cloak evolves into its own Wormadam with a Rare Candy and into Mothim with a Dawn Stone once it
+  is high enough level — that part was already right. But the sandy and trash cloaks were pointed at
+  their own private copies of Mothim, so the guide described one Mothim while the game handed you
+  another that had never been rebalanced. All three now lead to the one Mothim. (T-287)
+
+- **Meltan evolves into Melmetal.** In the official games that takes four hundred Meltan Candy in a
+  different game entirely, so Meltan arrived here with no evolution at all and the two were handed out
+  as unrelated Pokémon. Meltan is now the first stage of its own line, rebalanced and levelled like any
+  other. (T-286)
+
+- **Twenty-seven duplicate Pokémon left the pool.** A run had no reason to ever consider a second
+  Deerling that differs only by season, a third Pumpkaboo that differs only by size, or a Basculin whose
+  stripes are a different colour — they share their stats, types and abilities with the one you already
+  had a chance at. One of each set stays: Spring Deerling, Average Pumpkaboo, West Shellos, Phony
+  Sinistea, Green Squawkabilly, Curly Tatsugiri, plain Zarude. Basculin keeps its white stripe, because
+  that is the one that becomes Basculegion. (T-291)
+
+- **The evolution chain in the guide is the one the Pokémon is actually in.** Perrserker's entry drew
+  "Meowth → Persian", a line it has nothing to do with, and Galarian Weezing drew no chain at all.
+  Fourteen Pokémon were filed under the wrong line this way — Sirfetch'd, Clodsire, Overqwil, Sneasler,
+  Cursola, Obstagoon, Runerigus, Mr. Rime and the Hisuian Goodra line among them. Each now shows the
+  line it really belongs to, and Mothim shows all three Burmy cloaks converging on it. (T-284)
+
+- **One Pokémon per family per run now really means one.** A run could hand you an ordinary Meowth, an
+  Alolan Meowth *and* a Galarian one, because each regional line counted as its own separate prize.
+  They are still three different Pokémon — with their own stats, their own changes and their own
+  evolutions — but a single run now offers you one of them, the same way it has always offered you one
+  Pumpkaboo rather than four. Same for every other regional line, and for Koffing, which gives you
+  Weezing or Galarian Weezing but never both. (T-285)
+
+- **Terapagos is judged on what it can actually do here, and you can now be given the one you can
+  catch.** Its ability Terastallizes the Pokémon on entry — except Terastallization does not exist in
+  this game, so the ability does nothing while still being scored as one of the best in the dex, which
+  pushed Terapagos far above its weight. It is now worth zero, like the two other Terastal-only
+  abilities. And the placement rule was backwards: the form you would actually catch was barred while
+  the in-battle one was being handed out. (T-292)
+
+- **The evolution level the documentation promises is the one the cartridge uses.** When several
+  Pokémon evolve into the same one — the three Burmy cloaks all becoming Mothim — each was rolled its
+  own level for the guide while the ROM could only keep one of them, so the guide could tell you level
+  18 and the game ask for 20. They now share a single level: the lowest of the rolls, so it is
+  reachable from whichever cloak you happen to have. (T-282)
+
+- **Mega Evolutions no longer leak onto Pokémon that cannot use them.** Slowking was carrying Mega
+  Slowbro, Kleavor was carrying Mega Scizor and Froslass Mega Glalie — none of which they can become —
+  while Gardevoir and Gallade each claimed *both* of their line's megas instead of their own. A mega
+  now belongs to the Pokémon it is a mega of and to the ones that can still evolve into it, so Kirlia
+  keeps both and Slowpoke keeps Mega Slowbro, as they should. (T-281)
+
+- **A Pokémon's "best evolution" is now one it can actually reach.** Sixty Pokémon were being valued —
+  and therefore placed, offered and traded — against the best member of their *family* rather than the
+  best thing they can turn into. Flareon was rated as though it could become Espeon, Silcoon as though
+  it could become Dustox, Poliwrath as though it could become Politoed, and Basculin's red stripe as
+  though it could become Basculegion, which it cannot do at all. Wurmple still sees the best of all
+  four ends of its line, because it genuinely reaches them; Silcoon now sees only Beautifly. The same
+  fix reaches rewards that hand you "the first form" of a Pokémon: asking for Perrserker's used to
+  give you an ordinary Meowth, which can never become one. (T-280)
+
+- **Nineteen Pokémon were filed at the wrong point in their evolution line, and are not any more.**
+  Cursola, Sirfetch'd, Galarian Weezing and Overqwil were all treated as Pokémon that neither evolve nor
+  come from anything — so a run could hand you one straight out of the grass as if it were a Pokémon you
+  catch at the start. Flapple and Appletun were filed as if they still had an evolution ahead of them,
+  which they do not. Mr. Rime, Obstagoon and Hisuian Goodra were shortchanged as two-stage finals when
+  their lines are three deep, and Basculin's red and blue stripes were listed as the end of a line they
+  can never join. Where a Pokémon sits in its line decides where the game may place it, so all of this
+  now follows the actual evolution arrows. (T-279)
+
+- **A Pokémon's changes now come from the Pokémon it evolved from — and from nothing else.** Until now
+  the randomizer kept one list of changes per *family* and replayed all of it onto every later member,
+  which meant your Flareon carried buffs Vaporeon had earned, your Cascoon carried Silcoon's *and*
+  Beautifly's, and all eight Eeveelutions piled up each other's. Meanwhile the ones the game files put
+  in a separate family inherited nothing at all: Koffing's changes never reached Weezing Galar, and
+  Cursola inherited from the ordinary Corsola instead of from the Galarian one it actually evolves from.
+  And a handful — Perrserker, Clodsire, Obstagoon, Runerigus, Sneasler, Mr. Rime — inherited a line they
+  have nothing to do with. Every one of those is fixed: changes travel down the real evolution arrow.
+  Where several Pokémon converge on the same evolution — only Mothim now — it stacks all of them. (T-278)
+
 ### Removed
+
+- **Two duplicate Pokémon are out of the pool: Rockruff Own Tempo and Roaming Gimmighoul.** Both existed
+  only as a second way into an evolution you could already reach, and the randomizer treated each as its
+  own creature — so a single run could hand you two Rockruff, or two Gimmighoul, that looked and played the
+  same. Nothing is lost: the ordinary Rockruff still evolves into all three Lycanroc (Rare Candy for Midday,
+  Moon Stone for Midnight, Dusk Stone for Dusk), and Gholdengo is still waiting at the end of the Gimmighoul
+  you find. (T-289)
 
 - **Your Pokémon always listen to you now.** The old rule where a Pokémon above the level your Badges
   "allowed" could loaf around, turn away, fall asleep, hurt itself or use a move you never picked is gone

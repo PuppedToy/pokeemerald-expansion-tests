@@ -13,6 +13,7 @@ Entry point to all project documentation. **A document not listed here does not 
 ## Decisions (ADRs)
 
 <!-- One line per ADR, newest first. -->
+- [ADR-026 — Identity, stage classification and dedup are three separate concerns](adr/ADR-026-identity-classification-and-dedup-are-three-concerns.md) — a species inherits only from its direct pre-evolution (a convergence point unions all of them); stage type, `bestEvo` and base form derive from the `evolutions[]` edge graph instead of the `family` string; dedup becomes one invariant policy (one obtainable per dev block per run), superseding T-063 #1 (T-277)
 - [ADR-025 — The frontend's destinations are real paths, declared once in a shared route table](adr/ADR-025-frontend-path-routing-single-route-table.md) — path routing (not hashes), `frontend/js/router.js` as the single home of the URL map imported by the server too, a fixed shell-path list instead of a catch-all so unknown paths keep 404-ing, anchors instead of scripted buttons, one canonical URL per destination with aliases normalised on arrival (T-259)
 - [ADR-022](adr/ADR-022-base-plus-injection-architecture.md) — generation moves from compile-per-user to **build the base ROM once + inject randomized data** (prebuilt-ROM binary patching): one base ROM serves every config (no base-matrix), script/`#define` outputs refactored to data tables + a settings struct, variable tables padded/repointed, offsets from the `.map`, migrated module-by-module behind a compile-vs-inject switch verified byte-identically; *proposed*, accepted-pending the 32 MB free-space gate (T-054, T-229; builds on ADR-013)
 - [ADR-023 — Injection is verified by data equivalence per symbol, not image equality](adr/ADR-023-injection-verified-by-data-equivalence.md) — amends ADR-022 after B-057; adds the INV-LAYOUT tripwire and the coverage rule.
@@ -42,6 +43,7 @@ Entry point to all project documentation. **A document not listed here does not 
 
 <!-- Architecture, conventions, runbooks… One line per document. -->
 - [randomizer-diagnostics.md](randomizer-diagnostics.md) — how randomization warnings/errors (e.g. a short trainer team) are captured, POSTed to the server's 48h store, and audited from local; the diagnostic-code catalog + emission inventory (T-075)
+- [../randomizer/docs/families-and-forms.md](../randomizer/docs/families-and-forms.md) — the family model: identity, mutation inheritance, stage classification and the one-obtainable-per-superfamily dedup rule, plus the premium transformation items (T-277, ADR-026)
 - [../randomizer/docs/randomization-options.md](../randomizer/docs/randomization-options.md) — every frontend randomization option: category, config key, default, algorithm effect, RNG caveat, money ROM-build note (T-052)
 - [../randomizer/docs/client-injection.md](../randomizer/docs/client-injection.md) — running the injector in the browser: the artifacts a client needs, the build-id coupling, the shims, the flag, and what it costs in time and memory (T-249)
 - [upstream-bugfix-sync.md](upstream-bugfix-sync.md) — how we cherry-pick RHH bugfixes per version + the state ledger of how far we're patched (T-049, ADR-012)

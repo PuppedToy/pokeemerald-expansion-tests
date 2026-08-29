@@ -4235,7 +4235,17 @@ const DOUBLES_ABILITY_RATINGS = {
 };
 
 // Doubles value of an ability: the singles aiRating, floored up for doubles-relevant abilities.
+// T-292 — abilities whose entire effect is a mechanic this base does not implement. Terastallization
+// does not exist here, so Tera Shift, Tera Shell and Teraform Zero do literally nothing — yet the C
+// aiRating scores them as 10 and inflates Terapagos' tier on the strength of it. Dead in BOTH formats,
+// which is what separates them from T-141's ally-only corrections below: an ally-only ability at least
+// works in doubles. Owner decision (T-277 decisions, "Terapagos").
+const ABSENT_MECHANIC_ABILITIES = {
+    ABILITY_TERA_SHIFT: 0, ABILITY_TERA_SHELL: 0, ABILITY_TERAFORM_ZERO: 0,
+};
+
 function rateAbilityDoubles(abilityKey, ability) {
+    if (ABSENT_MECHANIC_ABILITIES[abilityKey] !== undefined) return ABSENT_MECHANIC_ABILITIES[abilityKey];
     const base = (ability && ability.rating) || 0;
     const floor = DOUBLES_ABILITY_RATINGS[abilityKey];
     return floor !== undefined ? Math.max(base, floor) : base;
@@ -4250,6 +4260,7 @@ const SINGLES_ABILITY_CORRECTIONS = {
     ABILITY_COMMANDER: 0, ABILITY_HOSPITALITY: 0, ABILITY_COSTAR: 0, ABILITY_POWER_SPOT: 0,
 };
 function rateAbilitySingles(abilityKey, ability) {
+    if (ABSENT_MECHANIC_ABILITIES[abilityKey] !== undefined) return ABSENT_MECHANIC_ABILITIES[abilityKey];
     const corrected = SINGLES_ABILITY_CORRECTIONS[abilityKey];
     return corrected !== undefined ? corrected : ((ability && ability.rating) || 0);
 }

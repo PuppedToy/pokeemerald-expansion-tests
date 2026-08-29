@@ -3,7 +3,7 @@
 // T-157 — Burmy and Ogerpon on the Deerling multi-form model: each catchable form is its own family
 // (so forms randomize independently), but they collapse to one family group for the "one obtainable per
 // family per run" dedup (one in the wild; a trainer holds at most one). Their form suffixes therefore
-// go in BOTH POKE_FORMS (parser split) and COSMETIC_FORM_SUFFIXES (getFamilyGroup collapse). Ogerpon's
+// go in POKE_FORMS, which drives BOTH the parser split and the getFamilyGroup collapse (G1). Ogerpon's
 // battle-only `_TERA` forms are dropped.
 
 const { POKE_FORMS } = require('../../constants');
@@ -73,7 +73,7 @@ describe('Burmy/Ogerpon form suffixes (T-157)', () => {
 `;
     const BURMY_MOTHIM = `
 #if P_FAMILY_BURMY
-${burmyCloak('SPECIES_BURMY_PLANT', 'SPECIES_WORMADAM_PLANT', 'SPECIES_MOTHIM_PLANT')}${burmyCloak('SPECIES_BURMY_SANDY', 'SPECIES_WORMADAM_SANDY', 'SPECIES_MOTHIM_SANDY')}${burmyCloak('SPECIES_BURMY_TRASH', 'SPECIES_WORMADAM_TRASH', 'SPECIES_MOTHIM_TRASH')}${burmyBase('SPECIES_WORMADAM_PLANT', 'NATIONAL_DEX_WORMADAM', 'TYPE_BUG, TYPE_GRASS')}${burmyBase('SPECIES_WORMADAM_SANDY', 'NATIONAL_DEX_WORMADAM', 'TYPE_GROUND, TYPE_STEEL')}${burmyBase('SPECIES_WORMADAM_TRASH', 'NATIONAL_DEX_WORMADAM', 'TYPE_BUG, TYPE_STEEL')}${burmyBase('SPECIES_MOTHIM_PLANT', 'NATIONAL_DEX_MOTHIM', 'TYPE_BUG, TYPE_FLYING')}${burmyBase('SPECIES_MOTHIM_SANDY', 'NATIONAL_DEX_MOTHIM', 'TYPE_BUG, TYPE_FLYING')}${burmyBase('SPECIES_MOTHIM_TRASH', 'NATIONAL_DEX_MOTHIM', 'TYPE_BUG, TYPE_FLYING')}#endif //P_FAMILY_BURMY
+${burmyCloak('SPECIES_BURMY_PLANT', 'SPECIES_WORMADAM_PLANT', 'SPECIES_MOTHIM_PLANT')}${burmyCloak('SPECIES_BURMY_SANDY', 'SPECIES_WORMADAM_SANDY', 'SPECIES_MOTHIM_PLANT')}${burmyCloak('SPECIES_BURMY_TRASH', 'SPECIES_WORMADAM_TRASH', 'SPECIES_MOTHIM_PLANT')}${burmyBase('SPECIES_WORMADAM_PLANT', 'NATIONAL_DEX_WORMADAM', 'TYPE_BUG, TYPE_GRASS')}${burmyBase('SPECIES_WORMADAM_SANDY', 'NATIONAL_DEX_WORMADAM', 'TYPE_GROUND, TYPE_STEEL')}${burmyBase('SPECIES_WORMADAM_TRASH', 'NATIONAL_DEX_WORMADAM', 'TYPE_BUG, TYPE_STEEL')}${burmyBase('SPECIES_MOTHIM_PLANT', 'NATIONAL_DEX_MOTHIM', 'TYPE_BUG, TYPE_FLYING')}${burmyBase('SPECIES_MOTHIM_SANDY', 'NATIONAL_DEX_MOTHIM', 'TYPE_BUG, TYPE_FLYING')}${burmyBase('SPECIES_MOTHIM_TRASH', 'NATIONAL_DEX_MOTHIM', 'TYPE_BUG, TYPE_FLYING')}#endif //P_FAMILY_BURMY
 `;
 
     test('B-040 — only one Mothim survives, but Wormadam keeps its three real forms', () => {
@@ -96,6 +96,11 @@ ${burmyCloak('SPECIES_BURMY_PLANT', 'SPECIES_WORMADAM_PLANT', 'SPECIES_MOTHIM_PL
         expect(nameizyPokemonId('SPECIES_WORMADAM_SANDY').replace(/\s+/g, ' ')).toBe('Wormadam Sandy');
     });
 
+    // T-287 — B-040's guarantee is unchanged, but its MECHANISM moved. The fixture used to feed
+    // `SPECIES_MOTHIM_SANDY` / `_TRASH` and rely on the parser's EVOLUTION_TARGET_ALIASES to remap
+    // them; the source now names SPECIES_MOTHIM_PLANT in all three cloaks and the alias is gone, so
+    // the fixture mirrors the real source. That the SOURCE says so is asserted by
+    // __tests__/unit/burmyMothimConvergence.test.js — together they still cover B-040 end to end.
     test('B-040 — every Burmy cloak evolves (by stone) into the single base Mothim', () => {
         const list = parseSpeciesFile(BURMY_MOTHIM, {}, {});
         for (const cloak of ['SPECIES_BURMY_PLANT', 'SPECIES_BURMY_SANDY', 'SPECIES_BURMY_TRASH']) {
