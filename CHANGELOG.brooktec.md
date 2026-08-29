@@ -91,6 +91,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Twenty-seven duplicate Pokémon left the pool.** A run had no reason to ever consider a second
+  Deerling that differs only by season, a third Pumpkaboo that differs only by size, or a Basculin whose
+  stripes are a different colour — they share their stats, types and abilities with the one you already
+  had a chance at. One of each set stays: Spring Deerling, Average Pumpkaboo, West Shellos, Phony
+  Sinistea, Green Squawkabilly, Curly Tatsugiri, plain Zarude. Basculin keeps its white stripe, because
+  that is the one that becomes Basculegion. (T-291)
+
 - **The evolution chain in the guide is the one the Pokémon is actually in.** Perrserker's entry drew
   "Meowth → Persian", a line it has nothing to do with, and Galarian Weezing drew no chain at all.
   Fourteen Pokémon were filed under the wrong line this way — Sirfetch'd, Clodsire, Overqwil, Sneasler,
