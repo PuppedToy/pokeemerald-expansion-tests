@@ -20,7 +20,12 @@ const {
     EVO_TYPE_NFE_OF_3, EVO_TYPE_LAST_OF_2, EVO_TYPE_LAST_OF_3,
 } = require('./constants');
 
-const MEGA_ID = /_(MEGA|PRIMAL|MEGA_X|MEGA_Y)$/;
+// T-290 rule 6 — `_PRIMAL` is deliberately NOT here. A primal form is reached by holding an item, so
+// it belongs to the premium-item tier and is rated as a standard Pokémon; treating it as a mega made
+// Kyogre and Groudon spend a mega-stone slot and carry the mega-only rating caps. Zacian-Crowned, the
+// same kind of form, was never a mega only because its id lacks the suffix — this removes that
+// inconsistency rather than adding to it.
+const MEGA_ID = /_(MEGA|MEGA_X|MEGA_Y)$/;
 const GUARD = 32;
 
 /**

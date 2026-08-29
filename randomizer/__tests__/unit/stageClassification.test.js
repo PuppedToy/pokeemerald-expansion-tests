@@ -85,10 +85,18 @@ describe('T-279 — the cases the family key got wrong', () => {
 });
 
 describe('T-279 — megas keep their own type', () => {
-    test.each([['SLOWBRO_MEGA'], ['SPECIES_KYOGRE_PRIMAL'], ['X_MEGA_X'], ['Y_MEGA_Y']])(
+    test.each([['SLOWBRO_MEGA'], ['X_MEGA_X'], ['Y_MEGA_Y']])(
         '%s is EVO_TYPE_MEGA', id => {
             expect(classifyStages([{ id }])(id)).toBe(EVO_TYPE_MEGA);
         });
+
+    // T-290 — `_PRIMAL` used to be in this list. A primal form is reached by holding an item, so it
+    // belongs to the premium-item tier and is rated as a standard Pokémon; see
+    // __tests__/unit/primalNotMega.test.js.
+    test('a primal form is NOT a mega', () => {
+        expect(classifyStages([{ id: 'SPECIES_KYOGRE_PRIMAL' }])('SPECIES_KYOGRE_PRIMAL'))
+            .toBe(EVO_TYPE_SOLO);
+    });
 });
 
 describe('T-279 — line length is the longest path, not the family size', () => {

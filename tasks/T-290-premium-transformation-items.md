@@ -53,7 +53,7 @@ Three layers, each shippable on its own:
 Acceptance criteria:
 - [x] A: catalogue of nine; base must be obtainable; an AG form withholds its item; one mask and one
       drive per run; deterministic per seed; random order.
-- [ ] B: primal forms are rated and placed as standard Pokémon.
+- [x] B: primal forms are rated and placed as standard Pokémon.
 - [ ] C: placed in the last batch only, E4/Champion only, alongside a mega stone, equipped only with
       the base form, mega stones first when slots run short.
 - [ ] `cd randomizer && npm test` green.
@@ -75,5 +75,15 @@ Acceptance criteria:
     `GENESECT_SPECIES_INFO`, so a Drive changes nothing but Techno Blast's type.
   Dry run against the cached dex: **7 of 9 placed**, with Zacian and Zamazenta withheld because their
   Crowned forms rate AG — rule 6 doing real work on the first try. Full suite green: 2729 passed.
+
+- **2026-08-14** — Layer B implemented TDD; `__tests__/unit/primalNotMega.test.js` (6) red on 3 first.
+  `_PRIMAL` is out of the mega id test in `evoStages`, so Kyogre-Primal and Groudon-Primal classify as
+  `EVO_TYPE_SOLO` — the same as Zacian-Crowned, which was never a mega only because its id lacks the
+  suffix. That inconsistency is the real reason rule 6 needed stating: two forms reached the same way
+  were rated by different rules. Their bases stop carrying a `megaEvos` entry, so they no longer spend
+  a mega-stone slot, which is what rule 4 (the item is EXTRA, not "the mega") requires.
+  Spec change to `__tests__/unit/stageClassification.test.js`: its "megas keep their own type" table
+  listed `SPECIES_KYOGRE_PRIMAL`. Replaced with an explicit assertion of the new rule rather than
+  quietly dropping the row. Full suite green: 2735 passed.
 
 ## Outcome
