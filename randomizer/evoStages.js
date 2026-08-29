@@ -119,4 +119,65 @@ function megaEvosOf(pokemonList) {
     };
 }
 
-module.exports = { classifyStages, bestEvoOf, megaEvosOf };
+/**
+ * ADR-026 — the evolution chain the docs viewer draws, in the shape it already renders:
+ * `[stage0, [stage1...], [stage2...]]`, where a stage is an id or an array of ids.
+ *
+ * Built from the species' own base form(s) forward, so it is the line the Pokémon is actually in.
+ * `evoTree[poke.family]` drew the line its FAMILY is in — Perrserker's chain read "Meowth → Persian",
+ * and Weezing-Galar had no chain at all because its family has no tree.
+ *
+ * Returns undefined for a species with no edges either way, which is what the viewer already treats
+ * as "nothing to draw".
+ *
+ * @param {Array} pokemonList
+ * @returns {(id: string) => (string|string[])[]|undefined}
+ */
+function evoChainOf(pokemonList) {
+    const graph = buildEvoGraph(pokemonList);
+    return function chainFor(id) {
+        const bases = graph.baseFormsOf(id);
+        if (!bases.length) return undefined;                 // cycle guard
+        if (bases.length === 1 && bases[0] === id && graph.isFinalStage(id)) return undefined;
+
+        const stages = [bases.length === 1 ? bases[0] : bases];
+        const seen = new Set(bases);
+        let frontier = [...new Set(bases.flatMap(base => graph.childrenOf(base)))];
+        while (frontier.length && stages.length < GUARD) {
+            const level = frontier.filter(node => !seen.has(node));
+            if (!level.length) break;
+            level.forEach(node => seen.add(node));
+            stages.push(level);
+            frontier = [...new Set(level.flatMap(node => graph.childrenOf(node)))];
+        }
+        return stages.length > 1 ? stages : undefined;
+    };
+}
+
+/**
+ * ADR-026 — a species' identity group is its connected component, named after the family of the
+ * component's base form. The parser derives `family` from the upstream `#if P_FAMILY_` block plus a
+ * form suffix, which parks a cross-family evolution in the wrong line: Perrserker carried
+ * `P_FAMILY_MEOWTH`, Cursola `P_FAMILY_CORSOLA`.
+ *
+ * Purely a label now — inheritance, stage, bestEvo and dedup all stopped reading it in T-278…T-285 —
+ * but the docs group by it, and the model should not say one thing and store another.
+ *
+ * The Burmy cloaks are the curated exception: they converge on one Mothim, so the component would
+ * merge all three, and T-157 keeps them randomizing independently. Each cloak keeps its own base's
+ * family, which falls out of using the base form rather than the component root.
+ *
+ * @param {Array} pokemonList
+ * @returns {(id: string) => string|undefined}
+ */
+function componentFamilyOf(pokemonList) {
+    const graph = buildEvoGraph(pokemonList);
+    const byId = new Map(pokemonList.map(p => [p.id, p]));
+    return function familyFor(id) {
+        const [base] = graph.baseFormsOf(id);
+        const owner = byId.get(base) || byId.get(id);
+        return owner ? owner.family : undefined;
+    };
+}
+
+module.exports = { classifyStages, bestEvoOf, megaEvosOf, evoChainOf, componentFamilyOf };

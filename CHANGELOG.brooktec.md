@@ -91,6 +91,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **The evolution chain in the guide is the one the Pokémon is actually in.** Perrserker's entry drew
+  "Meowth → Persian", a line it has nothing to do with, and Galarian Weezing drew no chain at all.
+  Fourteen Pokémon were filed under the wrong line this way — Sirfetch'd, Clodsire, Overqwil, Sneasler,
+  Cursola, Obstagoon, Runerigus, Mr. Rime and the Hisuian Goodra line among them. Each now shows the
+  line it really belongs to, and Mothim shows all three Burmy cloaks converging on it. (T-284)
+
 - **One Pokémon per family per run now really means one.** A run could hand you an ordinary Meowth, an
   Alolan Meowth *and* a Galarian one, because each regional line counted as its own separate prize.
   They are still three different Pokémon — with their own stats, their own changes and their own

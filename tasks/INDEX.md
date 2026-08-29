@@ -284,6 +284,7 @@
 | [T-280](T-280-best-evo-by-reachability.md) | Derive bestEvo and devolveToBase from reachability, not from the family tree | in-progress | 0.9.0 | 2026-08-14 |
 | [T-281](T-281-mega-attachment-by-reachability.md) | Attach megas to the species they are a mega of, not to a family | in-progress | 0.9.0 | 2026-08-14 |
 | [T-282](T-282-convergent-evo-level-collapse.md) | Give a converging evolution one gate level, so the docs and the ROM agree | in-progress | 0.9.0 | 2026-08-14 |
+| [T-284](T-284-family-and-chain-from-the-graph.md) | Name families after the component and draw the real evolution chain | in-progress | 0.9.0 | 2026-08-14 |
 | [T-285](T-285-dedup-per-superfamily.md) | Dedup per superfamily — one obtainable per dev block per run (G1) | in-progress | 0.9.0 | 2026-08-14 |
 | [T-289](T-289-remove-duplicate-path-forms.md) | Remove Rockruff-Own-Tempo and Gimmighoul-Roaming from the obtainable pool | in-progress | 0.9.0 | 2026-08-14 |
 | [T-292](T-292-terapagos-and-absent-mechanic-abilities.md) | Rate the Terastal abilities 0 and place the Terapagos form the player can own | in-progress | 0.9.0 | 2026-08-14 |

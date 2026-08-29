@@ -9,7 +9,7 @@ const { expandAllTeachables, buildTmPoolFromFile } = require('../teachableExpand
 const { ratePokemon, ratePokemonDoubles, rateContextual, rateContextualDoubles, wishiwashiEffectivePoke, palafinEffectivePoke, rateMove, rateMoveDoubles, rateAbilityDoubles, rateAbilitySingles, assignSupportTiersDoubles } = require('../rating');
 const { balancePokemon, resetInheritance } = require('../rebalancer');
 const { buildEvoGraph } = require('../evoGraph');
-const { classifyStages, bestEvoOf, megaEvosOf } = require('../evoStages');
+const { classifyStages, bestEvoOf, megaEvosOf, evoChainOf, componentFamilyOf } = require('../evoStages');
 const { mutateAllMoves } = require('../moveMutator');
 const { applyMegaBaseStab } = require('../megaBaseStab');
 const { applyMeloettaTierBlend } = require('../meloetta');
@@ -102,6 +102,11 @@ async function parseBaseData() {
 
     {
         const stageOf = classifyStages(rawPokes);
+        // ADR-026 — the chain the guide draws and the family label both follow the graph, not the
+        // `#if P_FAMILY_` block: `evoTree[poke.family]` drew the line the FAMILY is in, so Perrserker's
+        // chain read "Meowth → Persian" and Weezing-Galar had none at all.
+        const chainOf = evoChainOf(rawPokes);
+        const familyOf = componentFamilyOf(rawPokes);
         rawPokes.forEach(poke => {
             const learnset   = (poke.levelUpLearnset  && levelUpLearnsets[poke.levelUpLearnset])  ? levelUpLearnsets[poke.levelUpLearnset]  : [];
             const teachables = (poke.teachableLearnset && TMTeachables[poke.teachableLearnset]) ? TMTeachables[poke.teachableLearnset] : [];
@@ -129,6 +134,12 @@ async function parseBaseData() {
                 parsedTypes: parser.parseMonTypes(poke.types),
                 parsedAbilities: poke.abilities.replace(/\/\/.*$/, '').trim().replace(/{ /, '').replace(/ }/, '').split(', ').map(a => a.replace('ABILITY_', '')),
                 ...poke,
+                // ADR-026 — the identity group is the connected component, named after its base
+                // form's family. The parser's value comes from the `#if P_FAMILY_` block plus a form
+                // suffix, which parks a cross-family evolution in the wrong line (Perrserker carried
+                // P_FAMILY_MEOWTH). A label now — nothing behavioural reads it — but the model must
+                // not say one thing and store another.
+                family: familyOf(poke.id) || poke.family,
                 baseHP, baseAttack, baseDefense, baseSpeed, baseSpAttack, baseSpDefense, baseBST,
                 evolutionData: {
                     type: evolutionType,
@@ -142,7 +153,7 @@ async function parseBaseData() {
                 ...parser.FIXED_PROPERTIES,
                 learnset,
                 teachables,
-                evoTree: evoTree[poke.family],
+                evoTree: chainOf(poke.id),
             };
             allPokes.push(fullPoke);
         });
