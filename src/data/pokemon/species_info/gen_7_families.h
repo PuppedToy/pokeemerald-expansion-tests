@@ -7481,6 +7481,11 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .perfectIVCount = LEGENDARY_PERFECT_IV_COUNT,
         .levelUpLearnset = sMeltanLevelUpLearnset,
         .teachableLearnset = sMeltanTeachableLearnset,
+        // T-286 — officially Melmetal comes from 400 Meltan Candy in Pokemon GO, which has no
+        // equivalent here, so the expansion ships Meltan with no evolution at all. A plain candy
+        // evolution is the convention for a single-branch line (T-060); the randomizer rerolls the
+        // level per run.
+        .evolutions = EVOLUTION({EVO_LEVEL, 40, SPECIES_MELMETAL}),
     },
 
     [SPECIES_MELMETAL] =

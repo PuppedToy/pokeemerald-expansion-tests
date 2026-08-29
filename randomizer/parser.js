@@ -147,7 +147,7 @@ const REMOVED_SPECIES = [
     'SPECIES_GIMMIGHOUL_ROAMING',
     // B-040 — Mothim has no cloak forms. MOTHIM_PLANT/SANDY/TRASH are byte-identical dupes and
     // SPECIES_MOTHIM aliases MOTHIM_PLANT, so only Plant (the base Mothim) is kept; all three Burmy
-    // cloaks evolve into it (Sandy/Trash stone-evo targets are remapped via EVOLUTION_TARGET_ALIASES).
+    // cloaks name it directly as their stone-evo target since T-287.
     // (Wormadam's three cloak forms are genuinely different types and are NOT collapsed.)
     'SPECIES_MOTHIM_SANDY',
     'SPECIES_MOTHIM_TRASH',
@@ -280,19 +280,18 @@ function processLineForDefinitions(line, definitions) {
     }
 }
 
-// B-040 — canonicalize evolution targets that are removed cosmetic dupes onto the kept base species,
-// so an evolution pointing at a dropped form (e.g. Burmy Sandy → Mothim Sandy) resolves to the real one.
-const EVOLUTION_TARGET_ALIASES = {
-    SPECIES_MOTHIM_SANDY: 'SPECIES_MOTHIM_PLANT',
-    SPECIES_MOTHIM_TRASH: 'SPECIES_MOTHIM_PLANT',
-};
+// T-287 — this used to hold EVOLUTION_TARGET_ALIASES, remapping Burmy Sandy/Trash's Mothim targets
+// onto SPECIES_MOTHIM_PLANT after parsing (B-040). It only ever fixed the pipeline's view: the
+// injector writes evolution levels, never targets, so the cartridge still sent those cloaks to their
+// own Mothim — species the writer never touches, which therefore kept vanilla stats. All three cloaks
+// now name SPECIES_MOTHIM_PLANT in the source, so there is nothing left to remap.
 
 const evoRegex = /{EVO_(.*?), (.*?), (.*?)(?:}|,)/;
 function parseEvo(familyId, pokeId, line, evoTree) {
     const match = line.match(evoRegex);
     if (match) {
         const [, method, param, rawPokemon] = match;
-        const pokemon = EVOLUTION_TARGET_ALIASES[rawPokemon.trim()] || rawPokemon.trim();
+        const pokemon = rawPokemon.trim();
         // Frist time, create the family
         if (!evoTree[familyId]) {
             evoTree[familyId] = [pokeId, [pokemon]];

@@ -91,6 +91,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **All three Burmy cloaks now really do become the same Mothim, in the cartridge as well as the guide.**
+  Each cloak evolves into its own Wormadam with a Rare Candy and into Mothim with a Dawn Stone once it
+  is high enough level — that part was already right. But the sandy and trash cloaks were pointed at
+  their own private copies of Mothim, so the guide described one Mothim while the game handed you
+  another that had never been rebalanced. All three now lead to the one Mothim. (T-287)
+
+- **Meltan evolves into Melmetal.** In the official games that takes four hundred Meltan Candy in a
+  different game entirely, so Meltan arrived here with no evolution at all and the two were handed out
+  as unrelated Pokémon. Meltan is now the first stage of its own line, rebalanced and levelled like any
+  other. (T-286)
+
 - **Twenty-seven duplicate Pokémon left the pool.** A run had no reason to ever consider a second
   Deerling that differs only by season, a third Pumpkaboo that differs only by size, or a Basculin whose
   stripes are a different colour — they share their stats, types and abilities with the one you already
