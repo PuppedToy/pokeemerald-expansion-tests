@@ -91,6 +91,13 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ### Fixed
 
+- **Six Pokémon were being rebalanced on paper only.** Mothim, Icy Snow Vivillon, the red Flabébé line
+  and Strawberry Vanilla Cream Alcremie share their stats with sibling forms in the game files, and the
+  tool that writes changes back could not reach that shared block — so the guide showed you a rebalanced
+  Pokémon and the cartridge handed you an untouched one. They are written now. The same fix closes a
+  quieter fault where a leftover change from one Pokémon could land in that shared block and move every
+  Pokémon using it. (T-283)
+
 - **All three Burmy cloaks now really do become the same Mothim, in the cartridge as well as the guide.**
   Each cloak evolves into its own Wormadam with a Rare Candy and into Mothim with a Dawn Stone once it
   is high enough level — that part was already right. But the sandy and trash cloaks were pointed at

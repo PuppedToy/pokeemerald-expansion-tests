@@ -227,9 +227,16 @@ describe('failure modes', () => {
     });
 });
 
-describe('macro-backed species — what the writer cannot reach, the injector must not write', () => {
-    // 239 species are `[SPECIES_X] = SOME_MISC_INFO(…)`: their stats live in one shared #define body, so
-    // editSpeciesFile cannot rewrite them per species and compile() leaves them at their base values.
+describe('macro-backed species — the injector writes exactly what the writer writes', () => {
+    // 239 species are `[SPECIES_X] = SOME_MISC_INFO(…)`: their stats live in one shared #define body.
+    // Until T-283 editSpeciesFile could not rewrite them at all and compile() left them at their base
+    // values, so this module's contract was "must not write". T-283 taught the writer to follow the
+    // macro, and because this module RE-RUNS the writer the injector follows automatically — the
+    // contract is unchanged in substance (parity), only in what parity now means.
+    //
+    // The blast radius is deliberate: writing a macro body moves every species that invokes it. That
+    // is safe because each live species is the sole survivor of its macro, pinned by
+    // __tests__/unit/macroSharedSpeciesWrite.test.js.
     const macroSource = (name = 'macro.h') => ({
         name,
         text: [
@@ -248,14 +255,24 @@ describe('macro-backed species — what the writer cannot reach, the injector mu
         ].join('\n'),
     });
 
-    test('a macro-backed species with a rebalance log is left alone', () => {
+    test('T-283 — a macro-backed species with a rebalance log is now written', () => {
         const base = setup({
             pokes: [poke('SPECIES_ZIGZAGOON', { baseHP: 99, log: [{ target: 'baseHP' }] })],
         });
-        const { writes } = injectSpeciesInfo(base.ctx, { speciesSources: [macroSource()] });
+        injectSpeciesInfo(base.ctx, { speciesSources: [macroSource()] });
 
-        expect(writes.stats).toBe(0);
-        expect(readStat(base, 'SPECIES_ZIGZAGOON', 'baseHP')).toBe(38);
+        expect(readStat(base, 'SPECIES_ZIGZAGOON', 'baseHP')).toBe(99);
+    });
+
+    test('T-283 — and every species sharing that body moves with it, as the compiler would', () => {
+        // ZIG_MISC_INFO is invoked by both Zigzagoons. One body, one value: the ROM cannot express
+        // anything else, so the injector must not pretend otherwise.
+        const base = setup({
+            pokes: [poke('SPECIES_ZIGZAGOON', { baseHP: 99, log: [{ target: 'baseHP' }] })],
+        });
+        injectSpeciesInfo(base.ctx, { speciesSources: [macroSource()] });
+
+        expect(readStat(base, 'SPECIES_ZIGZAGOON_GALAR', 'baseHP')).toBe(99);
     });
 
     test('a species that owns its line is written from the same pass', () => {
@@ -267,9 +284,13 @@ describe('macro-backed species — what the writer cannot reach, the injector mu
         expect(readStat(base, 'SPECIES_LINOONE', 'baseHP')).toBe(90);
     });
 
-    test('when the writer does rewrite a macro body, every species using it moves — as the ROM would', () => {
-        // The writer attributes a line to the last [SPECIES_…] header it saw, so an unconsumed log entry
-        // can land inside a #define. Then the compiler applies it to every user, and so must the injector.
+    test('T-283 — an unconsumed log entry no longer bleeds into a macro body', () => {
+        // This used to assert the opposite: the writer attributed a line to the last [SPECIES_…]
+        // header it saw, so an unconsumed entry landed inside a #define and moved EVERY species using
+        // it — and the injector faithfully mirrored that, because parity with the compile path is the
+        // point of this module. T-283 fixed it at the source: a `#define` now resets the current
+        // species. The parity guarantee is untouched — both paths changed together, since the injector
+        // re-runs `editSpeciesFile`.
         const source = {
             name: 'bleed.h',
             text: [
@@ -288,10 +309,33 @@ describe('macro-backed species — what the writer cannot reach, the injector mu
         const base = setup({
             pokes: [poke('SPECIES_LINOONE', { baseHP: 55, log: [{ target: 'baseHP' }] })],
         });
-        injectSpeciesInfo(base.ctx, { speciesSources: [source] });
+        const { writes } = injectSpeciesInfo(base.ctx, { speciesSources: [source] });
 
-        // Linoone's own block has no .baseHP line, so the writer's first match is the macro's.
-        expect(readStat(base, 'SPECIES_ZIGZAGOON', 'baseHP')).toBe(55);
-        expect(readStat(base, 'SPECIES_ZIGZAGOON_GALAR', 'baseHP')).toBe(55);
+        // Linoone's own block has no .baseHP line, so its entry is simply never applied — it does not
+        // wander into the next macro body. Asserted as "nothing was written", which is the precise
+        // claim and does not depend on what the harness happens to seed each species with.
+        expect(writes.stats).toBe(0);
+        expect(readStat(base, 'SPECIES_ZIGZAGOON', 'baseHP')).toBe(38);
+    });
+
+    test('T-283 — a macro with no live user is still never written', () => {
+        // Ownership requires a species the bundle actually carries. A body nothing live invokes has no
+        // stats to represent and stays exactly as the base ROM has it.
+        const source = {
+            name: 'param.h',
+            text: [
+                '#define ZIG_MISC_INFO(x)                              \\',
+                '        .baseHP        = 38,                          \\',
+                '    }',
+                '    [SPECIES_ZIGZAGOON] = ZIG_MISC_INFO(1),',
+            ].join('\n'),
+        };
+        const base = setup({
+            pokes: [poke('SPECIES_LINOONE', { baseHP: 77, log: [{ target: 'baseHP' }] })],
+        });
+        const { writes } = injectSpeciesInfo(base.ctx, { speciesSources: [source] });
+
+        expect(writes.stats).toBe(0);
+        expect(readStat(base, 'SPECIES_ZIGZAGOON', 'baseHP')).toBe(38);
     });
 });

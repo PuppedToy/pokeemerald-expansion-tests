@@ -1,7 +1,7 @@
 ---
 id: T-283
 title: Macro-shared species keep vanilla stats in the ROM while the docs show mutated ones
-status: proposed
+status: in-progress
 type: fix
 created: 2026-08-14
 updated: 2026-08-14
@@ -56,12 +56,13 @@ same randomized stats, which quietly resolves that mismatch — **or** T-287 poi
 base-ROM rebuild.
 
 Acceptance criteria:
-- [ ] The six species' mutations reach the ROM.
-- [ ] A test pins that every co-user of each touched macro is a removed species.
-- [ ] Injection stays identical to compilation (the injector re-runs the writer, so this is a
-      consequence, but the corpus must confirm it).
-- [ ] Failing-first regression test.
-- [ ] `cd randomizer && npm test` green.
+- [x] The six species' mutations reach the ROM.
+- [x] A test pins that every co-user of each touched macro is a removed species.
+- [x] The latent leak is closed: an unconsumed log entry can no longer rewrite a macro body.
+- [x] Injection stays identical to compilation (the injector re-runs the writer).
+- [x] Failing-first regression test.
+- [x] `cd randomizer && npm test` green.
+- [x] `CHANGELOG.brooktec.md` line added.
 - [ ] Fresh golden-master baseline — this changes ROM bytes by design.
 
 ## Progress log
@@ -71,3 +72,33 @@ Acceptance criteria:
   · Scope is **6 live species**, not "macro-defined species" broadly.
   · The audit implied Mothim's stats were the Burmy problem. They are *a* problem, but the docs≠ROM
     half of the Mothim complaint is this task, not T-287.
+- **2026-08-14** — Implemented TDD; `__tests__/unit/macroSharedSpeciesWrite.test.js` (14) red first.
+  It turned out to be **two** defects, not one:
+  · The write itself, and
+  · a **latent leak** the injector's header had predicted: nothing reset the current species at a
+    `#define`, so an unconsumed log entry from whichever species block preceded it rewrote the macro
+    body and moved every species using it. My first version of that test passed by accident — the
+    fixture's leftover entry had no matching line in the macro. Sharpening it (a species block with no
+    `.types` line, a macro body with one) made it fail, which is the real hazard.
+  Three spellings of "my stats live in a macro" had to be handled, found one at a time by the six
+  species failing in turn:
+  · `[SPECIES_MOTHIM_PLANT] = MOTHIM_SPECIES_INFO,`
+  · `[SPECIES_VIVILLON_ICY_SNOW] = { VIVILLON_MISC_INFO(IcySnow, …), .description = … }` — a real
+    block whose stat lines simply are not in it
+  · `[SPECIES_ALCREMIE_…] = ALCREMIE_REGULAR_SPECIES_INFO(…),` whose body invokes
+    `ALCREMIE_MISC_INFO(color)` — the stats are one hop further in, so ownership propagates inward.
+  The nesting exposed a bug in my own ownership scan: it did not reset the species scope at a
+  `#define`, so `ALCREMIE_MISC_INFO` was claimed by whichever species header preceded the outer macro.
+  Same class of mistake as the leak it was written to fix.
+  Ownership is restricted to macros whose body actually declares stat lines, which keeps the scan off
+  `SHADOW()`, `FOOTPRINT()`, `OVERWORLD()` and friends.
+- **2026-08-14** — Spec change to `__tests__/unit/injectorSpecies.test.js`, logged per the TDD rule.
+  Its `describe` was titled *"what the writer cannot reach, the injector must not write"* and two of
+  its cases asserted `writes.stats === 0` for a macro-backed species — the pre-T-283 contract. The
+  module's real contract is **parity with the writer**, and that is untouched: the injector re-runs
+  `editSpeciesFile`, so both paths changed together. Retitled and rewritten to assert the new parity,
+  including that every species sharing a body moves with it, which is what the ROM can express.
+- **2026-08-14** — Full suite green: 2714 passed. **ROM bytes change by design** — the six species
+  finally receive their mutations, so the golden-master corpus needs a fresh baseline.
+
+## Outcome
